@@ -106,11 +106,49 @@ if (isset($_SESSION["reg_no"])) {
             <div class="col-md-6 col-lg-5">
                 <div class="card login-card">
                     <div class="login-header">
-                        <h1 class="h4 mb-0 fw-bold">Student Contribution Management Portal</h1>
+                        <h1 class="h4 mb-0 fw-bold" id="studentContributionManagementPortal">Student Contribution Management Portal</h1>
+                        <span id="studentContributionManagementPortal" class="studentContributionManagementPortal"></span>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const text = "Student Contribution Portal";
+                                const el = document.getElementById('studentContributionManagementPortal');
+
+                                function type() {
+                                    el.textContent = "";
+                                    let idx = 0;
+
+                                    function typing() {
+                                        if (idx < text.length) {
+                                            el.textContent += text[idx];
+                                            idx++;
+                                            setTimeout(typing, 60);
+                                        }
+                                    }
+                                    typing();
+                                }
+                                type();
+                                setInterval(type, 3000);
+                            });
+                        </script>
                     </div>
                     <div class="card-body login-body">
                         <div class="logo-container">
                             <img src="assets/logo.png" alt="Instruction logo" class="logo">
+                            <style>
+                                .logo {
+                                    animation: rotateLogo 35s linear infinite;
+                                }
+
+                                @keyframes rotateLogo {
+                                    from {
+                                        transform: rotate(0deg);
+                                    }
+
+                                    to {
+                                        transform: rotate(360deg);
+                                    }
+                                }
+                            </style>
                         </div>
                         <h2 class="h5 text-center mb-4 fw-bold">LOGIN</h2>
 
