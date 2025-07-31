@@ -1,0 +1,14 @@
+RewriteEngine On
+
+RewriteRule ^login$ login.php [NC,L]
+RewriteRule ^add_reason$ add_reason.php [NC,L]
+RewriteRule ^add_reason$ add_reason.php [NC,L]
+RewriteRule ^mark_paid$ mark_paid.php [NC,L]
+RewriteRule ^reason_list$ reason_list.php [NC,L]
+RewriteRule ^processing$ x.php [NC,L]
+
+RewriteRule ^edit_user/(\d+)$ edit_user.php?id=$1 [NC,L]
+
+Options -Indexes
+
+ErrorDocument 404 ./404.html

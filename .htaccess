@@ -1,0 +1,11 @@
+RewriteEngine On
+
+RewriteRule ^login$ login.php [NC,L]
+RewriteRule ^register$ register.php [NC,L]
+RewriteRule ^processing$ x.php [NC,L]
+
+RewriteRule ^edit_user/(\d+)$ edit_user.php?id=$1 [NC,L]
+
+Options -Indexes
+
+ErrorDocument 404 ./404.html
