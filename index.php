@@ -268,6 +268,7 @@ $balance = $tot - $tot_paid;
             -webkit-user-select: none !important;
             -moz-user-select: none !important;
             -ms-user-select: none !important;
+            user-select: none !important;
         }
     </style>
     <!-- Header --></script>
