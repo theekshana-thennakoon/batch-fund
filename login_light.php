@@ -16,69 +16,20 @@ if (isset($_SESSION["reg_no"])) {
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* ========== DARK MODE (Default) ========== */
-        :root {
-            --bg-gradient-start: #1a1a2e;
-            --bg-gradient-end: #16213e;
-            --card-bg: #1e1e2f;
-            --card-header-bg: #2a2a3a;
-            --card-header-text: #e9ecef;
-            --card-border: #2d2d44;
-            --text-primary: #e9ecef;
-            --text-secondary: #adb5bd;
-            --input-bg: #2a2a3a;
-            --input-border: #3d3d5c;
-            --input-text: #e9ecef;
-            --input-placeholder: #6c6c8d;
-            --label-color: #cbd5e0;
-            --btn-gradient-start: #4c51bf;
-            --btn-gradient-end: #6b46c0;
-            --btn-hover-start: #5a67d8;
-            --btn-hover-end: #805ad5;
-            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            --border-color: #2d2d44;
-        }
-
-        /* ========== LIGHT MODE ========== */
-        body.light-mode {
-            --bg-gradient-start: #667eea;
-            --bg-gradient-end: #764ba2;
-            --card-bg: white;
-            --card-header-bg: rgba(255, 255, 255, 0.9);
-            --card-header-text: #333;
-            --card-border: rgba(0, 0, 0, 0.1);
-            --text-primary: #212529;
-            --text-secondary: #6c757d;
-            --input-bg: #fff;
-            --input-border: #ddd;
-            --input-text: #212529;
-            --input-placeholder: #999;
-            --label-color: #495057;
-            --btn-gradient-start: #667eea;
-            --btn-gradient-end: #764ba2;
-            --btn-hover-start: #5a6fd1;
-            --btn-hover-end: #694499;
-            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            --border-color: rgba(0, 0, 0, 0.1);
-        }
-
         body {
-            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             height: 100vh;
             display: flex;
             align-items: center;
             background-attachment: fixed;
-            transition: background 0.3s ease;
-            color: var(--text-primary);
         }
 
         .login-card {
             border: none;
             border-radius: 15px;
-            box-shadow: var(--box-shadow);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             overflow: hidden;
-            transition: transform 0.3s ease, background-color 0.3s ease;
-            background-color: var(--card-bg);
+            transition: transform 0.3s ease;
         }
 
         .login-card:hover {
@@ -86,69 +37,54 @@ if (isset($_SESSION["reg_no"])) {
         }
 
         .login-header {
-            background: var(--card-header-bg);
-            color: var(--card-header-text);
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
             padding: 25px;
             text-align: center;
-            border-bottom: 1px solid var(--card-border);
-            transition: background 0.3s ease, color 0.3s ease;
-        }
-
-        .login-header h1 {
-            color: var(--card-header-text);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .login-body {
             padding: 30px;
-            background-color: var(--card-bg);
-            transition: background-color 0.3s ease;
+            background-color: white;
         }
 
         .form-control {
             border-radius: 8px;
             padding: 12px 15px;
-            border: 1px solid var(--input-border);
+            border: 1px solid #ddd;
             transition: all 0.3s;
-            background-color: var(--input-bg) !important;
-            color: var(--input-text) !important;
+            background-color: #fff !important;
         }
 
         .form-control:focus {
             border-color: #764ba2;
             box-shadow: 0 0 0 0.25rem rgba(118, 75, 162, 0.25);
-            background-color: var(--input-bg) !important;
-            color: var(--input-text) !important;
-        }
-
-        .form-control::placeholder {
-            color: var(--input-placeholder);
         }
 
         .btn-login {
-            background: linear-gradient(to right, var(--btn-gradient-start), var(--btn-gradient-end));
+            background: linear-gradient(to right, #667eea, #764ba2);
             border: none;
             padding: 12px;
             font-weight: 600;
             letter-spacing: 0.5px;
             border-radius: 8px;
             transition: all 0.3s;
-            color: white;
         }
 
         .btn-login:hover {
-            background: linear-gradient(to right, var(--btn-hover-start), var(--btn-hover-end));
+            background: linear-gradient(to right, #5a6fd1, #694499);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .text-muted {
-            color: var(--text-secondary) !important;
+            color: #6c757d !important;
         }
 
         .form-label {
             font-weight: 500;
-            color: var(--label-color);
-            transition: color 0.3s ease;
+            color: #495057;
         }
 
         .logo-container {
@@ -159,99 +95,11 @@ if (isset($_SESSION["reg_no"])) {
         .logo {
             max-height: 110px;
             max-width: 80%;
-            animation: rotateLogo 35s linear infinite;
-        }
-
-        @keyframes rotateLogo {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Theme toggle button in login page */
-        .theme-toggle-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            border-radius: 50px;
-            padding: 10px 20px;
-            font-size: 14px;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            font-weight: 500;
-        }
-
-        .theme-toggle-btn:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-            transform: scale(1.02);
-        }
-
-        body.light-mode .theme-toggle-btn {
-            background-color: rgba(0, 0, 0, 0.2);
-            color: #333;
-        }
-
-        body.light-mode .theme-toggle-btn:hover {
-            background-color: rgba(0, 0, 0, 0.3);
-        }
-
-        /* SweetAlert dark mode compatibility */
-        .swal2-popup {
-            background-color: var(--card-bg) !important;
-            color: var(--text-primary) !important;
-        }
-
-        .swal2-title {
-            color: var(--text-primary) !important;
-        }
-
-        .swal2-html-container {
-            color: var(--text-secondary) !important;
-        }
-
-        .swal2-confirm {
-            background-color: #764ba2 !important;
-        }
-
-        body.light-mode .swal2-popup {
-            background-color: white !important;
-        }
-
-        body.light-mode .swal2-title {
-            color: #212529 !important;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .theme-toggle-btn {
-                top: 10px;
-                right: 10px;
-                padding: 6px 12px;
-                font-size: 12px;
-            }
-
-            .login-header h1 {
-                font-size: 1.2rem;
-            }
         }
     </style>
 </head>
 
-<body class="dark-mode">
-    <!-- Theme Toggle Button -->
-    <!-- <button id="themeToggle" class="theme-toggle-btn">
-        <i class="fas fa-sun me-2"></i> Light Mode
-    </button> -->
-
+<body>
     <script src="./assets/sweetalert.js"></script>
     <div class="container">
         <div class="row justify-content-center">
@@ -286,6 +134,21 @@ if (isset($_SESSION["reg_no"])) {
                     <div class="card-body login-body">
                         <div class="logo-container">
                             <img src="assets/logo.png" alt="Instruction logo" class="logo">
+                            <style>
+                                .logo {
+                                    animation: rotateLogo 35s linear infinite;
+                                }
+
+                                @keyframes rotateLogo {
+                                    from {
+                                        transform: rotate(0deg);
+                                    }
+
+                                    to {
+                                        transform: rotate(360deg);
+                                    }
+                                }
+                            </style>
                         </div>
                         <h2 class="h5 text-center mb-4 fw-bold">LOGIN</h2>
 
@@ -318,8 +181,6 @@ if (isset($_SESSION["reg_no"])) {
 
     <!-- Bootstrap 5 JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script>
         function formatRegistrationNumber(input) {
@@ -388,73 +249,6 @@ if (isset($_SESSION["reg_no"])) {
         }
     </script>
 
-    <!-- Dark/Light Mode Toggle JavaScript - Dark Mode Default -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get the toggle button
-            const themeToggle = document.getElementById('themeToggle');
-            const body = document.body;
-
-            // Check for saved theme preference in localStorage
-            const savedTheme = localStorage.getItem('scmp_theme_login');
-
-            // Function to apply theme
-            function applyTheme(theme) {
-                if (theme === 'light') {
-                    body.classList.remove('dark-mode');
-                    body.classList.add('light-mode');
-                    if (themeToggle) {
-                        themeToggle.innerHTML = '<i class="fas fa-moon me-2"></i> Dark Mode';
-                    }
-                } else {
-                    body.classList.remove('light-mode');
-                    body.classList.add('dark-mode');
-                    if (themeToggle) {
-                        themeToggle.innerHTML = '<i class="fas fa-sun me-2"></i> Light Mode';
-                    }
-                }
-            }
-
-            // Apply saved theme or default to dark mode
-            if (savedTheme === 'light') {
-                applyTheme('light');
-            } else {
-                // Default to dark mode
-                applyTheme('dark');
-                // Save dark mode as default preference if no saved preference exists
-                if (!savedTheme) {
-                    localStorage.setItem('scmp_theme_login', 'dark');
-                }
-            }
-
-            // Toggle theme on button click
-            if (themeToggle) {
-                themeToggle.addEventListener('click', function() {
-                    if (body.classList.contains('dark-mode')) {
-                        // Switch to light mode
-                        applyTheme('light');
-                        localStorage.setItem('scmp_theme_login', 'light');
-                    } else {
-                        // Switch to dark mode
-                        applyTheme('dark');
-                        localStorage.setItem('scmp_theme_login', 'dark');
-                    }
-                });
-            }
-
-            // Add transition effect
-            const style = document.createElement('style');
-            style.textContent = `
-                .login-card, .login-header, .login-body, .form-control, .btn-login {
-                    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-                }
-            `;
-            document.head.appendChild(style);
-
-            console.log('Login page theme initialized: Dark Mode is default');
-        });
-    </script>
-
     <?php
     if (isset($_SESSION['wrong_user'])) {
         echo "
@@ -463,8 +257,8 @@ if (isset($_SESSION["reg_no"])) {
                         icon: 'error',
                         title: 'Oops...',
                         text: 'User does not exists!',
-                        background: document.body.classList.contains('dark-mode') ? '#1e1e2f' : 'white',
-                        color: document.body.classList.contains('dark-mode') ? '#e9ecef' : '#212529'
+                    }).then(() => {
+                        //window.history.back(); // Navigate back to the previous page
                     });
                 </script>";
         unset($_SESSION["wrong_user"]);
@@ -477,8 +271,8 @@ if (isset($_SESSION["reg_no"])) {
                         icon: 'error',
                         title: 'Oops...',
                         text: 'Please enter correct Password!',
-                        background: document.body.classList.contains('dark-mode') ? '#1e1e2f' : 'white',
-                        color: document.body.classList.contains('dark-mode') ? '#e9ecef' : '#212529'
+                    }).then(() => {
+                        //window.history.back(); // Navigate back to the previous page
                     });
                 </script>";
         unset($_SESSION["wrong_pwd"]);
