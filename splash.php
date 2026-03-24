@@ -1,6 +1,3 @@
-<?php
-// Splash page with rotating SVG animation
-?>
 <!DOCTYPE html>
 <html>
 

@@ -277,7 +277,7 @@ $balance = $tot - $tot_paid;
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
                     <img src="assets/logo.png" alt="SCMP Logo" class="scmp-logo">
-                    <style>
+                    <!--<style>
                         .scmp-logo,
                         .footer-logo {
                             animation: rotateLogo 85s linear infinite;
@@ -292,7 +292,7 @@ $balance = $tot - $tot_paid;
                                 transform: rotate(360deg);
                             }
                         }
-                    </style>
+                    </style>-->
                     <span class="fw-bold h2 mt-2">Batch Fund</span>
                 </div>
                 <div class="d-flex align-items-center">
@@ -310,7 +310,7 @@ $balance = $tot - $tot_paid;
             <i class="fas fa-shield-alt shield-icon"></i>
             <h2 class="mb-0" id="studentContributionProfile">Student Contribution Profile</h2>
             <span id="studentContributionProfile" class="studentContributionProfile"></span>
-            <script>
+            <!--<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     const text = "Student Contribution Profile";
                     const el = document.getElementById('studentContributionProfile');
@@ -331,7 +331,7 @@ $balance = $tot - $tot_paid;
                     type();
                     setInterval(type, 3000);
                 });
-            </script>
+            </script>-->
         </div>
 
         <hr>
@@ -371,7 +371,7 @@ $balance = $tot - $tot_paid;
             </div>-->
             </div>
         </div>
-        <script>
+        <!--<script>
             document.addEventListener('DOMContentLoaded', function() {
                 const colors = [
                     'linear-gradient(90deg, #dc3545 0%, #ff7675 100%)', // red gradient
@@ -384,7 +384,7 @@ $balance = $tot - $tot_paid;
                     idx = (idx + 1) % colors.length;
                 }, 1000);
             });
-        </script>
+        </script>-->
 
         <!-- Contribution Summary -->
         <div class="row">

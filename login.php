@@ -207,6 +207,13 @@ if (isset($_SESSION["reg_no"])) {
                         cursorAdjustment = 1;
                     }
                 }
+                else if (afterFirstSlash.startsWith("2020") && afterFirstSlash.length === 4 && !afterFirstSlash.includes("/")) {
+                    value = value.substring(0, 8) + "/";
+                    // If cursor was at the end, adjust it forward after adding slash
+                    if (selectionStart === 8) {
+                        cursorAdjustment = 1;
+                    }
+                }
             }
 
             // Direct handling of 2021 at the beginning (optional case)
