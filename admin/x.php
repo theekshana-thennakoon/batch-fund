@@ -6,9 +6,10 @@ session_start();
 if (isset($_POST["add_reason"])) {
     $reason = $_POST["reason"];
     $price = $_POST["price"];
+    $reason_type = $_POST["reason_type"];
 
-    $sql = "INSERT INTO reasons (reason, price)
-            VALUES ('{$reason}', {$price})";
+    $sql = "INSERT INTO reasons (reason,`type`, price)
+            VALUES ('{$reason}', '{$reason_type}', {$price})";
 
     if ($conn->query($sql) === TRUE) {
         $_SESSION['success_add_reason'] = 1;

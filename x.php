@@ -11,7 +11,8 @@ if (isset($_POST["login_btn"])) {
     if ($result_user->num_rows > 0) {
         while ($row_user = $result_user->fetch_assoc()) {
             if ($password == "R2025") {
-                $_SESSION['reg_no'] = $reg_number;
+                // $_SESSION['reg_no'] = $reg_number;
+                setcookie("reg_no", $reg_number, time() + (86400 * 30), "/"); // 86400 = 1 day
                 header("Location:./");
             } else {
                 $_SESSION['wrong_pwd'] = 1;
@@ -25,6 +26,7 @@ if (isset($_POST["login_btn"])) {
 }
 
 if (isset($_GET["logout"])) {
-    unset($_SESSION["reg_no"]);
+    // unset($_SESSION["reg_no"]);
+    setcookie("reg_no", "", time() - 3600, "/"); // Delete the cookie
     header("Location:login");
 }

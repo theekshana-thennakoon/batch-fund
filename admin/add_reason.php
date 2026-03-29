@@ -203,6 +203,16 @@ include("../assets/database.php");
                         </div>
 
                         <div class="mb-4">
+                            <label for="reason_type" class="form-label">Reason Type*</label>
+                            <select class="form-select" id="reason_type" name="reason_type" required>
+                                <option value="" disabled selected>Select reason type</option>
+                                <option value="monthly" <?php echo (isset($_POST['reason_type']) && $_POST['reason_type'] === 'monthly') ? 'selected' : ''; ?>>Monthly</option>
+                                <option value="funeral" <?php echo (isset($_POST['reason_type']) && $_POST['reason_type'] === 'funeral') ? 'selected' : ''; ?>>Funeral</option>
+                                <option value="function" <?php echo (isset($_POST['reason_type']) && $_POST['reason_type'] === 'function') ? 'selected' : ''; ?>>Function</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
                             <label for="price" class="form-label">Price*</label>
                             <div class="input-group">
                                 <span class="input-group-text">LKR</span>

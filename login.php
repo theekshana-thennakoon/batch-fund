@@ -1,7 +1,7 @@
 <?php
 date_default_timezone_set('Asia/Colombo');
 session_start();
-if (isset($_SESSION["reg_no"])) {
+if (isset($_COOKIE["reg_no"])) {
     header("Location:./");
 }
 ?>

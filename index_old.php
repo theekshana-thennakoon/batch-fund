@@ -41,39 +41,33 @@ if (!isset($_COOKIE["reg_no"])) {
 
     $tot = 0;
     $table_row = "";
-
-    $sql_reason = "SELECT * FROM reasons ORDER BY id DESC";
+    $sql_reason = "SELECT * FROM reasons order by id desc";
     $result_reason = $conn->query($sql_reason);
-
     if ($result_reason->num_rows > 0) {
         while ($row_reason = $result_reason->fetch_assoc()) {
-
             $reason_id = $row_reason["id"];
             $reason = $row_reason["reason"];
             $reason_price = $row_reason["price"];
-            $type = $row_reason["type"]; // ✅ NEW COLUMN
-
             $tot += $reason_price;
 
-            $sql_payment = "SELECT * FROM payments WHERE reg_no = '{$reg_no}' AND reason_id = $reason_id";
-            $result_payment = $conn->query($sql_payment);
 
+            $sql_payment = "SELECT * FROM payments WHERE reg_no = '{$reg_no}' and reason_id = $reason_id";
+            $result_payment = $conn->query($sql_payment);
             if ($result_payment->num_rows > 0) {
-                $status = "Paid";
+                $status = "paid";
                 $status_color = "success";
             } else {
                 $status = "Unpaid";
                 $status_color = "danger";
             }
 
-            // ✅ IMPORTANT: data-type added
             $table_row .= "
-        <tr data-type='{$type}'>
-            <td>{$reason}</td>
-            <td>Rs. {$reason_price}</td>
-            <td><span class=\"p-3 badge bg-{$status_color}\">{$status}</span></td>
-        </tr>
-        ";
+            <tr>
+                <td>{$reason}</td>
+                <td>Rs. {$reason_price}</td>
+                <td><span class=\"p-3 badge bg-{$status_color}\">{$status}</span></td>
+            </tr>
+            ";
         }
     }
 }
@@ -659,18 +653,9 @@ $balance = $tot - $tot_paid;
         </div>
 
         <!-- Contribution Tabs -->
-        <ul class="nav nav-tabs mb-3" id="contributionTabs">
-            <li class="nav-item">
-                <button class="nav-link active" data-type="all">All</button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-link" data-type="monthly">Monthly</button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-link" data-type="funeral">Funeral</button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-link" data-type="function">Function</button>
+        <ul class="nav nav-tabs" id="contributionTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="batch-fund-tab" data-bs-toggle="tab" data-bs-target="#batch-fund" type="button" role="tab">Batch Fund</button>
             </li>
         </ul>
 
@@ -827,37 +812,6 @@ $balance = $tot - $tot_paid;
             document.head.appendChild(style);
 
             console.log('Dashboard theme initialized: Dark Mode is default');
-        });
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-
-            const tabs = document.querySelectorAll('#contributionTabs .nav-link');
-            const rows = document.querySelectorAll('tbody tr');
-
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-
-                    // Active tab UI
-                    tabs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-
-                    const type = this.getAttribute('data-type');
-
-                    rows.forEach(row => {
-                        const rowType = row.getAttribute('data-type');
-
-                        if (type === 'all' || rowType === type) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    });
-
-                });
-            });
-
         });
     </script>
 </body>
