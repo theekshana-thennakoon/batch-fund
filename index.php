@@ -453,6 +453,27 @@ $balance = $tot - $tot_paid;
         .fw-bold {
             color: var(--text-primary);
         }
+
+        /* Loan Apply Button Styling */
+        .btn-primary {
+            background: linear-gradient(135deg, #427BFF 0%, #224abe 100%);
+            border: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #3860d6 0%, #1a3a8e 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(66, 123, 255, 0.4);
+        }
+
+        .btn-lg {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+        }
     </style>
 </head>
 

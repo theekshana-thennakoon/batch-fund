@@ -20,12 +20,22 @@ include("../assets/database.php");
             --header-height: 60px;
             --primary-color: #4e73df;
             --secondary-color: #f8f9fc;
+            --dark-bg: #0f1419;
+            --dark-card: #1a1f2e;
+            --primary-light: #818cf8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --text-primary: #e5e7eb;
+            --text-secondary: #9ca3af;
         }
 
         body {
             font-family: 'Nunito', sans-serif;
-            background-color: #f8f9fc;
+            background-color: var(--dark-bg);
             overflow-x: hidden;
+            color: var(--text-primary);
         }
 
         /* Sidebar Styles */
@@ -90,8 +100,10 @@ include("../assets/database.php");
         /* Header Styles */
         .topbar {
             height: var(--header-height);
-            background: white;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            background: var(--dark-card);
+            border-bottom: 1px solid rgba(129, 140, 248, 0.1);
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(0, 0, 0, 0.2);
+            color: var(--text-primary);
         }
 
         .topbar .navbar-search {
@@ -109,26 +121,31 @@ include("../assets/database.php");
         .card {
             border: none;
             border-radius: 0.35rem;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            border: 1px solid rgba(129, 140, 248, 0.1);
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(0, 0, 0, 0.2);
             margin-bottom: 1.5rem;
+            background-color: var(--dark-card);
+            color: var(--text-primary);
         }
 
         .card-header {
-            background-color: #f8f9fc;
-            border-bottom: 1px solid #e3e6f0;
+            background-color: rgba(129, 140, 248, 0.05);
+            border-bottom: 1px solid rgba(129, 140, 248, 0.1);
+            color: var(--primary-light);
         }
 
         .form-container {
             max-width: 600px;
             margin: 40px auto;
             padding: 30px;
-            background-color: white;
+            background-color: var(--dark-card);
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(129, 140, 248, 0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
         }
 
         .form-title {
-            color: #2c3e50;
+            color: var(--primary-light);
             margin-bottom: 30px;
             text-align: center;
             font-weight: 600;
@@ -136,17 +153,45 @@ include("../assets/database.php");
 
         .form-label {
             font-weight: 500;
+            color: var(--text-primary);
         }
 
         .btn-submit {
-            background-color: #4e73df;
+            background-color: var(--primary-light);
             border: none;
             padding: 10px 20px;
             font-weight: 600;
+            color: white;
+            transition: all 0.3s;
         }
 
         .btn-submit:hover {
-            background-color: #3a5bc7;
+            background-color: #6d78da;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(129, 140, 248, 0.3);
+        }
+
+        /* Form Controls */
+        .form-control,
+        .form-select {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(129, 140, 248, 0.2) !important;
+            color: var(--text-primary) !important;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            background-color: rgba(255, 255, 255, 0.08) !important;
+            border-color: var(--primary-light) !important;
+            box-shadow: 0 0 0 0.2rem rgba(129, 140, 248, 0.25) !important;
+            color: var(--text-primary) !important;
+        }
+
+        .input-group-text {
+            background-color: rgba(129, 140, 248, 0.1);
+            border: 1px solid rgba(129, 140, 248, 0.2);
+            color: var(--primary-light);
         }
 
         /* Responsive */
