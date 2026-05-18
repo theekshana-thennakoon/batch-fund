@@ -11,6 +11,7 @@ $reasons = [];
 $student_found = false;
 $payment_details = [];
 $tot_paid = 0;
+$isAjaxRequest = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
 // Process form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -205,6 +206,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $_SESSION['success'] = "Payments totaling Rs. " . number_format($tot_paid, 2) . " marked as paid successfully!";
+
+        if ($isAjaxRequest) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'status' => 'correct',
+                'msg' => $_SESSION['success']
+            ]);
+            exit();
+        }
+
         echo "<script>window.history.back();</script>";
         exit();
     }
@@ -464,8 +475,9 @@ if (isset($_GET['reg_no'])) {
                                     </div>
                                 </div>
 
-                                <form method="POST">
+                                <form method="POST" class="mark-paid-form">
                                     <input type="hidden" name="reg_no" value="<?php echo htmlspecialchars($reg_no); ?>">
+                                    <input type="hidden" name="mark_paid" value="1">
                                     <div class="table-responsive mb-4">
                                         <table class="table table-bordered table-hover">
                                             <!-- Add this right after the opening <tbody> tag -->
@@ -512,7 +524,7 @@ if (isset($_GET['reg_no'])) {
                                         <a href="./mark_paid.php" class="btn btn-outline-secondary">
                                             <i class="fas fa-arrow-left me-2"></i> Back to Students
                                         </a>
-                                        <button type="submit" name="mark_paid" class="btn btn-success px-4">
+                                        <button type="submit" name="mark_paid" class="btn btn-success px-4" id="markPaidBtn">
                                             <i class="fas fa-check-circle me-2"></i> Mark Selected as Paid
                                         </button>
                                     </div>
@@ -591,6 +603,7 @@ if (isset($_GET['reg_no'])) {
     <!-- Bootstrap core JavaScript-->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/sweetalert.js"></script>
 
     <!-- Custom scripts -->
     <script>
@@ -599,6 +612,79 @@ if (isset($_GET['reg_no'])) {
             $('#sidebarCollapse').on('click', function() {
                 $('#sidebar').toggleClass('active');
                 $('#content').toggleClass('active');
+            });
+        });
+    </script>
+    <script>
+        $(function() {
+            $('.mark-paid-form').on('submit', function(event) {
+                event.preventDefault();
+
+                const $form = $(this);
+                const $button = $('#markPaidBtn');
+                const originalHtml = $button.html();
+
+                $button.prop('disabled', true);
+
+                Swal.fire({
+                    title: 'Please wait',
+                    text: 'Successfully adding payment...',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    allowEnterKey: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                $.ajax({
+                    url: window.location.href,
+                    type: 'POST',
+                    data: $form.serialize(),
+                    dataType: 'json',
+                    success: function(response) {
+                        Swal.close();
+
+                        if (response && response.status === 'correct') {
+                            Swal.fire({
+                                title: 'Success',
+                                text: response.msg || 'Payments marked as paid successfully.',
+                                icon: 'success',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                confirmButtonText: 'OK',
+                                showConfirmButton: true
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            $button.prop('disabled', false).html(originalHtml);
+                            Swal.fire({
+                                title: 'Oops...',
+                                text: (response && response.msg) ? response.msg : 'Unable to process payment.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.close();
+                        $button.prop('disabled', false).html(originalHtml);
+
+                        let errorMsg = 'Unable to process payment.';
+                        if (xhr.responseJSON && xhr.responseJSON.msg) {
+                            errorMsg = xhr.responseJSON.msg;
+                        }
+
+                        Swal.fire({
+                            title: 'Oops...',
+                            text: errorMsg,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
             });
         });
     </script>
