@@ -95,6 +95,115 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt_reason->close();
         }
 
+        // After recording payments, send a receipt email to the student (if email exists)
+        // Get student email and name
+        $student_email = '';
+        $student_name_for_email = '';
+        $student_card = '';
+        $stmt_user = $conn->prepare("SELECT Name, card FROM users WHERE reg_no = ?");
+        $stmt_user->bind_param("s", $reg_no);
+        $stmt_user->execute();
+        $result_user = $stmt_user->get_result();
+        if ($result_user && $result_user->num_rows > 0) {
+            $u = $result_user->fetch_assoc();
+            $student_name_for_email = $u['Name'];
+            $student_card = $u['card'] ?? '';
+        }
+        $stmt_user->close();
+
+        // Generate email from reg_no when Email is missing.
+        // Rule: strip non-alphanumeric chars, lowercase, append domain `@tec.rjt.ac.lk`.
+        if (empty($student_email)) {
+            $generated_local = preg_replace('/[^A-Za-z0-9]/', '', $reg_no);
+            $generated_local = strtolower($generated_local);
+            if (!empty($generated_local)) {
+                $student_email = $generated_local . '@tec.rjt.ac.lk';
+            }
+        }
+
+        // Compute the full total paid for this student (after inserts)
+        $full_total_paid = 0;
+        $stmt_full = $conn->prepare("SELECT SUM(r.price) as total FROM payments p JOIN reasons r ON p.reason_id = r.id WHERE p.reg_no = ?");
+        $stmt_full->bind_param("s", $reg_no);
+        $stmt_full->execute();
+        $res_full = $stmt_full->get_result();
+        if ($res_full && $row_full = $res_full->fetch_assoc()) {
+            $full_total_paid = (float)$row_full['total'];
+        }
+        $stmt_full->close();
+
+        // Compute total expected amount (sum of all reasons)
+        $totalAmount = 0;
+        $totalRes = $conn->query('SELECT COALESCE(SUM(price),0) AS total_amount FROM reasons');
+        if ($totalRes && $row = $totalRes->fetch_assoc()) {
+            $totalAmount = (float)$row['total_amount'];
+        }
+
+        // Build reasonsData with only recently added (just marked) reasons
+        $reasonsData = [];
+        if (!empty($marked_reasons)) {
+            // Get details for only the recently marked reasons
+            foreach ($marked_reasons as $reasonId) {
+                $reasonId = (int)$reasonId;
+                $reasonSql = 'SELECT r.id, r.reason, r.price FROM reasons r WHERE r.id = ?';
+                $reasonCheck = $conn->prepare($reasonSql);
+                $reasonCheck->bind_param('i', $reasonId);
+                $reasonCheck->execute();
+                $reasonRow = $reasonCheck->get_result()->fetch_assoc();
+                $reasonCheck->close();
+
+                if ($reasonRow) {
+                    $reasonsData[] = [
+                        'reason_name' => $reasonRow['reason'],
+                        'price' => (float) $reasonRow['price'],
+                        'is_paid' => true
+                    ];
+                }
+            }
+        }
+
+        // Send email using project's MailService if we have an email (use payment_summary template)
+        if (!empty($student_email)) {
+            require_once __DIR__ . "/../email/services/MailService.php";
+            $config = require __DIR__ . "/../email/config/config.php";
+            try {
+                $mailService = new \App\Services\MailService();
+
+                $balance = $totalAmount - $full_total_paid;
+                if ($balance < 0) {
+                    $balance = 0;
+                }
+
+                // Prepare template parameters matching payment_summary.php
+                $templateParams = [
+                    'name' => $student_name_for_email ?: $student_name,
+                    'regNo' => $reg_no,
+                    'card' => $student_card,
+                    'date' => date('l, F j, Y'),
+                    'totalAmount' => $totalAmount,
+                    'totalPaid' => $full_total_paid,
+                    'balance' => $balance,
+                    'reasonsData' => $reasonsData,
+                    'companyName' => $config['settings']['company_name'] ?? '',
+                    'companyPhone' => $config['settings']['company_phone'] ?? '',
+                    'contactUrl' => $config['settings']['contact_url'] ?? '#',
+                    'webUrl' => $config['settings']['baseURL'] ?? '',
+                    'bannerUrl' => $config['settings']['banner_url'] ?? '',
+                    'companyEmail' => $config['settings']['admin_email'] ?? '',
+                    'companyLogo' => $config['settings']['logo'] ?? '../assets/logo.png',
+                ];
+
+                $body = $mailService->renderTemplate('payment_summary', $templateParams);
+                $subject = 'Payment Summary - ' . $reg_no;
+                $mailResult = $mailService->sendMail($student_email, $subject, $body);
+                if ($mailResult !== true) {
+                    $_SESSION['mail_error'] = $mailResult;
+                }
+            } catch (\Throwable $e) {
+                $_SESSION['mail_error'] = $e->getMessage();
+            }
+        }
+
         $_SESSION['success'] = "Payments totaling Rs. " . number_format($tot_paid, 2) . " marked as paid successfully!";
         echo "<script>window.history.back();</script>";
         exit();
@@ -367,8 +476,8 @@ if (isset($_GET['reg_no'])) {
                                                     <th width="20%">
                                                         <div class="form-check d-flex justify-content-center">
                                                             <center>
-                                                            <input type="checkbox" class="form-check-input paid-checkbox" id="selectAll" style="border: 1px solid #427BFF;">
-                                                            <label class="form-check-label text-primary ms-2" for="selectAll">Select All</label>
+                                                                <input type="checkbox" class="form-check-input paid-checkbox" id="selectAll" style="border: 1px solid #427BFF;">
+                                                                <label class="form-check-label text-primary ms-2" for="selectAll">Select All</label>
                                                             </center>
                                                         </div>
                                                     </th>
@@ -421,41 +530,41 @@ if (isset($_GET['reg_no'])) {
         </div>
         <!-- /.container-fluid -->
     </div>
-    
+
     <script>
         function formatRegistrationNumber(input) {
             // Get current cursor position
             let cursorPos = input.selectionStart;
             let originalValue = input.value;
-            
+
             // Remove all slashes first to avoid duplicates
             let value = originalValue.replace(/\//g, '');
-            
+
             // Check if the input starts with BST, ITT, or ENT (case insensitive)
             const prefixMatch = value.match(/^(BST|ITT|ENT)/i);
             if (prefixMatch) {
                 const prefix = prefixMatch[0].toUpperCase();
-                
+
                 // Insert first slash after prefix
                 value = prefix + (value.length > prefix.length ? '/' + value.substring(prefix.length) : '');
-                
+
                 // If we have at least 4 more characters (for year), insert second slash
                 if (value.length > prefix.length + 5) {
                     const beforeYear = value.substring(0, prefix.length + 1);
                     const yearAndAfter = value.substring(prefix.length + 1);
-                    
+
                     // Insert slash after year (assuming year is 4 digits)
                     if (/^\d{4}/.test(yearAndAfter)) {
-                        value = beforeYear + yearAndAfter.substring(0, 4) + 
-                               (yearAndAfter.length > 4 ? '/' + yearAndAfter.substring(4) : '');
+                        value = beforeYear + yearAndAfter.substring(0, 4) +
+                            (yearAndAfter.length > 4 ? '/' + yearAndAfter.substring(4) : '');
                     }
                 }
             }
-            
+
             // Only update if the value has changed to avoid cursor jumping
             if (value !== originalValue) {
                 input.value = value;
-                
+
                 // Adjust cursor position
                 if (cursorPos === originalValue.length) {
                     // If cursor was at end, keep it at end
@@ -466,7 +575,7 @@ if (isset($_GET['reg_no'])) {
                     const addedSlashes = (value.match(/\//g) || []).length - (originalValue.match(/\//g) || []).length;
                     cursorPos += addedSlashes;
                 }
-                
+
                 input.setSelectionRange(cursorPos, cursorPos);
             }
         }
@@ -477,8 +586,8 @@ if (isset($_GET['reg_no'])) {
             window.history.replaceState(null, null, window.location.href);
         }
     </script>
-    
-    
+
+
     <!-- Bootstrap core JavaScript-->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

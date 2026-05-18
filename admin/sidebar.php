@@ -97,6 +97,9 @@
                 <a href="./mark_paid"><i class="fas fa-check"></i> Mark as paid</a>
             </li>
             <li>
+                <a href="./send_email"><i class="fas fa-envelope"></i> Send Email</a>
+            </li>
+            <li>
                 <a href="./loans"><i class="fas fa-money-bill-wave"></i> Loan Applications</a>
             </li>
             <li>

@@ -7,6 +7,7 @@ RewriteRule ^mark_paid$ mark_paid.php [NC,L]
 RewriteRule ^reason_list$ reason_list.php [NC,L]
 RewriteRule ^processing$ x.php [NC,L]
 RewriteRule ^loans$ loans.php [NC,L]
+RewriteRule ^send_email$ send_email.php [NC,L]
 
 RewriteRule ^edit_user/(\d+)$ edit_user.php?id=$1 [NC,L]
 
