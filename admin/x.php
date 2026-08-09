@@ -20,7 +20,7 @@ if (isset($_POST["add_reason"])) {
 if (isset($_POST["login_btn"])) {
     $reg_number = $_POST["reg_number"];
     $password = $_POST["password"];
-    if ($reg_number == "ITT/2021/109" && $password == "Batchfund1@") {
+    if ($reg_number == "BST/2021/047" && $password == "Batchfund1@") {
         $_SESSION['admin_logged_user'] = $reg_number;
         header("Location:./");
     } else {

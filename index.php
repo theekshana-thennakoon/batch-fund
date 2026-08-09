@@ -78,6 +78,79 @@ if (!isset($_COOKIE["reg_no"])) {
     }
 }
 
+$tot = $tot + 5950;
+
+// Check prev_system table for student's previous system balance adjustment
+$sql_prev = "SELECT * FROM prev_system WHERE reg_no = '{$reg_no}'";
+$result_prev = $conn->query($sql_prev);
+
+$is_prev_fully_paid = true;
+$prev_due_amount = 0;
+
+if ($result_prev && $result_prev->num_rows > 0) {
+    $row_prev = $result_prev->fetch_assoc();
+    $prev_balance = (float)$row_prev["balance"];
+    if ($prev_balance > 0) {
+        $tot_paid = $tot_paid + (5950 - $prev_balance);
+        $is_prev_fully_paid = false;
+        $prev_due_amount = $prev_balance;
+    } else {
+        $tot_paid = $tot_paid + 5950;
+        $is_prev_fully_paid = true;
+    }
+} else {
+    $tot_paid = $tot_paid + 5950;
+    $is_prev_fully_paid = true;
+}
+
+$prev_summary_row = "";
+$prev_sector_rows = "";
+
+if ($is_prev_fully_paid) {
+    $prev_status_badge = "<span class=\"badge bg-success prev-system-badge d-inline-flex align-items-center justify-content-center text-wrap w-100\"><i class=\"fas fa-check-circle fa-xl me-2\"></i> You successfully paid full amount in 2024</span>";
+    $prev_summary_row = "
+        <tr data-type='prev_system_summary'>
+            <td colspan=\"3\" class=\"text-center p-2\">{$prev_status_badge}</td>
+        </tr>
+    ";
+} else {
+    $prev_status_badge = "<span class=\"badge bg-danger prev-system-badge blink-badge d-inline-flex align-items-center justify-content-center text-wrap w-100\"><i class=\"fas fa-exclamation-circle fa-xl me-2\"></i> Amount you need to pay for 2024: Rs. {$prev_balance}</span>";
+    $prev_summary_row = "
+        <tr data-type='prev_system_summary'>
+            <td colspan=\"3\" class=\"text-center p-2\">{$prev_status_badge}</td>
+        </tr>
+    ";
+
+    $num_full_sectors = (int)floor($prev_balance / 500);
+    $remainder = fmod($prev_balance, 500);
+
+    $sector_count = 1;
+
+    for ($i = 0; $i < $num_full_sectors; $i++) {
+        $prev_sector_rows .= "
+        <tr data-type='prev_system_sector' style='display: none;'>
+            <td>2024 Contribution (Part {$sector_count})</td>
+            <td>Rs. 500</td>
+            <td><span class=\"p-3 badge bg-danger\">Unpaid</span></td>
+        </tr>
+        ";
+        $sector_count++;
+    }
+
+    if ($remainder > 0) {
+        $remainder_formatted = number_format($remainder, ($remainder == (int)$remainder ? 0 : 2));
+        $prev_sector_rows .= "
+        <tr data-type='prev_system_sector' style='display: none;'>
+            <td>2024 Contribution (Remaining Balance)</td>
+            <td>Rs. {$remainder_formatted}</td>
+            <td><span class=\"p-3 badge bg-danger\">Unpaid</span></td>
+        </tr>
+        ";
+    }
+}
+
+$table_row = $prev_summary_row . $prev_sector_rows . $table_row;
+
 $balance = $tot - $tot_paid;
 
 ?>
@@ -425,6 +498,55 @@ $balance = $tot - $tot_paid;
                 padding: 6px 12px;
                 font-size: 12px;
             }
+
+            .prev-system-badge {
+                font-size: 0.8rem !important;
+                padding: 6px 10px !important;
+            }
+
+            .prev-system-badge i {
+                font-size: 0.95rem !important;
+            }
+        }
+
+        .prev-system-badge {
+            font-size: 1.1rem;
+            padding: 10px 16px;
+        }
+
+        /* Blink animation for 2024 tab and row badge when balance > 0 */
+        @keyframes tab-blink {
+            0%, 100% {
+                background-color: #dc3545;
+                color: #ffffff;
+                box-shadow: 0 0 12px rgba(220, 53, 69, 0.9);
+            }
+            50% {
+                background-color: #721c24;
+                color: #ffc9c9;
+                box-shadow: 0 0 2px rgba(220, 53, 69, 0.3);
+            }
+        }
+
+        .blink-tab {
+            animation: tab-blink 1.2s ease-in-out infinite !important;
+            font-weight: bold !important;
+            border-color: #dc3545 !important;
+        }
+
+        @keyframes badge-blink {
+            0%, 100% {
+                opacity: 1;
+                box-shadow: 0 0 10px rgba(220, 53, 69, 0.7);
+            }
+            50% {
+                opacity: 0.75;
+                box-shadow: 0 0 2px rgba(220, 53, 69, 0.2);
+            }
+        }
+
+        .blink-badge {
+            animation: badge-blink 1.2s ease-in-out infinite !important;
         }
 
         /* Ensure table wrapper has proper background */
@@ -454,25 +576,98 @@ $balance = $tot - $tot_paid;
             color: var(--text-primary);
         }
 
-        /* Loan Apply Button Styling */
-        .btn-primary {
-            background: linear-gradient(135deg, #427BFF 0%, #224abe 100%);
-            border: none;
-            color: white;
-            transition: all 0.3s ease;
+        /* ========== FLOWBITE SKELETON LOADER STYLES ========== */
+        @keyframes flowbite-pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.35;
+            }
         }
 
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #3860d6 0%, #1a3a8e 100%);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(66, 123, 255, 0.4);
+        .flowbite-skeleton {
+            animation: flowbite-pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
 
-        .btn-lg {
-            padding: 12px 30px;
-            font-size: 1.1rem;
-            border-radius: 8px;
+        :root {
+            --skeleton-bg: #282e42;
+            --skeleton-bg-subtle: #222736;
+            --skeleton-border: #2d2d44;
+        }
+
+        body.light-mode {
+            --skeleton-bg: #e5e7eb;
+            --skeleton-bg-subtle: #f3f4f6;
+            --skeleton-border: #e2e8f0;
+        }
+
+        .skeleton-card {
+            background-color: var(--info-card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .skeleton-line {
+            height: 0.875rem;
+            background-color: var(--skeleton-bg);
+            border-radius: 0.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .skeleton-line.sm {
+            height: 0.65rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .skeleton-line.lg {
+            height: 1.25rem;
+        }
+
+        .skeleton-line.xl {
+            height: 1.75rem;
+        }
+
+        .skeleton-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--skeleton-bg);
+            flex-shrink: 0;
+        }
+
+        .skeleton-badge-box {
+            width: 70px;
+            height: 28px;
+            border-radius: 6px;
+            background-color: var(--skeleton-bg);
+        }
+
+        .skeleton-tab-btn {
+            width: 75px;
+            height: 38px;
+            border-radius: 6px 6px 0 0;
+            background-color: var(--skeleton-bg);
+            margin-right: 8px;
+            display: inline-block;
+        }
+
+        /* Width Utilities for Skeletons */
+        .w-20 { width: 20% !important; }
+        .w-30 { width: 30% !important; }
+        .w-35 { width: 35% !important; }
+        .w-40 { width: 40% !important; }
+        .w-60 { width: 60% !important; }
+        .w-65 { width: 65% !important; }
+        .w-70 { width: 70% !important; }
+        .w-80 { width: 80% !important; }
+        .w-85 { width: 85% !important; }
+
+        #main-content {
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
         }
     </style>
 </head>
@@ -549,214 +744,268 @@ $balance = $tot - $tot_paid;
             <p class="mb-0">2025 වර්ෂයේ ජනවාරි 1 වනදා සිට විස්තර මෙහි සදහන් වේ. </p>
         </div>
 
-        <!-- Student Info Card -->
-        <div class="info-card" id="infoCardBox">
+        <!-- Flowbite Skeleton Loader -->
+        <div id="skeleton-loader" class="flowbite-skeleton">
+            <!-- Student Info Card Skeleton -->
+            <div class="skeleton-card">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-4"><div class="skeleton-line lg w-75"></div></div>
+                            <div class="col-8"><div class="skeleton-line lg w-50"></div></div>
+                        </div>
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-4"><div class="skeleton-line lg w-60"></div></div>
+                            <div class="col-8"><div class="skeleton-line lg w-75"></div></div>
+                        </div>
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-4"><div class="skeleton-line lg w-50"></div></div>
+                            <div class="col-8"><div class="skeleton-line lg w-60"></div></div>
+                        </div>
+                        <div class="row mb-2 align-items-center">
+                            <div class="col-4"><div class="skeleton-line lg w-40"></div></div>
+                            <div class="col-8"><div class="skeleton-line lg w-30"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contribution Summary Skeleton -->
             <div class="row">
-                <div class="col-md-8">
-                    <div class="row mb-2">
-                        <div class="col-4 fw-bold">Registration No</div>
-                        <div class="col-8">: <?php echo isset($reg_no) ? $reg_no : '2021/CS/001'; ?></div>
+                <div class="col-md-4 mb-3">
+                    <div class="contribution-box">
+                        <div class="skeleton-circle"></div>
+                        <div class="flex-grow-1 ms-3">
+                            <div class="skeleton-line xl w-60 mb-2"></div>
+                            <div class="skeleton-line sm w-80 mb-0"></div>
+                        </div>
                     </div>
-                    <div class="row mb-2">
-                        <div class="col-4 fw-bold">Name</div>
-                        <div class="col-8">: <?php echo isset($name) ? $name : 'John Doe'; ?></div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="contribution-box">
+                        <div class="skeleton-circle"></div>
+                        <div class="flex-grow-1 ms-3">
+                            <div class="skeleton-line xl w-60 mb-2"></div>
+                            <div class="skeleton-line sm w-80 mb-0"></div>
+                        </div>
                     </div>
-                    <div class="row mb-2">
-                        <div class="col-4 fw-bold">Card</div>
-                        <div class="col-8">: <?php echo isset($card) ? $card : '****-****-1234'; ?></div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="contribution-box">
+                        <div class="skeleton-circle"></div>
+                        <div class="flex-grow-1 ms-3">
+                            <div class="skeleton-line xl w-60 mb-2"></div>
+                            <div class="skeleton-line sm w-80 mb-0"></div>
+                        </div>
                     </div>
-                    <div class="row mb-2">
-                        <div class="col-4 fw-bold">Batch</div>
-                        <div class="col-8">: 2021</div>
-                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs Skeleton -->
+            <div class="d-flex mb-3">
+                <div class="skeleton-tab-btn" style="width: 60px;"></div>
+                <div class="skeleton-tab-btn" style="width: 80px;"></div>
+                <div class="skeleton-tab-btn" style="width: 75px;"></div>
+                <div class="skeleton-tab-btn" style="width: 85px;"></div>
+                <div class="skeleton-tab-btn" style="width: 120px;"></div>
+            </div>
+
+            <!-- Table Skeleton -->
+            <div class="skeleton-card">
+                <div class="skeleton-line lg w-25 mb-4"></div>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th><div class="skeleton-line sm w-50 mb-0"></div></th>
+                                <th><div class="skeleton-line sm w-40 mb-0"></div></th>
+                                <th><div class="skeleton-line sm w-30 mb-0"></div></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><div class="skeleton-line sm w-75 mb-0"></div></td>
+                                <td><div class="skeleton-line sm w-50 mb-0"></div></td>
+                                <td><div class="skeleton-badge-box"></div></td>
+                            </tr>
+                            <tr>
+                                <td><div class="skeleton-line sm w-60 mb-0"></div></td>
+                                <td><div class="skeleton-line sm w-40 mb-0"></div></td>
+                                <td><div class="skeleton-badge-box"></div></td>
+                            </tr>
+                            <tr>
+                                <td><div class="skeleton-line sm w-80 mb-0"></div></td>
+                                <td><div class="skeleton-line sm w-55 mb-0"></div></td>
+                                <td><div class="skeleton-badge-box"></div></td>
+                            </tr>
+                            <tr>
+                                <td><div class="skeleton-line sm w-65 mb-0"></div></td>
+                                <td><div class="skeleton-line sm w-45 mb-0"></div></td>
+                                <td><div class="skeleton-badge-box"></div></td>
+                            </tr>
+                            <tr>
+                                <td><div class="skeleton-line sm w-70 mb-0"></div></td>
+                                <td><div class="skeleton-line sm w-50 mb-0"></div></td>
+                                <td><div class="skeleton-badge-box"></div></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
-        <!-- Contribution Summary -->
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <div class="contribution-box">
-                    <div class="contribution-icon blue-icon">
-                        <i class="fas fa-coins"></i>
+        <noscript>
+            <style>
+                #skeleton-loader { display: none !important; }
+                #main-content { display: block !important; opacity: 1 !important; }
+            </style>
+        </noscript>
+
+        <!-- Main Content Container -->
+        <div id="main-content" style="display: none;">
+            <!-- Student Info Card -->
+            <div class="info-card" id="infoCardBox">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="row mb-2">
+                            <div class="col-4 fw-bold">Registration No</div>
+                            <div class="col-8">: <?php echo isset($reg_no) ? $reg_no : '2021/CS/001'; ?></div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-4 fw-bold">Name</div>
+                            <div class="col-8">: <?php echo isset($name) ? $name : 'John Doe'; ?></div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-4 fw-bold">Card</div>
+                            <div class="col-8">: <?php echo isset($card) ? $card : '****-****-1234'; ?></div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-4 fw-bold">Batch</div>
+                            <div class="col-8">: 2021</div>
+                        </div>
                     </div>
-                    <div>
-                        <h4 class="contribution-amount" id="totalAmount">Rs. 0</h4>
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                const total = <?php echo isset($tot) ? $tot : 25000; ?>;
-                                const duration = 1200;
-                                const frameRate = 30;
-                                const steps = Math.ceil(duration / (1000 / frameRate));
-                                let current = 0;
-                                const increment = total / steps;
-                                const el = document.getElementById('totalAmount');
-                                if (el) {
-                                    function animate() {
-                                        current += increment;
-                                        if (current < total) {
-                                            el.textContent = 'Rs. ' + Math.floor(current);
-                                            requestAnimationFrame(animate);
-                                        } else {
-                                            el.textContent = 'Rs. ' + total;
+                </div>
+            </div>
+
+            <!-- Contribution Summary -->
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="contribution-box">
+                        <div class="contribution-icon blue-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div>
+                            <h4 class="contribution-amount" id="totalAmount">Rs. 0</h4>
+                            <p class="contribution-label">Total / මුළු එකතුව</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="contribution-box">
+                        <div class="contribution-icon green-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div>
+                            <h4 class="contribution-amount" id="totalPaidAmount">Rs. 0</h4>
+                            <p class="contribution-label">Total Paid / ගෙවා ඇති මුළු එකතුව</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="contribution-box">
+                        <div class="contribution-icon red-icon">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div>
+                            <h4 class="contribution-amount" id="totalBalanceAmount">Rs. 0</h4>
+                            <p class="contribution-label">Total Due / ගෙවීමට ඇති මුළු එකතුව</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contribution Tabs -->
+            <ul class="nav nav-tabs mb-3" id="contributionTabs">
+                <li class="nav-item">
+                    <button class="nav-link active" data-type="all">All</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-type="monthly">Monthly</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-type="funeral">Funeral</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-type="function">Function</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-type="prev_system">2024</button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="contributionTabsContent">
+                <div class="tab-pane fade show active" id="batch-fund" role="tabpanel">
+                    <div class="info-card">
+                        <h4>Contribution Details</h4>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Contribution</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    // Sample data for demonstration - table rows will be visible in both modes
+                                    if (isset($table_row) && !empty($table_row)) {
+                                        echo $table_row;
+                                    } else {
+                                        // Sample data to demonstrate table visibility
+                                        $sampleData = [
+                                            ['Semester Fee', 5000, 'paid'],
+                                            ['Library Fund', 2000, 'paid'],
+                                            ['Sports Fund', 3000, 'Unpaid'],
+                                            ['Cultural Fund', 2500, 'paid'],
+                                            ['Development Fund', 4000, 'Unpaid'],
+                                            ['Welfare Fund', 3500, 'paid'],
+                                            ['Annual Contribution', 5000, 'Unpaid']
+                                        ];
+
+                                        foreach ($sampleData as $item) {
+                                            $status = $item[2];
+                                            $status_color = ($status == 'paid') ? 'success' : 'danger';
+                                            $display_status = ucfirst($status);
+                                            echo "
+                                            <tr>
+                                                <td>{$item[0]}</td>
+                                                <td>Rs. {$item[1]}</td>
+                                                <td><span class=\"badge bg-{$status_color}\">{$display_status}</span></td>
+                                            </tr>
+                                            ";
                                         }
                                     }
-                                    animate();
-                                }
-                            });
-                        </script>
-                        <p class="contribution-label">Total / මුළු එකතුව</p>
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4 mb-3">
-                <div class="contribution-box">
-                    <div class="contribution-icon green-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div>
-                        <h4 class="contribution-amount" id="totalPaidAmount">Rs. <?php echo isset($tot_paid) ? $tot_paid : 15000; ?></h4>
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                const total = <?php echo isset($tot_paid) ? $tot_paid : 15000; ?>;
-                                const duration = 1200;
-                                const frameRate = 30;
-                                const steps = Math.ceil(duration / (1000 / frameRate));
-                                let current = 0;
-                                const increment = total / steps;
-                                const el = document.getElementById('totalPaidAmount');
-                                if (el) {
-                                    function animate() {
-                                        current += increment;
-                                        if (current < total) {
-                                            el.textContent = 'Rs. ' + Math.floor(current);
-                                            requestAnimationFrame(animate);
-                                        } else {
-                                            el.textContent = 'Rs. ' + total;
-                                        }
-                                    }
-                                    animate();
-                                }
-                            });
-                        </script>
-                        <p class="contribution-label">Total Paid / ගෙවා ඇති මුළු එකතුව</p>
+
+                <div class="tab-pane fade" id="batch-function" role="tabpanel">
+                    <div class="info-card">
+                        <h4>Batch Function Details</h4>
+                        <p>No batch function details available at the moment.</p>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4 mb-3">
-                <div class="contribution-box">
-                    <div class="contribution-icon red-icon">
-                        <i class="fas fa-exclamation-circle"></i>
+
+                <div class="tab-pane fade" id="night-fund" role="tabpanel">
+                    <div class="info-card">
+                        <h4>Night Fund Details</h4>
+                        <p>No night fund details available at the moment.</p>
                     </div>
-                    <div>
-                        <h4 class="contribution-amount" id="totalBalanceAmount">Rs. <?php echo isset($balance) ? $balance : 10000; ?></h4>
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                const total = <?php echo isset($balance) ? $balance : 10000; ?>;
-                                const duration = 1200;
-                                const frameRate = 30;
-                                const steps = Math.ceil(duration / (1000 / frameRate));
-                                let current = 0;
-                                const increment = total / steps;
-                                const el = document.getElementById('totalBalanceAmount');
-                                if (el) {
-                                    function animate() {
-                                        current += increment;
-                                        if (current < total) {
-                                            el.textContent = 'Rs. ' + Math.floor(current);
-                                            requestAnimationFrame(animate);
-                                        } else {
-                                            el.textContent = 'Rs. ' + total;
-                                        }
-                                    }
-                                    animate();
-                                }
-                            });
-                        </script>
-                        <p class="contribution-label">Total Due / ගෙවීමට ඇති මුළු එකතුව</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Contribution Tabs -->
-        <ul class="nav nav-tabs mb-3" id="contributionTabs">
-            <li class="nav-item">
-                <button class="nav-link active" data-type="all">All</button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-link" data-type="monthly">Monthly</button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-link" data-type="funeral">Funeral</button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-link" data-type="function">Function</button>
-            </li>
-        </ul>
-
-        <!-- Tab Content -->
-        <div class="tab-content" id="contributionTabsContent">
-            <div class="tab-pane fade show active" id="batch-fund" role="tabpanel">
-                <div class="info-card">
-                    <h4>Contribution Details</h4>
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Contribution</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                // Sample data for demonstration - table rows will be visible in both modes
-                                if (isset($table_row) && !empty($table_row)) {
-                                    echo $table_row;
-                                } else {
-                                    // Sample data to demonstrate table visibility
-                                    $sampleData = [
-                                        ['Semester Fee', 5000, 'paid'],
-                                        ['Library Fund', 2000, 'paid'],
-                                        ['Sports Fund', 3000, 'Unpaid'],
-                                        ['Cultural Fund', 2500, 'paid'],
-                                        ['Development Fund', 4000, 'Unpaid'],
-                                        ['Welfare Fund', 3500, 'paid'],
-                                        ['Annual Contribution', 5000, 'Unpaid']
-                                    ];
-
-                                    foreach ($sampleData as $item) {
-                                        $status = $item[2];
-                                        $status_color = ($status == 'paid') ? 'success' : 'danger';
-                                        $display_status = ucfirst($status);
-                                        echo "
-                                        <tr>
-                                            <td>{$item[0]}</td>
-                                            <td>Rs. {$item[1]}</td>
-                                            <td><span class=\"badge bg-{$status_color}\">{$display_status}</span></td>
-                                        </tr>
-                                        ";
-                                    }
-                                }
-                                ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tab-pane fade" id="batch-function" role="tabpanel">
-                <div class="info-card">
-                    <h4>Batch Function Details</h4>
-                    <p>No batch function details available at the moment.</p>
-                </div>
-            </div>
-
-            <div class="tab-pane fade" id="night-fund" role="tabpanel">
-                <div class="info-card">
-                    <h4>Night Fund Details</h4>
-                    <p>No night fund details available at the moment.</p>
                 </div>
             </div>
         </div>
@@ -854,8 +1103,88 @@ $balance = $tot - $tot_paid;
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
+            // Function to animate numbers count up
+            function animateCounter(id, targetVal) {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const duration = 1000;
+                const frameRate = 30;
+                const steps = Math.ceil(duration / (1000 / frameRate));
+                let current = 0;
+                const increment = targetVal / steps;
+
+                function animate() {
+                    current += increment;
+                    if (current < targetVal) {
+                        el.textContent = 'Rs. ' + Math.floor(current);
+                        requestAnimationFrame(animate);
+                    } else {
+                        el.textContent = 'Rs. ' + targetVal;
+                    }
+                }
+                animate();
+            }
+
+            function startCounterAnimations() {
+                animateCounter('totalAmount', <?php echo isset($tot) ? (int)$tot : 25000; ?>);
+                animateCounter('totalPaidAmount', <?php echo isset($tot_paid) ? (int)$tot_paid : 15000; ?>);
+                animateCounter('totalBalanceAmount', <?php echo isset($balance) ? (int)$balance : 10000; ?>);
+            }
+
+            // Skeleton Loader transition
+            const skeletonLoader = document.getElementById('skeleton-loader');
+            const mainContent = document.getElementById('main-content');
+
+            setTimeout(function() {
+                if (skeletonLoader && mainContent) {
+                    skeletonLoader.style.opacity = '0';
+                    skeletonLoader.style.transition = 'opacity 0.35s ease-out';
+
+                    setTimeout(function() {
+                        skeletonLoader.style.display = 'none';
+                        mainContent.style.display = 'block';
+                        requestAnimationFrame(function() {
+                            mainContent.style.opacity = '1';
+                            startCounterAnimations();
+                        });
+                    }, 350);
+                } else if (mainContent) {
+                    mainContent.style.display = 'block';
+                    mainContent.style.opacity = '1';
+                    startCounterAnimations();
+                }
+            }, 600);
+
+            // Tab filtering logic
             const tabs = document.querySelectorAll('#contributionTabs .nav-link');
             const rows = document.querySelectorAll('tbody tr');
+
+            function filterRows(type) {
+                const isFullyPaid = <?php echo isset($is_prev_fully_paid) && $is_prev_fully_paid ? 'true' : 'false'; ?>;
+                rows.forEach(row => {
+                    const rowType = row.getAttribute('data-type');
+
+                    if (type === 'all') {
+                        if (rowType === 'prev_system_sector') {
+                            row.style.display = 'none';
+                        } else {
+                            row.style.display = '';
+                        }
+                    } else if (type === 'prev_system') {
+                        if (rowType === 'prev_system_sector' || (rowType === 'prev_system_summary' && isFullyPaid)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    } else {
+                        if (rowType === type) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    }
+                });
+            }
 
             tabs.forEach(tab => {
                 tab.addEventListener('click', function() {
@@ -865,19 +1194,15 @@ $balance = $tot - $tot_paid;
                     this.classList.add('active');
 
                     const type = this.getAttribute('data-type');
-
-                    rows.forEach(row => {
-                        const rowType = row.getAttribute('data-type');
-
-                        if (type === 'all' || rowType === type) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    });
-
+                    filterRows(type);
                 });
             });
+
+            // Initial filter on page load for active tab
+            const activeTab = document.querySelector('#contributionTabs .nav-link.active');
+            if (activeTab) {
+                filterRows(activeTab.getAttribute('data-type'));
+            }
 
         });
     </script>
