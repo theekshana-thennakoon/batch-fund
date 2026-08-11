@@ -12,7 +12,18 @@ $conn->query("CREATE TABLE IF NOT EXISTS `prev_system` (
 )");
 
 // Selected threshold criteria
-$threshold = isset($_GET['threshold']) ? (float)$_GET['threshold'] : 500;
+$threshold = isset($_GET['threshold']) ? $_GET['threshold'] : '500';
+
+$filter_label = "";
+if ($threshold === 'zero') {
+    $filter_label = "Users with Zero Balance (Due = Rs. 0)";
+} elseif ($threshold === 'all') {
+    $filter_label = "All Registered Users";
+} elseif (is_numeric($threshold) && (float)$threshold == 0) {
+    $filter_label = "All Users with Unpaid Balance (> Rs. 0)";
+} else {
+    $filter_label = "Due > Rs. " . number_format((float)$threshold, 0);
+}
 
 // Helper function to calculate combined financials for a student
 function calculateStudentFinancials($conn, $reg_no) {
@@ -75,7 +86,22 @@ $res_users = $conn->query("SELECT reg_no, Name, card FROM users ORDER BY reg_no 
 if ($res_users && $res_users->num_rows > 0) {
     while ($user = $res_users->fetch_assoc()) {
         $fin = calculateStudentFinancials($conn, $user['reg_no']);
-        if ($fin['due_balance'] > $threshold) {
+        $include = false;
+
+        if ($threshold === 'zero') {
+            if ($fin['due_balance'] <= 0) {
+                $include = true;
+            }
+        } elseif ($threshold === 'all') {
+            $include = true;
+        } else {
+            $thresh_val = (float)$threshold;
+            if ($fin['due_balance'] > $thresh_val) {
+                $include = true;
+            }
+        }
+
+        if ($include) {
             $user['fin'] = $fin;
             $report_students[] = $user;
             $total_due_sum += $fin['due_balance'];
@@ -87,14 +113,16 @@ if ($res_users && $res_users->num_rows > 0) {
 if (isset($_GET['download_pdf'])) {
     require_once __DIR__ . '/../vendor/autoload.php';
 
-    $font_regular = str_replace('\\', '/', realpath(__DIR__ . '/../assets/fonts/AbhayaLibre-Regular.ttf'));
-    $font_bold = str_replace('\\', '/', realpath(__DIR__ . '/../assets/fonts/AbhayaLibre-Bold.ttf'));
+    $calibri_regular = str_replace('\\', '/', realpath(__DIR__ . '/../assets/fonts/Calibri-Regular.ttf'));
+    $calibri_bold = str_replace('\\', '/', realpath(__DIR__ . '/../assets/fonts/Calibri-Bold.ttf'));
+    $noto_regular = str_replace('\\', '/', realpath(__DIR__ . '/../assets/fonts/NotoSansSinhala-Regular.ttf'));
+    $noto_bold = str_replace('\\', '/', realpath(__DIR__ . '/../assets/fonts/NotoSansSinhala-Bold.ttf'));
 
     $options = new \Dompdf\Options();
     $options->set('isHtml5ParserEnabled', true);
     $options->set('isRemoteEnabled', true);
     $options->set('isFontSubsettingEnabled', true);
-    $options->set('defaultFont', 'AbhayaLibre');
+    $options->set('chroot', [realpath(__DIR__ . '/..')]);
 
     $dompdf = new \Dompdf\Dompdf($options);
 
@@ -106,19 +134,32 @@ if (isset($_GET['download_pdf'])) {
         <title>Student Outstanding PDF Report</title>
         <style>
             @font-face {
-                font-family: "AbhayaLibre";
+                font-family: "Calibri";
                 font-style: normal;
                 font-weight: normal;
-                src: url("file:///' . $font_regular . '") format("truetype");
+                src: url("' . $calibri_regular . '") format("truetype");
             }
             @font-face {
-                font-family: "AbhayaLibre";
+                font-family: "Calibri";
                 font-style: normal;
                 font-weight: bold;
-                src: url("file:///' . $font_bold . '") format("truetype");
+                src: url("' . $calibri_bold . '") format("truetype");
+            }
+            @font-face {
+                font-family: "NotoSansSinhala";
+                font-style: normal;
+                font-weight: normal;
+                src: url("' . $noto_regular . '") format("truetype");
+            }
+            @font-face {
+                font-family: "NotoSansSinhala";
+                font-style: normal;
+                font-weight: bold;
+                src: url("' . $noto_bold . '") format("truetype");
             }
 
-            body { font-family: "AbhayaLibre", sans-serif; font-size: 12px; color: #333; line-height: 1.4; margin: 0; padding: 0; }
+            * { font-family: "Calibri", "NotoSansSinhala", sans-serif; }
+            body { font-family: "Calibri", "NotoSansSinhala", sans-serif; font-size: 12px; color: #333; line-height: 1.4; margin: 0; padding: 0; }
             .header-table { width: 100%; border-bottom: 2px solid #4e73df; padding-bottom: 10px; margin-bottom: 15px; }
             .header-title { font-size: 18px; font-weight: bold; color: #4e73df; margin: 0; }
             .header-subtitle { font-size: 11px; color: #666; margin: 3px 0 0 0; }
@@ -147,7 +188,7 @@ if (isset($_GET['download_pdf'])) {
                     <div class="header-subtitle">Official Student Outstanding Payment Report</div>
                 </td>
                 <td class="text-right">
-                    <span class="badge-filter">Filter: Due > Rs. ' . number_format($threshold, 0) . '</span>
+                    <span class="badge-filter">Filter: ' . htmlspecialchars($filter_label) . '</span>
                     <div style="font-size: 9px; color: #777; margin-top: 4px;">Date: ' . date('Y-m-d H:i:s') . '</div>
                 </td>
             </tr>
@@ -184,7 +225,7 @@ if (isset($_GET['download_pdf'])) {
             <tbody>';
 
     if (empty($report_students)) {
-        $html .= '<tr><td colspan="6" class="text-center" style="padding: 15px;">No students found matching criteria (Due > Rs. ' . number_format($threshold, 0) . ').</td></tr>';
+        $html .= '<tr><td colspan="6" class="text-center" style="padding: 15px;">No students found matching criteria (' . htmlspecialchars($filter_label) . ').</td></tr>';
     } else {
         $i = 1;
         foreach ($report_students as $st) {
@@ -228,8 +269,119 @@ if (isset($_GET['download_pdf'])) {
     $dompdf->setPaper('A4', 'portrait');
     $dompdf->render();
 
-    $filename = "Student_Outstanding_Report_Over_" . (int)$threshold . ".pdf";
+    $filename = "Student_Report_" . preg_replace('/[^A-Za-z0-9_-]/', '_', $threshold) . ".pdf";
     $dompdf->stream($filename, ["Attachment" => true]);
+    exit;
+}
+
+// PhpSpreadsheet XLSX Generation when requested
+if (isset($_GET['download_xlsx'])) {
+    require_once __DIR__ . '/../vendor/autoload.php';
+
+    $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setTitle('Student Outstanding');
+
+    // Title / Header block
+    $sheet->setCellValue('A1', 'Student Contribution Management Portal');
+    $sheet->mergeCells('A1:G1');
+    $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(16)->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('4E73DF'));
+
+    $sheet->setCellValue('A2', 'Official Student Outstanding Payment Report');
+    $sheet->mergeCells('A2:G2');
+    $sheet->getStyle('A2')->getFont()->setItalic(true)->setSize(11)->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('666666'));
+
+    $sheet->setCellValue('A3', 'Filter Criteria: ' . $filter_label . ' | Generated: ' . date('Y-m-d H:i:s'));
+    $sheet->mergeCells('A3:G3');
+    $sheet->getStyle('A3')->getFont()->setSize(10)->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('333333'));
+
+    // Summary Statistics Cards section
+    $sheet->setCellValue('A5', 'Matching Students Count:');
+    $sheet->setCellValue('B5', count($report_students) . ' Students');
+    $sheet->getStyle('A5')->getFont()->setBold(true);
+    $sheet->getStyle('B5')->getFont()->setBold(true)->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('4E73DF'));
+
+    $sheet->setCellValue('D5', 'Combined Outstanding Balance:');
+    $sheet->setCellValue('E5', $total_due_sum);
+    $sheet->getStyle('D5')->getFont()->setBold(true);
+    $sheet->getStyle('E5')->getFont()->setBold(true)->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('E74A3B'));
+    $sheet->getStyle('E5')->getNumberFormat()->setFormatCode('"Rs. "#,##0.00');
+
+    // Table Header (Row 7)
+    $headers = ['#', 'Reg No', 'Student Name', 'Card No', 'Total Expected (Rs.)', 'Total Paid (Rs.)', 'Total Due (Rs.)'];
+    $cols = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+
+    foreach ($headers as $index => $header) {
+        $cell = $cols[$index] . '7';
+        $sheet->setCellValue($cell, $header);
+        $sheet->getStyle($cell)->getFont()->setBold(true)->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_WHITE));
+        $sheet->getStyle($cell)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('4E73DF');
+        $sheet->getStyle($cell)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+    }
+
+    // Data rows starting at row 8
+    $rowNum = 8;
+    $i = 1;
+    if (empty($report_students)) {
+        $sheet->setCellValue('A' . $rowNum, 'No students found matching criteria (' . $filter_label . ').');
+        $sheet->mergeCells('A' . $rowNum . ':G' . $rowNum);
+        $sheet->getStyle('A' . $rowNum)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $rowNum++;
+    } else {
+        foreach ($report_students as $st) {
+            $sheet->setCellValue('A' . $rowNum, $i++);
+            $sheet->getStyle('A' . $rowNum)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+            $sheet->setCellValue('B' . $rowNum, $st['reg_no']);
+            $sheet->getStyle('B' . $rowNum)->getFont()->setBold(true);
+
+            $sheet->setCellValue('C' . $rowNum, $st['Name']);
+            $sheet->setCellValue('D' . $rowNum, $st['card'] ?? 'N/A');
+
+            $sheet->setCellValue('E' . $rowNum, $st['fin']['tot']);
+            $sheet->getStyle('E' . $rowNum)->getNumberFormat()->setFormatCode('"Rs. "#,##0.00');
+
+            $sheet->setCellValue('F' . $rowNum, $st['fin']['tot_paid']);
+            $sheet->getStyle('F' . $rowNum)->getNumberFormat()->setFormatCode('"Rs. "#,##0.00');
+            $sheet->getStyle('F' . $rowNum)->getFont()->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('1CC88A'));
+
+            $sheet->setCellValue('G' . $rowNum, $st['fin']['due_balance']);
+            $sheet->getStyle('G' . $rowNum)->getNumberFormat()->setFormatCode('"Rs. "#,##0.00');
+            $sheet->getStyle('G' . $rowNum)->getFont()->setBold(true)->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('E74A3B'));
+
+            $rowNum++;
+        }
+    }
+
+    // Grand Total Footer row
+    $sheet->setCellValue('A' . $rowNum, 'Grand Total Outstanding:');
+    $sheet->mergeCells('A' . $rowNum . ':F' . $rowNum);
+    $sheet->getStyle('A' . $rowNum)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+    $sheet->getStyle('A' . $rowNum)->getFont()->setBold(true);
+
+    $sheet->setCellValue('G' . $rowNum, $total_due_sum);
+    $sheet->getStyle('G' . $rowNum)->getNumberFormat()->setFormatCode('"Rs. "#,##0.00');
+    $sheet->getStyle('G' . $rowNum)->getFont()->setBold(true)->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('E74A3B'));
+
+    $sheet->getStyle('A' . $rowNum . ':G' . $rowNum)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('EAECF4');
+
+    // Add borders to data table
+    $tableRange = 'A7:G' . $rowNum;
+    $sheet->getStyle($tableRange)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN)->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('DDDDDD'));
+
+    // Auto-fit column widths
+    foreach ($cols as $col) {
+        $sheet->getColumnDimension($col)->setAutoSize(true);
+    }
+
+    $filename = "Student_Report_" . preg_replace('/[^A-Za-z0-9_-]/', '_', $threshold) . ".xlsx";
+
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Cache-Control: max-age=0');
+
+    $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+    $writer->save('php://output');
     exit;
 }
 ?>
@@ -248,7 +400,7 @@ if (isset($_GET['download_pdf'])) {
     <!-- Google Fonts for Sinhala & English -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --sidebar-width: 250px;
@@ -257,7 +409,7 @@ if (isset($_GET['download_pdf'])) {
         }
 
         body {
-            font-family: 'Abhaya Libre', 'Nunito', sans-serif;
+            font-family: 'Calibri', 'Carlito', 'Noto Sans Sinhala', sans-serif;
             background-color: #f8f9fc;
             overflow-x: hidden;
         }
@@ -282,7 +434,7 @@ if (isset($_GET['download_pdf'])) {
             border-radius: 8px;
             border: 1px solid #e3e6f0;
             color: #333;
-            font-family: 'Abhaya Libre', serif;
+            font-family: 'Calibri', 'Carlito', 'Noto Sans Sinhala', sans-serif;
         }
 
         .report-header {
@@ -329,14 +481,14 @@ if (isset($_GET['download_pdf'])) {
         <div class="container-fluid p-4">
             <!-- Title & Action Buttons -->
             <div class="d-flex justify-content-between align-items-center mb-4 no-print">
-                <h1 class="h3 mb-0 text-gray-800"><i class="fas fa-file-pdf text-danger me-2"></i> Student Outstanding PDF Reports</h1>
+                <h1 class="h3 mb-0 text-gray-800"><i class="fas fa-file-alt text-primary me-2"></i> Student Outstanding Reports</h1>
                 <div>
-                    <a href="?threshold=<?php echo (int)$threshold; ?>&download_pdf=1" class="btn btn-danger btn-lg me-2">
+                    <a href="?threshold=<?php echo htmlspecialchars($threshold); ?>&download_pdf=1" class="btn btn-danger btn-lg me-2">
                         <i class="fas fa-file-pdf me-1"></i> Download PDF Report
                     </a>
-                    <button onclick="window.print()" class="btn btn-secondary btn-lg">
-                        <i class="fas fa-print me-1"></i> Print Page
-                    </button>
+                    <a href="?threshold=<?php echo htmlspecialchars($threshold); ?>&download_xlsx=1" class="btn btn-success btn-lg">
+                        <i class="fas fa-file-excel me-1"></i> Download XLSX Report
+                    </a>
                 </div>
             </div>
 
@@ -350,13 +502,15 @@ if (isset($_GET['download_pdf'])) {
                         <div class="col-md-8">
                             <label for="thresholdSelect" class="form-label fw-bold">Display Users Who Need To Pay:</label>
                             <select class="form-select form-select-lg" id="thresholdSelect" name="threshold">
-                                <option value="500" <?php echo $threshold == 500 ? 'selected' : ''; ?>>Users who need to pay > Rs. 500</option>
-                                <option value="1000" <?php echo $threshold == 1000 ? 'selected' : ''; ?>>Users who need to pay > Rs. 1,000</option>
-                                <option value="1500" <?php echo $threshold == 1500 ? 'selected' : ''; ?>>Users who need to pay > Rs. 1,500</option>
-                                <option value="2000" <?php echo $threshold == 2000 ? 'selected' : ''; ?>>Users who need to pay > Rs. 2,000</option>
-                                <option value="2500" <?php echo $threshold == 2500 ? 'selected' : ''; ?>>Users who need to pay > Rs. 2,500</option>
-                                <option value="3000" <?php echo $threshold == 3000 ? 'selected' : ''; ?>>Users who need to pay > Rs. 3,000</option>
-                                <option value="0" <?php echo $threshold == 0 ? 'selected' : ''; ?>>All Users with Unpaid Balance (> Rs. 0)</option>
+                                <option value="500" <?php echo $threshold == '500' ? 'selected' : ''; ?>>Users who need to pay > Rs. 500</option>
+                                <option value="1000" <?php echo $threshold == '1000' ? 'selected' : ''; ?>>Users who need to pay > Rs. 1,000</option>
+                                <option value="1500" <?php echo $threshold == '1500' ? 'selected' : ''; ?>>Users who need to pay > Rs. 1,500</option>
+                                <option value="2000" <?php echo $threshold == '2000' ? 'selected' : ''; ?>>Users who need to pay > Rs. 2,000</option>
+                                <option value="2500" <?php echo $threshold == '2500' ? 'selected' : ''; ?>>Users who need to pay > Rs. 2,500</option>
+                                <option value="3000" <?php echo $threshold == '3000' ? 'selected' : ''; ?>>Users who need to pay > Rs. 3,000</option>
+                                <option value="0" <?php echo $threshold === '0' ? 'selected' : ''; ?>>All Users with Unpaid Balance (> Rs. 0)</option>
+                                <option value="zero" <?php echo $threshold === 'zero' ? 'selected' : ''; ?>>Users with Fully Paid / Zero Balance (Due = Rs. 0)</option>
+                                <option value="all" <?php echo $threshold === 'all' ? 'selected' : ''; ?>>All Registered Users (Including Rs. 0 Balance)</option>
                             </select>
                         </div>
                         <div class="col-md-4">
@@ -376,7 +530,7 @@ if (isset($_GET['download_pdf'])) {
                         <p class="mb-0 text-muted">Official Student Outstanding Payment Report</p>
                     </div>
                     <div class="text-end">
-                        <span class="badge bg-danger fs-6 mb-1">Filter: Due > Rs. <?php echo number_format($threshold, 0); ?></span>
+                        <span class="badge bg-danger fs-6 mb-1">Filter: <?php echo htmlspecialchars($filter_label); ?></span>
                         <div class="small text-muted">Generated: <?php echo date('Y-m-d H:i:s'); ?></div>
                     </div>
                 </div>
@@ -415,7 +569,7 @@ if (isset($_GET['download_pdf'])) {
                             <?php if (empty($report_students)): ?>
                                 <tr>
                                     <td colspan="7" class="text-center py-4 text-muted">
-                                        No students found matching criteria (Due > Rs. <?php echo number_format($threshold, 0); ?>).
+                                        No students found matching criteria (<?php echo htmlspecialchars($filter_label); ?>).
                                     </td>
                                 </tr>
                             <?php else: ?>

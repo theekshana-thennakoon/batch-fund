@@ -1,0 +1,17 @@
+{
+    "customfont": {
+        "normal": "customfont_normal_a9659298a3b50a68908e74776d4cc246"
+    },
+    "abhayalibre": {
+        "normal": "C:\\xampp\\htdocs\\batchfund\\vendor\\dompdf\\dompdf\/lib\/fonts\/abhayalibre_normal_b923f1033b711628b2be38609bb87b99",
+        "bold": "abhayalibre_bold_1e3c5a01f0bb275a5a5e01cbb3d928f4"
+    },
+    "calibri": {
+        "normal": "C:\\xampp\\htdocs\\batchfund\\vendor\\dompdf\\dompdf\/lib\/fonts\/calibri_normal_b99f304256d33ba4f2a7493416a4a5ba",
+        "bold": "calibri_bold_3d33f45dfaf582389245619421e08477"
+    },
+    "notosanssinhala": {
+        "normal": "C:\\xampp\\htdocs\\batchfund\\vendor\\dompdf\\dompdf\/lib\/fonts\/notosanssinhala_normal_10863ad373b373f322b1e897d06fdc3b",
+        "bold": "notosanssinhala_bold_cbcecb5a2508ba239823d64dce8523e1"
+    }
+}

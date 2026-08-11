@@ -100,7 +100,7 @@
                 <a href="./pay_2024"><i class="fas fa-calendar-check"></i> 2024 Payment</a>
             </li>
             <li>
-                <a href="./due_reports"><i class="fas fa-file-pdf"></i> Due PDF Reports</a>
+                <a href="./due_reports"><i class="fas fa-file-invoice-dollar"></i> Due Reports</a>
             </li>
             <li>
                 <a href="./send_email"><i class="fas fa-envelope"></i> Send Email</a>
