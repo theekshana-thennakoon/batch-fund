@@ -165,6 +165,7 @@ $balance = $tot - $tot_paid;
     <link rel="icon" type="image/x-icon" href="./assets/logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <style>
         /* ========== DARK MODE (Default) ========== */
         :root {
@@ -549,6 +550,112 @@ $balance = $tot - $tot_paid;
             animation: badge-blink 1.2s ease-in-out infinite !important;
         }
 
+        /* Voice Button for Fully Paid */
+        .due-amount-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .due-amount-wrapper {
+                justify-content: center;
+            }
+        }
+
+        .speak-voice-btn {
+            background-color: rgba(40, 167, 69, 0.15);
+            border: 1px solid rgba(40, 167, 69, 0.4);
+            color: #28a745;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0;
+            font-size: 13px;
+            transition: all 0.25s ease;
+            outline: none;
+        }
+
+        .speak-voice-btn:hover {
+            background-color: #28a745;
+            color: #ffffff;
+            transform: scale(1.12);
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.4);
+        }
+
+        .speak-voice-btn.speaking {
+            background-color: #28a745;
+            color: #ffffff;
+            animation: speakPulse 0.9s infinite alternate;
+        }
+
+        body.light-mode .speak-voice-btn {
+            background-color: rgba(40, 167, 69, 0.12);
+            border-color: rgba(40, 167, 69, 0.5);
+            color: #1e7e34;
+        }
+
+        body.light-mode .speak-voice-btn:hover {
+            background-color: #28a745;
+            color: #ffffff;
+        }
+
+        .speak-voice-btn.red-speak-btn {
+            background-color: rgba(220, 53, 69, 0.15);
+            border-color: rgba(220, 53, 69, 0.4);
+            color: #dc3545;
+        }
+
+        .speak-voice-btn.red-speak-btn:hover {
+            background-color: #dc3545;
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(220, 53, 69, 0.4);
+        }
+
+        .speak-voice-btn.red-speak-btn.speaking {
+            background-color: #dc3545;
+            color: #ffffff;
+            animation: speakPulseRed 0.9s infinite alternate;
+        }
+
+        body.light-mode .speak-voice-btn.red-speak-btn {
+            background-color: rgba(220, 53, 69, 0.12);
+            border-color: rgba(220, 53, 69, 0.5);
+            color: #c82333;
+        }
+
+        body.light-mode .speak-voice-btn.red-speak-btn:hover {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+
+        @keyframes speakPulseRed {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.6);
+            }
+            100% {
+                transform: scale(1.18);
+                box-shadow: 0 0 12px 4px rgba(220, 53, 69, 0.35);
+            }
+        }
+
+        @keyframes speakPulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.6);
+            }
+            100% {
+                transform: scale(1.18);
+                box-shadow: 0 0 12px 4px rgba(40, 167, 69, 0.35);
+            }
+        }
+
         /* Ensure table wrapper has proper background */
         .table-responsive {
             background-color: transparent;
@@ -917,7 +1024,20 @@ $balance = $tot - $tot_paid;
                             <i class="fas fa-exclamation-circle"></i>
                         </div>
                         <div>
-                            <h4 class="contribution-amount" id="totalBalanceAmount">Rs. 0</h4>
+                            <div class="due-amount-wrapper">
+                                <?php if (isset($balance) && (float)$balance <= 0): ?>
+                                    <button type="button" id="speakDueBtn" class="speak-voice-btn" title="Click to hear: 'ඔයා ඔක්කොම ගෙවලා ඉවරයි. ආදරෙයි'" aria-label="Listen: ඔයා ඔක්කොම ගෙවලා ඉවරයි. ආදරෙයි">
+                                        <i class="fas fa-volume-up"></i>
+                                    </button>
+                                    <audio id="dueStatusAudio" src="./assets/audio/fully_paid_sinhala.mp3" preload="auto" playsinline></audio>
+                                <?php elseif (isset($balance) && (float)$balance > 0): ?>
+                                    <button type="button" id="speakDueBtn" class="speak-voice-btn red-speak-btn" title="Click to hear: 'ඔයා රුපියක් <?php echo (int)$balance; ?>ක් ගෙවන්න තියෙනවා. ඒක ගෙවලා ඉවර කරන්නකෝ'" aria-label="Listen: Due amount">
+                                        <i class="fas fa-volume-up"></i>
+                                    </button>
+                                    <audio id="dueStatusAudio" src="./tts_speech.php?balance=<?php echo (int)$balance; ?>" preload="auto" playsinline></audio>
+                                <?php endif; ?>
+                                <h4 class="contribution-amount" id="totalBalanceAmount">Rs. 0</h4>
+                            </div>
                             <p class="contribution-label">Total Due / ගෙවීමට ඇති මුළු එකතුව</p>
                         </div>
                     </div>
@@ -1129,6 +1249,174 @@ $balance = $tot - $tot_paid;
                 animateCounter('totalAmount', <?php echo isset($tot) ? (int)$tot : 25000; ?>);
                 animateCounter('totalPaidAmount', <?php echo isset($tot_paid) ? (int)$tot_paid : 15000; ?>);
                 animateCounter('totalBalanceAmount', <?php echo isset($balance) ? (int)$balance : 10000; ?>);
+            }
+
+            // Text to Voice & Status Speech in Sinhala
+            const balanceAmount = <?php echo isset($balance) ? (int)$balance : 0; ?>;
+            const isTotalDueZero = balanceAmount <= 0;
+            const sinhalaSpeechText = isTotalDueZero 
+                ? "ඔයා ඔක්කොම ගෙවලා ඉවරයි. ආදරෙයි" 
+                : "ඔයා රුපියක් " + balanceAmount + "ක් ගෙවන්න තියෙනවා. ඒක ගෙවලා ඉවර කරන්නකෝ";
+            const sinhalaAudioSrc = isTotalDueZero 
+                ? "./assets/audio/fully_paid_sinhala.mp3" 
+                : "./tts_speech.php?balance=" + balanceAmount;
+
+            let hasSpokenDueSpeech = false;
+
+            function launchConfettiCelebration() {
+                if (typeof confetti !== 'function') return;
+
+                // Burst 1: Cannon from bottom center
+                confetti({
+                    particleCount: 80,
+                    spread: 80,
+                    origin: { y: 0.75 },
+                    zIndex: 9999
+                });
+
+                // Burst 2: Dual cannons from left & right sides
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 50,
+                        angle: 60,
+                        spread: 65,
+                        origin: { x: 0, y: 0.7 },
+                        zIndex: 9999
+                    });
+                    confetti({
+                        particleCount: 50,
+                        angle: 120,
+                        spread: 65,
+                        origin: { x: 1, y: 0.7 },
+                        zIndex: 9999
+                    });
+                }, 300);
+
+                // Burst 3: Gentle raining confetti from top
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 45,
+                        spread: 120,
+                        origin: { y: 0.2 },
+                        gravity: 0.8,
+                        ticks: 300,
+                        zIndex: 9999
+                    });
+                }, 700);
+            }
+
+            function playDueStatusSpeech() {
+                if (hasSpokenDueSpeech) return;
+
+                const speakBtn = document.getElementById('speakDueBtn');
+                const audioEl = document.getElementById('dueStatusAudio') || new Audio(sinhalaAudioSrc);
+
+                function onPlaying() {
+                    hasSpokenDueSpeech = true;
+                    if (speakBtn) speakBtn.classList.add('speaking');
+                    if (isTotalDueZero) {
+                        launchConfettiCelebration();
+                    }
+                }
+
+                function onEnded() {
+                    if (speakBtn) speakBtn.classList.remove('speaking');
+                }
+
+                audioEl.onplay = onPlaying;
+                audioEl.onended = onEnded;
+                audioEl.onpause = onEnded;
+                audioEl.onerror = function() {
+                    if (speakBtn) speakBtn.classList.remove('speaking');
+                    fallbackSpeechSynthesis();
+                };
+
+                try {
+                    audioEl.currentTime = 0;
+                    const playPromise = audioEl.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(function() {
+                            hasSpokenDueSpeech = true;
+                        }).catch(function(err) {
+                            console.log('Autoplay audio waiting for user gesture:', err);
+                            setupUserInteractionFallback(audioEl);
+                            fallbackSpeechSynthesis();
+                        });
+                    }
+                } catch (err) {
+                    console.error('Audio play error:', err);
+                    setupUserInteractionFallback(audioEl);
+                    fallbackSpeechSynthesis();
+                }
+            }
+
+            function setupUserInteractionFallback(audioEl) {
+                if (hasSpokenDueSpeech) return;
+                const gestureEvents = ['click', 'touchstart', 'pointerdown', 'keydown', 'scroll'];
+                const onFirstGesture = function() {
+                    if (!hasSpokenDueSpeech) {
+                        hasSpokenDueSpeech = true;
+                        try {
+                            audioEl.currentTime = 0;
+                            audioEl.play().catch(function() {
+                                fallbackSpeechSynthesis();
+                            });
+                        } catch(e) {
+                            fallbackSpeechSynthesis();
+                        }
+                    }
+                    gestureEvents.forEach(evt => window.removeEventListener(evt, onFirstGesture, true));
+                };
+                gestureEvents.forEach(evt => window.addEventListener(evt, onFirstGesture, { once: true, capture: true }));
+            }
+
+            // Fallback to Web Speech API
+            function fallbackSpeechSynthesis() {
+                if (!('speechSynthesis' in window)) return;
+                try {
+                    window.speechSynthesis.cancel();
+                    const utterance = new SpeechSynthesisUtterance(sinhalaSpeechText);
+                    utterance.lang = 'si-LK';
+                    utterance.rate = 0.95;
+
+                    const speakBtn = document.getElementById('speakDueBtn');
+                    utterance.onstart = function() {
+                        hasSpokenDueSpeech = true;
+                        if (speakBtn) speakBtn.classList.add('speaking');
+                        if (isTotalDueZero) {
+                            launchConfettiCelebration();
+                        }
+                    };
+                    utterance.onend = function() {
+                        if (speakBtn) speakBtn.classList.remove('speaking');
+                    };
+                    utterance.onerror = function() {
+                        if (speakBtn) speakBtn.classList.remove('speaking');
+                    };
+
+                    window.speechSynthesis.speak(utterance);
+                } catch (e) {
+                    console.error('Speech synthesis fallback error:', e);
+                }
+            }
+
+            // Play voice and background celebration on load
+            playDueStatusSpeech();
+
+            const speakBtn = document.getElementById('speakDueBtn');
+            if (speakBtn) {
+                speakBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    hasSpokenDueSpeech = false;
+                    const audioEl = document.getElementById('dueStatusAudio') || new Audio(sinhalaAudioSrc);
+                    audioEl.currentTime = 0;
+                    audioEl.play().catch(function() {
+                        fallbackSpeechSynthesis();
+                    });
+                    if (isTotalDueZero) {
+                        launchConfettiCelebration();
+                    }
+                });
             }
 
             // Skeleton Loader transition
