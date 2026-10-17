@@ -517,11 +517,14 @@ $balance = $tot - $tot_paid;
 
         /* Blink animation for 2024 tab and row badge when balance > 0 */
         @keyframes tab-blink {
-            0%, 100% {
+
+            0%,
+            100% {
                 background-color: #dc3545;
                 color: #ffffff;
                 box-shadow: 0 0 12px rgba(220, 53, 69, 0.9);
             }
+
             50% {
                 background-color: #721c24;
                 color: #ffc9c9;
@@ -536,10 +539,13 @@ $balance = $tot - $tot_paid;
         }
 
         @keyframes badge-blink {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
                 box-shadow: 0 0 10px rgba(220, 53, 69, 0.7);
             }
+
             50% {
                 opacity: 0.75;
                 box-shadow: 0 0 2px rgba(220, 53, 69, 0.2);
@@ -639,6 +645,7 @@ $balance = $tot - $tot_paid;
                 transform: scale(1);
                 box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.6);
             }
+
             100% {
                 transform: scale(1.18);
                 box-shadow: 0 0 12px 4px rgba(220, 53, 69, 0.35);
@@ -650,6 +657,7 @@ $balance = $tot - $tot_paid;
                 transform: scale(1);
                 box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.6);
             }
+
             100% {
                 transform: scale(1.18);
                 box-shadow: 0 0 12px 4px rgba(40, 167, 69, 0.35);
@@ -685,9 +693,12 @@ $balance = $tot - $tot_paid;
 
         /* ========== FLOWBITE SKELETON LOADER STYLES ========== */
         @keyframes flowbite-pulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
             }
+
             50% {
                 opacity: 0.35;
             }
@@ -762,21 +773,49 @@ $balance = $tot - $tot_paid;
         }
 
         /* Width Utilities for Skeletons */
-        .w-20 { width: 20% !important; }
-        .w-30 { width: 30% !important; }
-        .w-35 { width: 35% !important; }
-        .w-40 { width: 40% !important; }
-        .w-60 { width: 60% !important; }
-        .w-65 { width: 65% !important; }
-        .w-70 { width: 70% !important; }
-        .w-80 { width: 80% !important; }
-        .w-85 { width: 85% !important; }
+        .w-20 {
+            width: 20% !important;
+        }
+
+        .w-30 {
+            width: 30% !important;
+        }
+
+        .w-35 {
+            width: 35% !important;
+        }
+
+        .w-40 {
+            width: 40% !important;
+        }
+
+        .w-60 {
+            width: 60% !important;
+        }
+
+        .w-65 {
+            width: 65% !important;
+        }
+
+        .w-70 {
+            width: 70% !important;
+        }
+
+        .w-80 {
+            width: 80% !important;
+        }
+
+        .w-85 {
+            width: 85% !important;
+        }
 
         #main-content {
             opacity: 0;
             transition: opacity 0.4s ease-in-out;
         }
     </style>
+    <!-- Glassy Screen Styling -->
+    <link rel="stylesheet" href="./assets/glassy.css">
 </head>
 
 <body class="dark-mode">
@@ -829,7 +868,7 @@ $balance = $tot - $tot_paid;
                         <i class="fas fa-sun me-1"></i>
                     </button>
                     <a class="btn logout-btn" href="x.php?logout=1">
-                        <i class="fas fa-sign-out-alt me-1"></i> Logout
+                        <i class="fas fa-sign-out-alt me-1"></i>
                     </a>
                 </div>
             </div>
@@ -858,20 +897,36 @@ $balance = $tot - $tot_paid;
                 <div class="row">
                     <div class="col-md-8">
                         <div class="row mb-3 align-items-center">
-                            <div class="col-4"><div class="skeleton-line lg w-75"></div></div>
-                            <div class="col-8"><div class="skeleton-line lg w-50"></div></div>
+                            <div class="col-4">
+                                <div class="skeleton-line lg w-75"></div>
+                            </div>
+                            <div class="col-8">
+                                <div class="skeleton-line lg w-50"></div>
+                            </div>
                         </div>
                         <div class="row mb-3 align-items-center">
-                            <div class="col-4"><div class="skeleton-line lg w-60"></div></div>
-                            <div class="col-8"><div class="skeleton-line lg w-75"></div></div>
+                            <div class="col-4">
+                                <div class="skeleton-line lg w-60"></div>
+                            </div>
+                            <div class="col-8">
+                                <div class="skeleton-line lg w-75"></div>
+                            </div>
                         </div>
                         <div class="row mb-3 align-items-center">
-                            <div class="col-4"><div class="skeleton-line lg w-50"></div></div>
-                            <div class="col-8"><div class="skeleton-line lg w-60"></div></div>
+                            <div class="col-4">
+                                <div class="skeleton-line lg w-50"></div>
+                            </div>
+                            <div class="col-8">
+                                <div class="skeleton-line lg w-60"></div>
+                            </div>
                         </div>
                         <div class="row mb-2 align-items-center">
-                            <div class="col-4"><div class="skeleton-line lg w-40"></div></div>
-                            <div class="col-8"><div class="skeleton-line lg w-30"></div></div>
+                            <div class="col-4">
+                                <div class="skeleton-line lg w-40"></div>
+                            </div>
+                            <div class="col-8">
+                                <div class="skeleton-line lg w-30"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -924,36 +979,72 @@ $balance = $tot - $tot_paid;
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th><div class="skeleton-line sm w-50 mb-0"></div></th>
-                                <th><div class="skeleton-line sm w-40 mb-0"></div></th>
-                                <th><div class="skeleton-line sm w-30 mb-0"></div></th>
+                                <th>
+                                    <div class="skeleton-line sm w-50 mb-0"></div>
+                                </th>
+                                <th>
+                                    <div class="skeleton-line sm w-40 mb-0"></div>
+                                </th>
+                                <th>
+                                    <div class="skeleton-line sm w-30 mb-0"></div>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td><div class="skeleton-line sm w-75 mb-0"></div></td>
-                                <td><div class="skeleton-line sm w-50 mb-0"></div></td>
-                                <td><div class="skeleton-badge-box"></div></td>
+                                <td>
+                                    <div class="skeleton-line sm w-75 mb-0"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton-line sm w-50 mb-0"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton-badge-box"></div>
+                                </td>
                             </tr>
                             <tr>
-                                <td><div class="skeleton-line sm w-60 mb-0"></div></td>
-                                <td><div class="skeleton-line sm w-40 mb-0"></div></td>
-                                <td><div class="skeleton-badge-box"></div></td>
+                                <td>
+                                    <div class="skeleton-line sm w-60 mb-0"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton-line sm w-40 mb-0"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton-badge-box"></div>
+                                </td>
                             </tr>
                             <tr>
-                                <td><div class="skeleton-line sm w-80 mb-0"></div></td>
-                                <td><div class="skeleton-line sm w-55 mb-0"></div></td>
-                                <td><div class="skeleton-badge-box"></div></td>
+                                <td>
+                                    <div class="skeleton-line sm w-80 mb-0"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton-line sm w-55 mb-0"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton-badge-box"></div>
+                                </td>
                             </tr>
                             <tr>
-                                <td><div class="skeleton-line sm w-65 mb-0"></div></td>
-                                <td><div class="skeleton-line sm w-45 mb-0"></div></td>
-                                <td><div class="skeleton-badge-box"></div></td>
+                                <td>
+                                    <div class="skeleton-line sm w-65 mb-0"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton-line sm w-45 mb-0"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton-badge-box"></div>
+                                </td>
                             </tr>
                             <tr>
-                                <td><div class="skeleton-line sm w-70 mb-0"></div></td>
-                                <td><div class="skeleton-line sm w-50 mb-0"></div></td>
-                                <td><div class="skeleton-badge-box"></div></td>
+                                <td>
+                                    <div class="skeleton-line sm w-70 mb-0"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton-line sm w-50 mb-0"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton-badge-box"></div>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -963,8 +1054,14 @@ $balance = $tot - $tot_paid;
 
         <noscript>
             <style>
-                #skeleton-loader { display: none !important; }
-                #main-content { display: block !important; opacity: 1 !important; }
+                #skeleton-loader {
+                    display: none !important;
+                }
+
+                #main-content {
+                    display: block !important;
+                    opacity: 1 !important;
+                }
             </style>
         </noscript>
 
@@ -1140,7 +1237,7 @@ $balance = $tot - $tot_paid;
             <div class="text-center">
                 <p>Student Contribution Management Portal</p>
                 <p class="small">Copyright © Student Contribution Management Portal | V 2.0 |
-                    Developed by Thisula Development
+                    Developed by Theekshana Thennakoon
                 </p>
             </div>
         </div>
@@ -1254,12 +1351,12 @@ $balance = $tot - $tot_paid;
             // Text to Voice & Status Speech in Sinhala
             const balanceAmount = <?php echo isset($balance) ? (int)$balance : 0; ?>;
             const isTotalDueZero = balanceAmount <= 0;
-            const sinhalaSpeechText = isTotalDueZero 
-                ? "ඔයා ඔක්කොම ගෙවලා ඉවරයි. ආදරෙයි" 
-                : "ඔයා රුපියක් " + balanceAmount + "ක් ගෙවන්න තියෙනවා. ඒක ගෙවලා ඉවර කරන්නකෝ";
-            const sinhalaAudioSrc = isTotalDueZero 
-                ? "./assets/audio/fully_paid_sinhala.mp3" 
-                : "./tts_speech.php?balance=" + balanceAmount;
+            const sinhalaSpeechText = isTotalDueZero ?
+                "ඔයා ඔක්කොම ගෙවලා ඉවරයි. ආදරෙයි" :
+                "ඔයා රුපියක් " + balanceAmount + "ක් ගෙවන්න තියෙනවා. ඒක ගෙවලා ඉවර කරන්නකෝ";
+            const sinhalaAudioSrc = isTotalDueZero ?
+                "./assets/audio/fully_paid_sinhala.mp3" :
+                "./tts_speech.php?balance=" + balanceAmount;
 
             let hasSpokenDueSpeech = false;
 
@@ -1270,7 +1367,9 @@ $balance = $tot - $tot_paid;
                 confetti({
                     particleCount: 80,
                     spread: 80,
-                    origin: { y: 0.75 },
+                    origin: {
+                        y: 0.75
+                    },
                     zIndex: 9999
                 });
 
@@ -1280,14 +1379,20 @@ $balance = $tot - $tot_paid;
                         particleCount: 50,
                         angle: 60,
                         spread: 65,
-                        origin: { x: 0, y: 0.7 },
+                        origin: {
+                            x: 0,
+                            y: 0.7
+                        },
                         zIndex: 9999
                     });
                     confetti({
                         particleCount: 50,
                         angle: 120,
                         spread: 65,
-                        origin: { x: 1, y: 0.7 },
+                        origin: {
+                            x: 1,
+                            y: 0.7
+                        },
                         zIndex: 9999
                     });
                 }, 300);
@@ -1297,7 +1402,9 @@ $balance = $tot - $tot_paid;
                     confetti({
                         particleCount: 45,
                         spread: 120,
-                        origin: { y: 0.2 },
+                        origin: {
+                            y: 0.2
+                        },
                         gravity: 0.8,
                         ticks: 300,
                         zIndex: 9999
@@ -1361,13 +1468,16 @@ $balance = $tot - $tot_paid;
                             audioEl.play().catch(function() {
                                 fallbackSpeechSynthesis();
                             });
-                        } catch(e) {
+                        } catch (e) {
                             fallbackSpeechSynthesis();
                         }
                     }
                     gestureEvents.forEach(evt => window.removeEventListener(evt, onFirstGesture, true));
                 };
-                gestureEvents.forEach(evt => window.addEventListener(evt, onFirstGesture, { once: true, capture: true }));
+                gestureEvents.forEach(evt => window.addEventListener(evt, onFirstGesture, {
+                    once: true,
+                    capture: true
+                }));
             }
 
             // Fallback to Web Speech API

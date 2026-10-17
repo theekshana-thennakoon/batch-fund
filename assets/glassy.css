@@ -1,0 +1,595 @@
+/* ==========================================================================
+   GLASSY UI OVERLAY - APPLIES PURE GLASSMORPHISM TO PREVIOUS DESIGN
+   Maintains 100% of the previous layout, perfect paddings, and alignment.
+   ========================================================================== */
+
+/* Typography */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    background: radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.18) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(14, 165, 233, 0.16) 0%, transparent 40%),
+                linear-gradient(135deg, #090c16 0%, #111728 50%, #0d111d 100%) !important;
+    background-attachment: fixed !important;
+    color: #e9ecef !important;
+    min-height: 100vh;
+}
+
+body.light-mode {
+    background: radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(14, 165, 233, 0.12) 0%, transparent 40%),
+                linear-gradient(135deg, #eef2f7 0%, #f8fafc 50%, #e2e8f0 100%) !important;
+    background-attachment: fixed !important;
+    color: #212529 !important;
+}
+
+/* ==========================================================================
+   HEADER - FROSTED GLASS
+   ========================================================================== */
+.scmp-header {
+    background: rgba(14, 20, 36, 0.78) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+    padding: 12px 0 !important;
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+}
+
+body.light-mode .scmp-header {
+    background: rgba(255, 255, 255, 0.78) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+}
+
+.scmp-logo {
+    height: 52px !important;
+    max-height: 52px !important;
+    width: auto !important;
+    object-fit: contain !important;
+    margin-right: 12px !important;
+}
+
+/* ==========================================================================
+   CARDS - GLASSMORPHISM WITH GENEROUS PADDINGS
+   ========================================================================== */
+.info-card,
+.skeleton-card {
+    background: rgba(22, 28, 48, 0.65) !important;
+    backdrop-filter: blur(18px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 16px !important;
+    padding: 22px 24px !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.12) !important;
+    margin-bottom: 22px !important;
+}
+
+body.light-mode .info-card,
+body.light-mode .skeleton-card {
+    background: rgba(255, 255, 255, 0.75) !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 8px 24px 0 rgba(31, 38, 135, 0.08), inset 0 1px 2px rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Student info card row layout & alignment */
+.info-card .row.mb-2 {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px !important;
+}
+
+@media (max-width: 768px) {
+    .info-card {
+        padding: 18px 18px !important;
+    }
+    .info-card .col-4 {
+        width: 44% !important;
+        font-size: 0.92rem;
+    }
+    .info-card .col-8 {
+        width: 56% !important;
+        font-size: 0.92rem;
+    }
+}
+
+/* ==========================================================================
+   CONTRIBUTION BOXES - CONSISTENT PADDING & ALIGNMENT
+   ========================================================================== */
+.contribution-box {
+    background: rgba(22, 28, 48, 0.65) !important;
+    backdrop-filter: blur(18px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 16px !important;
+    padding: 18px 20px !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.12) !important;
+    margin-bottom: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 14px !important;
+    transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+body.light-mode .contribution-box {
+    background: rgba(255, 255, 255, 0.75) !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 8px 24px 0 rgba(31, 38, 135, 0.08), inset 0 1px 2px rgba(255, 255, 255, 0.9) !important;
+}
+
+.contribution-box:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.45) !important;
+}
+
+.contribution-box > div:last-child {
+    text-align: right;
+    flex-grow: 1;
+}
+
+.contribution-icon {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 20px !important;
+    flex-shrink: 0 !important;
+}
+
+.blue-icon {
+    background: linear-gradient(135deg, #3b82f6, #06b6d4) !important;
+    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4) !important;
+}
+
+.green-icon {
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4) !important;
+}
+
+.red-icon {
+    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4) !important;
+}
+
+.contribution-amount {
+    font-size: 1.55rem !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    color: inherit;
+}
+
+.contribution-label {
+    font-size: 0.82rem !important;
+    margin: 4px 0 0 0 !important;
+    color: #94a3b8 !important;
+}
+
+body.light-mode .contribution-label {
+    color: #64748b !important;
+}
+
+/* Desktop layout for due amount */
+@media (min-width: 769px) {
+    .due-amount-wrapper {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        gap: 8px !important;
+    }
+}
+
+/* Mobile responsive alignment - perfect symmetry across all boxes */
+@media (max-width: 768px) {
+    .contribution-box {
+        flex-direction: column !important;
+        text-align: center !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 20px 16px !important;
+    }
+
+    .contribution-icon {
+        margin: 0 auto 12px auto !important;
+    }
+
+    .contribution-box > div:last-child {
+        text-align: center !important;
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .contribution-amount {
+        text-align: center !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+    }
+
+    .contribution-label {
+        text-align: center !important;
+        width: 100% !important;
+        margin: 4px auto 0 auto !important;
+    }
+
+    /* Symmetrically center the due amount with reserved padding for the speaker button */
+    .due-amount-wrapper {
+        position: relative !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        padding: 0 38px !important;
+        margin: 0 auto !important;
+        width: auto !important;
+    }
+
+    .due-amount-wrapper .speak-voice-btn {
+        position: absolute !important;
+        left: 0 !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        margin: 0 !important;
+    }
+
+    .due-amount-wrapper .speak-voice-btn:hover {
+        transform: translateY(-50%) scale(1.12) !important;
+    }
+
+    .due-amount-wrapper .speak-voice-btn.speaking {
+        transform: translateY(-50%) scale(1.12) !important;
+    }
+
+    .due-amount-wrapper .contribution-amount {
+        text-align: center !important;
+        margin: 0 !important;
+        width: auto !important;
+    }
+}
+
+/* ==========================================================================
+   ALERT BANNER - FROSTED
+   ========================================================================== */
+.alert-info {
+    background: rgba(14, 165, 233, 0.12) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    border: 1px solid rgba(14, 165, 233, 0.3) !important;
+    border-radius: 14px !important;
+    padding: 16px 20px !important;
+    color: #38bdf8 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+body.light-mode .alert-info {
+    background: rgba(14, 165, 233, 0.1) !important;
+    color: #0369a1 !important;
+    border-color: rgba(14, 165, 233, 0.25) !important;
+}
+
+.alert-info p {
+    color: inherit !important;
+}
+
+/* ==========================================================================
+   TABS - SEGMENTED FROSTED CAPSULE
+   ========================================================================== */
+.nav-tabs {
+    border-bottom: none !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 12px !important;
+    padding: 5px !important;
+    display: inline-flex !important;
+    flex-wrap: wrap !important;
+    gap: 5px !important;
+}
+
+body.light-mode .nav-tabs {
+    background: rgba(0, 0, 0, 0.04) !important;
+    border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+.nav-tabs .nav-link {
+    border-radius: 8px !important;
+    border: none !important;
+    padding: 8px 18px !important;
+    font-weight: 600 !important;
+    font-size: 0.92rem !important;
+    color: #94a3b8 !important;
+    background: transparent !important;
+    transition: all 0.2s ease !important;
+}
+
+.nav-tabs .nav-link:hover {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+
+body.light-mode .nav-tabs .nav-link {
+    color: #64748b !important;
+}
+
+body.light-mode .nav-tabs .nav-link:hover {
+    color: #1e293b !important;
+    background: rgba(0, 0, 0, 0.05) !important;
+}
+
+.nav-tabs .nav-link.active {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4) !important;
+}
+
+/* ==========================================================================
+   TABLE - FROSTED ROWS & HEADER
+   ========================================================================== */
+.table-responsive {
+    border-radius: 14px !important;
+    overflow: hidden !important;
+    margin-top: 15px !important;
+}
+
+.table {
+    margin-bottom: 0 !important;
+    border: none !important;
+    color: inherit !important;
+}
+
+.table thead th {
+    background: rgba(24, 34, 60, 0.75) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    color: #ffffff !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 14px 18px !important;
+    font-weight: 600 !important;
+    font-size: 0.92rem !important;
+}
+
+body.light-mode .table thead th {
+    background: rgba(235, 242, 250, 0.9) !important;
+    color: #1e293b !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.table tbody tr {
+    background: transparent !important;
+}
+
+.table tbody td {
+    padding: 14px 18px !important;
+    vertical-align: middle !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+    font-size: 0.95rem !important;
+    color: inherit !important;
+}
+
+body.light-mode .table tbody td {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+.table-striped tbody tr:nth-of-type(odd) td {
+    background: rgba(255, 255, 255, 0.02) !important;
+}
+
+body.light-mode .table-striped tbody tr:nth-of-type(odd) td {
+    background: rgba(0, 0, 0, 0.02) !important;
+}
+
+.table-hover tbody tr:hover td {
+    background: rgba(99, 102, 241, 0.1) !important;
+}
+
+/* ==========================================================================
+   BADGES & PILLS
+   ========================================================================== */
+.badge {
+    padding: 8px 14px !important;
+    border-radius: 20px !important;
+    font-weight: 600 !important;
+    font-size: 0.84rem !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+}
+
+.badge.bg-success {
+    background: rgba(16, 185, 129, 0.2) !important;
+    color: #34d399 !important;
+    border: 1px solid rgba(16, 185, 129, 0.4) !important;
+}
+
+.badge.bg-danger {
+    background: rgba(239, 68, 68, 0.2) !important;
+    color: #f87171 !important;
+    border: 1px solid rgba(239, 68, 68, 0.4) !important;
+}
+
+.prev-system-badge {
+    padding: 12px 18px !important;
+    border-radius: 12px !important;
+    font-size: 0.95rem !important;
+}
+
+/* ==========================================================================
+   FOOTER & FIXED LOGO SIZE
+   ========================================================================== */
+.scmp-footer {
+    background: rgba(10, 14, 26, 0.8) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 24px 0 20px 0 !important;
+    margin-top: 40px !important;
+    color: #94a3b8 !important;
+}
+
+body.light-mode .scmp-footer {
+    background: rgba(240, 244, 248, 0.8) !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+    color: #64748b !important;
+}
+
+/* FIXED FOOTER LOGO - NEVER LARGE */
+.footer-logo {
+    height: 48px !important;
+    max-height: 48px !important;
+    max-width: 120px !important;
+    width: auto !important;
+    object-fit: contain !important;
+    display: block !important;
+    margin: 0 auto !important;
+}
+
+/* ==========================================================================
+   LOGIN CARD - FROSTED GLASS
+   ========================================================================== */
+.login-card {
+    background: rgba(22, 28, 48, 0.72) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
+    overflow: hidden;
+}
+
+body.light-mode .login-card {
+    background: rgba(255, 255, 255, 0.78) !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.12), inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
+}
+
+.login-header {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 24px 20px !important;
+}
+
+body.light-mode .login-header {
+    background: rgba(255, 255, 255, 0.5) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.login-body {
+    background: transparent !important;
+    padding: 30px !important;
+}
+
+.form-control {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: #f8fafc !important;
+    backdrop-filter: blur(8px) !important;
+    border-radius: 10px !important;
+    padding: 12px 16px !important;
+}
+
+body.light-mode .form-control {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(203, 213, 225, 0.8) !important;
+    color: #0f172a !important;
+}
+
+.form-control:focus {
+    border-color: #818cf8 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25) !important;
+    background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.btn-login {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 10px !important;
+    padding: 12px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 16px rgba(79, 70, 229, 0.4) !important;
+}
+
+/* Buttons (Theme Toggle & Logout) */
+/* Login page theme toggle button (pill button with text) */
+.theme-toggle-btn {
+    width: auto !important;
+    height: auto !important;
+    min-height: 38px !important;
+    border-radius: 50px !important;
+    padding: 8px 18px !important;
+    white-space: nowrap !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+    color: white !important;
+    cursor: pointer !important;
+    z-index: 1050 !important;
+    transition: all 0.2s ease !important;
+}
+
+.theme-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    transform: scale(1.03) !important;
+}
+
+body.light-mode .theme-toggle-btn {
+    background: rgba(0, 0, 0, 0.08) !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+    color: #1e293b !important;
+}
+
+body.light-mode .theme-toggle-btn:hover {
+    background: rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Header navbar circular button in dashboard */
+.scmp-header .theme-toggle-btn {
+    width: 38px !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    position: static !important;
+}
+
+@media (max-width: 768px) {
+    /* Responsive sizing for fixed login theme toggle */
+    body:not(.dashboard) .theme-toggle-btn:not(.scmp-header *) {
+        top: 14px !important;
+        right: 14px !important;
+        padding: 6px 14px !important;
+        font-size: 12px !important;
+    }
+}
+
+.logout-btn {
+    background: rgba(220, 53, 69, 0.2) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(220, 53, 69, 0.4) !important;
+    color: #ff6b7d !important;
+    border-radius: 8px !important;
+    padding: 7px 14px !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    transition: all 0.2s ease !important;
+}
+
+.logout-btn:hover {
+    background: #dc3545 !important;
+    color: white !important;
+}

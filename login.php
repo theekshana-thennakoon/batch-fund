@@ -244,13 +244,15 @@ if (isset($_COOKIE["reg_no"])) {
             }
         }
     </style>
+    <!-- Glassy Screen Styling -->
+    <link rel="stylesheet" href="./assets/glassy.css">
 </head>
 
 <body class="dark-mode">
     <!-- Theme Toggle Button -->
-    <!-- <button id="themeToggle" class="theme-toggle-btn">
+    <button id="themeToggle" class="theme-toggle-btn">
         <i class="fas fa-sun me-2"></i> Light Mode
-    </button> -->
+    </button>
 
     <script src="./assets/sweetalert.js"></script>
     <div class="container">
@@ -287,7 +289,7 @@ if (isset($_COOKIE["reg_no"])) {
                         <div class="logo-container">
                             <img src="assets/logo.png" alt="Instruction logo" class="logo">
                         </div>
-                        <h2 class="h5 text-center mb-4 fw-bold">LOGIN</h2>
+                        <h2 class="h5 text-center text-white mb-4 fw-bold">LOGIN</h2>
 
                         <form action="processing" method="post" autocomplete="off">
                             <div class="mb-4">
