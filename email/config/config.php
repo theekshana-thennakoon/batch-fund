@@ -26,6 +26,6 @@ return [
         'jwt_secret' => '8c9a2b7f15d34c69aefa725a4e061c29b8fc998eb74f6425acfe30c0d1fd129b',
         'currency' => 'LKR',
         'currency_symbol' => 'Rs.',
-        'company_phone' => '+94774006055'
+        'company_phone' => '+9478 965 1168'
     ],
 ];

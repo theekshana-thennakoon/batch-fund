@@ -90,6 +90,18 @@ if ($sampleResult && $sampleResult->num_rows > 0) {
         <div class="container py-2">
             <div class="row justify-content-center">
                 <div class="col-lg-10">
+                    <!-- Batch Photo Notice Promotion Banner -->
+                    <div class="alert alert-info d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 shadow-sm border-0" style="background:linear-gradient(135deg, #1e1b4b, #312e81); color:#ffffff; border-radius:12px;">
+                        <div>
+                            <span class="badge bg-warning text-dark mb-1">📸 NEW EVENT NOTICE</span>
+                            <h5 class="mb-0 fw-bold">Official Batch Photo 2026 Announcement Email</h5>
+                            <small class="text-white-50">Send event announcement emails to all students with test send to ITT/2021/106</small>
+                        </div>
+                        <a href="./batch_photo_email" class="btn btn-warning fw-bold text-dark">
+                            <i class="fas fa-camera-retro me-1"></i> Open Batch Photo Email Sender
+                        </a>
+                    </div>
+
                     <div class="card shadow">
                         <div class="card-header bg-primary text-white">
                             <h4 class="mb-0"><i class="fas fa-envelope me-2"></i>Send Payment Summary Emails (All Students)</h4>

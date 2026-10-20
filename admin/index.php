@@ -683,6 +683,17 @@ if ($result && $result->num_rows > 0) {
                                 <div class="countdown-number" id="adminBpSeconds">--</div>
                                 <div class="countdown-label">Seconds<span class="countdown-label-si">තත්පර</span></div>
                             </div>
+                        <!-- Action Links -->
+                        <div class="d-flex flex-wrap gap-2 mt-3">
+                            <a href="./batch_photo_email" class="btn btn-primary btn-sm fw-bold" style="text-decoration:none;">
+                                <i class="fas fa-paper-plane me-1"></i> Send Notice to All Students
+                            </a>
+                            <a href="./batch_photo_email" class="btn btn-outline-success btn-sm fw-bold" style="text-decoration:none;">
+                                <i class="fas fa-vial me-1"></i> Test Send (ITT/2021/106)
+                            </a>
+                            <a href="./batch_photo_demo" target="_blank" class="btn btn-outline-info btn-sm fw-bold" style="text-decoration:none;">
+                                <i class="fas fa-eye me-1"></i> Preview Email Template
+                            </a>
                         </div>
                     </div>
                 </div>
