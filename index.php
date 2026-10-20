@@ -813,6 +813,393 @@ $balance = $tot - $tot_paid;
             opacity: 0;
             transition: opacity 0.4s ease-in-out;
         }
+
+        /* ========== BATCH PHOTO ANNOUNCEMENT CARD ========== */
+        .batch-photo-card {
+            position: relative;
+            background: linear-gradient(135deg, rgba(30, 27, 75, 0.78) 0%, rgba(49, 46, 129, 0.6) 50%, rgba(15, 23, 42, 0.85) 100%) !important;
+            backdrop-filter: blur(20px) saturate(190%) !important;
+            -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
+            border: 1px solid rgba(165, 180, 252, 0.3) !important;
+            border-radius: 20px !important;
+            padding: 26px 28px !important;
+            margin-bottom: 24px !important;
+            box-shadow: 0 16px 40px -10px rgba(99, 102, 241, 0.32), inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .batch-photo-card::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.35) 0%, rgba(56, 189, 248, 0.18) 60%, transparent 80%);
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(20px);
+            z-index: 0;
+            animation: orbFloat 6s ease-in-out infinite alternate;
+        }
+
+        .batch-photo-card::after {
+            content: '';
+            position: absolute;
+            bottom: -40px;
+            left: 20%;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(25px);
+            z-index: 0;
+        }
+
+        @keyframes orbFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-20px, 15px) scale(1.1); }
+        }
+
+        body.light-mode .batch-photo-card {
+            background: linear-gradient(135deg, rgba(238, 242, 255, 0.9) 0%, rgba(224, 231, 255, 0.8) 50%, rgba(245, 243, 255, 0.9) 100%) !important;
+            border: 1px solid rgba(99, 102, 241, 0.3) !important;
+            box-shadow: 0 14px 34px -8px rgba(99, 102, 241, 0.18), inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
+        }
+
+        .batch-photo-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .batch-photo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(99, 102, 241, 0.25);
+            border: 1px solid rgba(165, 180, 252, 0.45);
+            color: #c7d2fe;
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 50px;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+        }
+
+        body.light-mode .batch-photo-badge {
+            background: rgba(99, 102, 241, 0.15);
+            border-color: rgba(99, 102, 241, 0.4);
+            color: #4338ca;
+        }
+
+        .batch-date-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(245, 158, 11, 0.18);
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            color: #fbbf24;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 5px 13px;
+            border-radius: 50px;
+        }
+
+        body.light-mode .batch-date-pill {
+            background: rgba(217, 119, 6, 0.12);
+            border-color: rgba(217, 119, 6, 0.4);
+            color: #b45309;
+        }
+
+        .batch-camera-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: #ffffff;
+            font-size: 1.4rem;
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.45);
+            animation: cameraPulse 3s infinite ease-in-out;
+            flex-shrink: 0;
+        }
+
+        @keyframes cameraPulse {
+            0%, 100% {
+                transform: scale(1) rotate(0deg);
+                box-shadow: 0 8px 20px rgba(99, 102, 241, 0.45);
+            }
+            50% {
+                transform: scale(1.08) rotate(-4deg);
+                box-shadow: 0 12px 28px rgba(168, 85, 247, 0.6);
+            }
+        }
+
+        .batch-photo-title {
+            font-size: clamp(1.35rem, 2.8vw, 1.85rem);
+            font-weight: 800;
+            line-height: 1.25;
+            margin: 12px 0 8px 0;
+            color: #ffffff;
+        }
+
+        .batch-photo-title .title-highlight {
+            background: linear-gradient(135deg, #a5b4fc 0%, #e0e7ff 40%, #f472b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        body.light-mode .batch-photo-title {
+            color: #1e1b4b;
+        }
+
+        body.light-mode .batch-photo-title .title-highlight {
+            background: linear-gradient(135deg, #4338ca 0%, #6366f1 50%, #db2777 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .batch-photo-quote {
+            font-size: 0.98rem;
+            line-height: 1.55;
+            color: #cbd5e1;
+            margin-bottom: 6px;
+            font-style: italic;
+        }
+
+        body.light-mode .batch-photo-quote {
+            color: #334155;
+        }
+
+        .batch-photo-sinhala {
+            font-size: 0.92rem;
+            line-height: 1.5;
+            color: #a5b4fc;
+            margin-bottom: 18px;
+            font-weight: 500;
+        }
+
+        body.light-mode .batch-photo-sinhala {
+            color: #4f46e5;
+        }
+
+        /* Countdown Grid */
+        .countdown-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            max-width: 480px;
+            margin-bottom: 16px;
+        }
+
+        .countdown-box {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(165, 180, 252, 0.25);
+            border-radius: 14px;
+            padding: 12px 8px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+        }
+
+        .countdown-box:hover {
+            transform: translateY(-3px);
+            border-color: rgba(168, 85, 247, 0.55);
+            box-shadow: 0 8px 22px rgba(99, 102, 241, 0.35);
+        }
+
+        body.light-mode .countdown-box {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.1);
+        }
+
+        .countdown-number {
+            font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+            font-weight: 800;
+            line-height: 1.1;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(180deg, #38bdf8 0%, #818cf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+        }
+
+        body.light-mode .countdown-number {
+            background: linear-gradient(180deg, #2563eb 0%, #4f46e5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+        }
+
+        .countdown-label {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #94a3b8;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        body.light-mode .countdown-label {
+            color: #64748b;
+        }
+
+        .countdown-label-si {
+            display: block;
+            font-size: 0.62rem;
+            color: #64748b;
+            font-weight: 500;
+            margin-top: 1px;
+            letter-spacing: normal;
+        }
+
+        body.light-mode .countdown-label-si {
+            color: #8b5cf6;
+        }
+
+        /* Action buttons */
+        .batch-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .btn-calendar {
+            background: rgba(99, 102, 241, 0.18);
+            color: #c7d2fe !important;
+            border: 1px solid rgba(165, 180, 252, 0.35);
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .btn-calendar:hover {
+            background: rgba(99, 102, 241, 0.3);
+            border-color: rgba(165, 180, 252, 0.6);
+            color: #ffffff !important;
+            transform: translateY(-2px);
+        }
+
+        body.light-mode .btn-calendar {
+            background: rgba(99, 102, 241, 0.1);
+            color: #4338ca !important;
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        body.light-mode .btn-calendar:hover {
+            background: rgba(99, 102, 241, 0.2);
+            color: #312e81 !important;
+        }
+
+        .batch-chip-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            color: #94a3b8;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        body.light-mode .batch-chip-item {
+            color: #64748b;
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+            }
+
+            .scmp-header .container,
+            .scmp-footer .container {
+                padding-left: 18px !important;
+                padding-right: 18px !important;
+            }
+
+            .batch-photo-card {
+                margin-top: 8px !important;
+                margin-bottom: 24px !important;
+                padding: 22px 18px !important;
+            }
+
+            .info-card,
+            .skeleton-card {
+                margin-bottom: 22px !important;
+            }
+
+            .alert-info {
+                margin-bottom: 22px !important;
+            }
+
+            .nav-tabs {
+                margin-bottom: 20px !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding-left: 16px !important;
+                padding-right: 16px !important;
+            }
+
+            .batch-photo-card {
+                margin-top: 6px !important;
+                margin-bottom: 22px !important;
+                padding: 20px 16px !important;
+            }
+
+            .info-card,
+            .skeleton-card {
+                padding: 18px 16px !important;
+                margin-bottom: 20px !important;
+            }
+
+            .countdown-grid {
+                gap: 8px !important;
+                margin-top: 8px !important;
+                margin-bottom: 18px !important;
+            }
+
+            .countdown-box {
+                padding: 10px 4px !important;
+            }
+
+            .countdown-number {
+                font-size: 1.35rem !important;
+            }
+
+            .batch-actions {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                margin-top: 10px !important;
+                gap: 10px !important;
+            }
+
+            .btn-calendar {
+                justify-content: center !important;
+            }
+        }
     </style>
     <!-- Glassy Screen Styling -->
     <link rel="stylesheet" href="./assets/glassy.css">
@@ -892,6 +1279,22 @@ $balance = $tot - $tot_paid;
 
         <!-- Flowbite Skeleton Loader -->
         <div id="skeleton-loader" class="flowbite-skeleton">
+            <!-- Batch Photo Card Skeleton -->
+            <div class="skeleton-card" style="border: 1px solid rgba(99, 102, 241, 0.35); border-left: 5px solid #6366f1;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="skeleton-line sm w-25 mb-0"></div>
+                    <div class="skeleton-line sm w-20 mb-0"></div>
+                </div>
+                <div class="skeleton-line xl w-60 mb-2"></div>
+                <div class="skeleton-line sm w-85 mb-3"></div>
+                <div class="row g-2" style="max-width: 480px;">
+                    <div class="col-3"><div class="skeleton-line xl" style="height: 52px; border-radius: 12px;"></div></div>
+                    <div class="col-3"><div class="skeleton-line xl" style="height: 52px; border-radius: 12px;"></div></div>
+                    <div class="col-3"><div class="skeleton-line xl" style="height: 52px; border-radius: 12px;"></div></div>
+                    <div class="col-3"><div class="skeleton-line xl" style="height: 52px; border-radius: 12px;"></div></div>
+                </div>
+            </div>
+
             <!-- Student Info Card Skeleton -->
             <div class="skeleton-card">
                 <div class="row">
@@ -1067,6 +1470,73 @@ $balance = $tot - $tot_paid;
 
         <!-- Main Content Container -->
         <div id="main-content" style="display: none;">
+            <!-- Batch Photo Announcement & Countdown Card -->
+            <div class="batch-photo-card" id="batchPhotoCard">
+                <div class="batch-photo-content">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <span class="batch-photo-badge">
+                                <i class="fas fa-camera-retro"></i> Batch Photo • Batch 20/21
+                            </span>
+                            <span class="batch-date-pill">
+                                <i class="far fa-calendar-alt"></i> 2026.11.07 (Saturday)
+                            </span>
+                        </div>
+                        <div class="batch-chip-item">
+                            <i class="fas fa-clock"></i> 08:30 AM Onwards
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start gap-3 mt-3">
+                        <div class="batch-camera-icon d-none d-sm-inline-flex">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h3 class="batch-photo-title">
+                                <span class="title-highlight">Batch Photo 2026:</span> Freezing Memories, Celebrating One Unbroken Bond! 📸
+                            </h3>
+                            <p class="batch-photo-quote mb-1">
+                                "Years will pass, chapters will turn, but in this single frame, our smiles will stay timeless. Let's make every second leading up to our official Batch Photo count!"
+                            </p>
+                            <p class="batch-photo-sinhala mb-3">
+                                "නොමැකෙන මතකයන් එකම රාමුවකට... අපේ සොඳුරු බැච් ෆොටෝ (Batch Photo) මතක සටහනට තව දින කිහිපයයි!"
+                            </p>
+
+                            <!-- Countdown Timer -->
+                            <div class="countdown-grid" id="batchPhotoCountdown">
+                                <div class="countdown-box">
+                                    <div class="countdown-number" id="bpDays">--</div>
+                                    <div class="countdown-label">Days<span class="countdown-label-si">දින</span></div>
+                                </div>
+                                <div class="countdown-box">
+                                    <div class="countdown-number" id="bpHours">--</div>
+                                    <div class="countdown-label">Hours<span class="countdown-label-si">පැය</span></div>
+                                </div>
+                                <div class="countdown-box">
+                                    <div class="countdown-number" id="bpMinutes">--</div>
+                                    <div class="countdown-label">Minutes<span class="countdown-label-si">මිනිත්තු</span></div>
+                                </div>
+                                <div class="countdown-box">
+                                    <div class="countdown-number" id="bpSeconds">--</div>
+                                    <div class="countdown-label">Seconds<span class="countdown-label-si">තත්පර</span></div>
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="batch-actions">
+                                <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Batch+Photo+2026+-+Batch+20/21&dates=20261107T030000Z/20261107T113000Z&details=Official+Batch+Photo+Session+for+Batch+20/21.+Freezing+our+memories+together!&location=University+Premises" 
+                                   target="_blank" rel="noopener noreferrer" class="btn-calendar" title="Add event to Google Calendar">
+                                    <i class="far fa-calendar-plus"></i> Add to Calendar
+                                </a>
+                                <div class="batch-chip-item">
+                                    <i class="fas fa-user-tie"></i> Dress Code: Official / Formal
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Student Info Card -->
             <div class="info-card" id="infoCardBox">
                 <div class="row">
@@ -1128,7 +1598,7 @@ $balance = $tot - $tot_paid;
                                     </button>
                                     <audio id="dueStatusAudio" src="./assets/audio/fully_paid_sinhala.mp3" preload="auto" playsinline></audio>
                                 <?php elseif (isset($balance) && (float)$balance > 0): ?>
-                                    <button type="button" id="speakDueBtn" class="speak-voice-btn red-speak-btn" title="Click to hear: 'ඔයා රුපියක් <?php echo (int)$balance; ?>ක් ගෙවන්න තියෙනවා. ඒක ගෙවලා ඉවර කරන්නකෝ'" aria-label="Listen: Due amount">
+                                    <button type="button" id="speakDueBtn" class="speak-voice-btn red-speak-btn" title="Click to hear: 'තව <?php echo (int)$balance; ?>යි බං තියෙන්නේ. ඕක දීල ඉවර කරපන් බං.'" aria-label="Listen: Due amount">
                                         <i class="fas fa-volume-up"></i>
                                     </button>
                                     <audio id="dueStatusAudio" src="./tts_speech.php?balance=<?php echo (int)$balance; ?>" preload="auto" playsinline></audio>
@@ -1353,7 +1823,7 @@ $balance = $tot - $tot_paid;
             const isTotalDueZero = balanceAmount <= 0;
             const sinhalaSpeechText = isTotalDueZero ?
                 "ඔයා ඔක්කොම ගෙවලා ඉවරයි. ආදරෙයි" :
-                "ඔයා රුපියක් " + balanceAmount + "ක් ගෙවන්න තියෙනවා. ඒක ගෙවලා ඉවර කරන්නකෝ";
+                "තව " + balanceAmount + "යි බං තියෙන්නේ. ඕක දීල ඉවර කරපන් බං.";
             const sinhalaAudioSrc = isTotalDueZero ?
                 "./assets/audio/fully_paid_sinhala.mp3" :
                 "./tts_speech.php?balance=" + balanceAmount;
@@ -1488,6 +1958,14 @@ $balance = $tot - $tot_paid;
                     const utterance = new SpeechSynthesisUtterance(sinhalaSpeechText);
                     utterance.lang = 'si-LK';
                     utterance.rate = 0.95;
+                    if (!isTotalDueZero) {
+                        utterance.pitch = 0.75;
+                        const voices = window.speechSynthesis.getVoices();
+                        const maleVoice = voices.find(v => v.lang.startsWith('si') && (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('sameera')));
+                        if (maleVoice) {
+                            utterance.voice = maleVoice;
+                        }
+                    }
 
                     const speakBtn = document.getElementById('speakDueBtn');
                     utterance.onstart = function() {
@@ -1552,6 +2030,54 @@ $balance = $tot - $tot_paid;
                     startCounterAnimations();
                 }
             }, 600);
+
+            // Batch Photo Countdown Logic (Target: 2026.11.07 08:30:00 Asia/Colombo)
+            const photoTargetDate = new Date('2026-11-07T08:30:00+05:30').getTime();
+
+            function updateBatchPhotoCountdown() {
+                const now = new Date().getTime();
+                const distance = photoTargetDate - now;
+
+                const daysEl = document.getElementById('bpDays');
+                const hoursEl = document.getElementById('bpHours');
+                const minEl = document.getElementById('bpMinutes');
+                const secEl = document.getElementById('bpSeconds');
+
+                if (!daysEl || !hoursEl || !minEl || !secEl) return;
+
+                if (distance <= 0) {
+                    daysEl.textContent = '00';
+                    hoursEl.textContent = '00';
+                    minEl.textContent = '00';
+                    secEl.textContent = '00';
+
+                    const countdownContainer = document.getElementById('batchPhotoCountdown');
+                    if (countdownContainer && !countdownContainer.dataset.celebrated) {
+                        countdownContainer.dataset.celebrated = 'true';
+                        countdownContainer.innerHTML = `
+                            <div class="countdown-box w-100" style="grid-column: 1 / -1; padding: 14px;">
+                                <div class="countdown-number" style="font-size: 1.4rem;">
+                                    🎉 TODAY IS THE BIG DAY! SMILE & FREEZE THE MOMENT! 📸
+                                </div>
+                            </div>
+                        `;
+                    }
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                daysEl.textContent = String(days).padStart(2, '0');
+                hoursEl.textContent = String(hours).padStart(2, '0');
+                minEl.textContent = String(minutes).padStart(2, '0');
+                secEl.textContent = String(seconds).padStart(2, '0');
+            }
+
+            updateBatchPhotoCountdown();
+            setInterval(updateBatchPhotoCountdown, 1000);
 
             // Tab filtering logic
             const tabs = document.querySelectorAll('#contributionTabs .nav-link');
