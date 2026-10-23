@@ -655,15 +655,9 @@ if ($result && $result->num_rows > 0) {
                         <i class="fas fa-camera"></i>
                     </div>
                     <div class="flex-grow-1">
-                        <h3 class="batch-photo-title">
+                        <h3 class="batch-photo-title mb-3">
                             <span class="title-highlight">Batch Photo 2026:</span> Freezing Memories, Celebrating One Unbroken Bond! 📸
                         </h3>
-                        <p class="batch-photo-quote">
-                            "Years will pass, chapters will turn, but in this single frame, our smiles will stay timeless. Let's make every second leading up to our official Batch Photo count!"
-                        </p>
-                        <p class="batch-photo-sinhala">
-                            "නොමැකෙන මතකයන් එකම රාමුවකට... අපේ සොඳුරු බැච් ෆොටෝ (Batch Photo) මතක සටහනට තව දින කිහිපයයි!"
-                        </p>
 
                         <!-- Countdown Grid -->
                         <div class="countdown-grid" id="adminBpCountdown">

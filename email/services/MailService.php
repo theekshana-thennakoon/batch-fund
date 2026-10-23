@@ -58,6 +58,8 @@ class MailService
                 $this->mail->Username   = $this->smtp['username'];
                 $this->mail->Password   = $this->smtp['password'];
                 $this->mail->setFrom($this->smtp['from_email'], $this->smtp['from_name']);
+                $this->mail->CharSet    = 'UTF-8';
+                $this->mail->Encoding   = 'base64';
                 $this->mail->SMTPDebug  = $this->smtp['debug'] ? 2 : 0;
 
                 // Disable SSL certificate verification (required for Windows XAMPP)
@@ -77,6 +79,7 @@ class MailService
 
             $mail->clearAddresses();
             $mail->clearReplyTos();
+            $mail->clearAttachments();
             $mail->Subject = '';
             $mail->Body = '';
             $mail->AltBody = '';
@@ -92,6 +95,14 @@ class MailService
 
             if (!empty($replyTo)) {
                 $mail->addReplyTo($replyTo[0], $replyTo[1] ?? '');
+            }
+
+            // Auto embed company logo if template references cid:company_logo
+            if (strpos($body, 'cid:company_logo') !== false) {
+                $logoPath = realpath(__DIR__ . '/../../assets/logo.png');
+                if ($logoPath && file_exists($logoPath)) {
+                    $mail->addEmbeddedImage($logoPath, 'company_logo', 'logo.png', 'base64', 'image/png');
+                }
             }
 
             // Content

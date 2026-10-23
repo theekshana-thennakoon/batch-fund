@@ -44,6 +44,7 @@ $demoHtml = $mailer->renderTemplate('batch_photo_notice', [
     'webUrl' => $config['settings']['baseURL'] ?? 'http://localhost/batchfund',
     'companyEmail' => 'theekshanathennakoon79@gmail.com',
     'companyLogo' => '../assets/logo.png',
+    'isWebPreview' => true,
 ]);
 
 echo $demoHtml;

@@ -112,7 +112,7 @@ try {
             'contactUrl' => $config['settings']['contact_url'] ?? '#',
             'webUrl' => $config['settings']['baseURL'] ?? 'http://localhost/batchfund',
             'companyEmail' => 'theekshanathennakoon79@gmail.com',
-            'companyLogo' => '../assets/logo.png',
+            'companyLogo' => 'cid:company_logo',
         ]);
 
         $subject = '📸 Official Batch Photo 2026 Announcement - ' . $regNo;
