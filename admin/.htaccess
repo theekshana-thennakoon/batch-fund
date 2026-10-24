@@ -12,6 +12,8 @@ RewriteRule ^loans$ loans.php [NC,L]
 RewriteRule ^send_email$ send_email.php [NC,L]
 RewriteRule ^batch_photo_email$ batch_photo_email.php [NC,L]
 RewriteRule ^batch_photo_demo$ batch_photo_demo.php [NC,L]
+RewriteRule ^loan_report_email$ loan_report_email.php [NC,L]
+RewriteRule ^loan_report_demo$ loan_report_demo.php [NC,L]
 
 RewriteRule ^edit_user/(\d+)$ edit_user.php?id=$1 [NC,L]
 

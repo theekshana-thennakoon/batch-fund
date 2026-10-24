@@ -70,6 +70,7 @@ if ($result && $result->num_rows > 0) {
     <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <style>
         :root {
             --dark-bg: #0f1419;
@@ -592,18 +593,702 @@ if ($result && $result->num_rows > 0) {
             color: #8b5cf6;
         }
 
+        /* ========== ACADEMIC & HOSTEL NOTICE CARD ========== */
+        .academic-notice-card {
+            position: relative;
+            background: linear-gradient(135deg, rgba(24, 24, 40, 0.85) 0%, rgba(30, 27, 75, 0.72) 50%, rgba(15, 23, 42, 0.9) 100%) !important;
+            backdrop-filter: blur(20px) saturate(190%) !important;
+            -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
+            border: 1px solid rgba(245, 158, 11, 0.35) !important;
+            border-radius: 20px !important;
+            padding: 24px 26px !important;
+            margin-bottom: 24px !important;
+            box-shadow: 0 16px 40px -10px rgba(245, 158, 11, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.12) !important;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .academic-notice-card::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.28) 0%, rgba(239, 68, 68, 0.16) 50%, transparent 75%);
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(25px);
+            z-index: 0;
+            animation: orbFloatAmber 7s ease-in-out infinite alternate;
+        }
+
+        @keyframes orbFloatAmber {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-25px, 20px) scale(1.12); }
+        }
+
+        [data-theme="light"] .academic-notice-card {
+            background: linear-gradient(135deg, rgba(254, 249, 195, 0.75) 0%, rgba(255, 251, 235, 0.95) 50%, rgba(241, 245, 249, 0.9) 100%) !important;
+            border: 1px solid rgba(217, 119, 6, 0.35) !important;
+            box-shadow: 0 14px 34px -8px rgba(217, 119, 6, 0.16), inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
+        }
+
+        .academic-notice-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .academic-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(245, 158, 11, 0.22);
+            border: 1px solid rgba(251, 191, 36, 0.55);
+            color: #fde68a;
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 50px;
+        }
+
+        [data-theme="light"] .academic-badge {
+            background: rgba(217, 119, 6, 0.14);
+            border-color: rgba(217, 119, 6, 0.45);
+            color: #92400e;
+        }
+
+        .academic-date-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(59, 130, 246, 0.18);
+            border: 1px solid rgba(96, 165, 250, 0.45);
+            color: #93c5fd;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 5px 13px;
+            border-radius: 50px;
+        }
+
+        [data-theme="light"] .academic-date-pill {
+            background: rgba(37, 99, 235, 0.1);
+            border-color: rgba(37, 99, 235, 0.35);
+            color: #1d4ed8;
+        }
+
+        .hostel-vacate-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(248, 113, 113, 0.5);
+            color: #fca5a5;
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            padding: 5px 13px;
+            border-radius: 50px;
+        }
+
+        [data-theme="light"] .hostel-vacate-pill {
+            background: rgba(220, 38, 38, 0.12);
+            border-color: rgba(220, 38, 38, 0.4);
+            color: #b91c1c;
+        }
+
+        .academic-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 60%, #ea580c 100%);
+            color: #ffffff;
+            font-size: 1.4rem;
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.45);
+            flex-shrink: 0;
+        }
+
+        .academic-title {
+            font-size: 1.45rem;
+            font-weight: 800;
+            margin: 6px 0 16px 0;
+            color: #ffffff;
+        }
+
+        .academic-title .title-highlight-amber {
+            background: linear-gradient(135deg, #fde68a 0%, #fbbf24 50%, #f97316 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        [data-theme="light"] .academic-title {
+            color: #1e1b4b;
+        }
+
+        [data-theme="light"] .academic-title .title-highlight-amber {
+            background: linear-gradient(135deg, #b45309 0%, #d97706 50%, #ea580c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .notice-bilingual-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .notice-lang-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 16px 18px;
+            position: relative;
+            backdrop-filter: blur(10px);
+            transition: all 0.25s ease;
+        }
+
+        [data-theme="light"] .notice-lang-box {
+            background: rgba(255, 255, 255, 0.88);
+            border-color: rgba(217, 119, 6, 0.22);
+            box-shadow: 0 4px 14px rgba(217, 119, 6, 0.08);
+        }
+
+        .notice-lang-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="light"] .notice-lang-header {
+            border-bottom-color: rgba(0, 0, 0, 0.08);
+        }
+
+        .notice-lang-box .lang-badge {
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .notice-lang-box.si-box .lang-badge {
+            background: rgba(245, 158, 11, 0.25);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.45);
+        }
+
+        .notice-lang-box.en-box .lang-badge {
+            background: rgba(59, 130, 246, 0.25);
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.45);
+        }
+
+        [data-theme="light"] .notice-lang-box.si-box .lang-badge {
+            background: rgba(217, 119, 6, 0.15);
+            color: #b45309;
+        }
+
+        [data-theme="light"] .notice-lang-box.en-box .lang-badge {
+            background: rgba(37, 99, 235, 0.12);
+            color: #1d4ed8;
+        }
+
+        .notice-lang-header .lang-title {
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: #cbd5e1;
+        }
+
+        [data-theme="light"] .notice-lang-header .lang-title {
+            color: #475569;
+        }
+
+        .notice-point-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 10px;
+            font-size: 0.94rem;
+            line-height: 1.6;
+            color: #e2e8f0;
+        }
+
+        .notice-point-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .notice-point-item .point-icon {
+            font-size: 1.05rem;
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
+
+        .notice-point-item.academic-point .point-icon {
+            color: #fbbf24;
+        }
+
+        .notice-point-item.hostel-point {
+            background: rgba(239, 68, 68, 0.12);
+            border-left: 3px solid #ef4444;
+            padding: 10px 14px;
+            border-radius: 0 10px 10px 0;
+            color: #fecaca;
+        }
+
+        .notice-point-item.hostel-point .point-icon {
+            color: #f87171;
+            margin-top: 2px;
+        }
+
+        [data-theme="light"] .notice-point-item {
+            color: #1e293b;
+        }
+
+        [data-theme="light"] .notice-point-item.hostel-point {
+            background: rgba(239, 68, 68, 0.08);
+            border-left-color: #dc2626;
+            color: #991b1b;
+        }
+
+        .notice-point-item strong {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .notice-point-item.academic-point strong {
+            color: #fde68a;
+        }
+
+        [data-theme="light"] .notice-point-item strong {
+            color: #0f172a;
+        }
+
+        [data-theme="light"] .notice-point-item.academic-point strong {
+            color: #b45309;
+        }
+
+        .academic-countdown-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            max-width: 440px;
+            margin-bottom: 14px;
+        }
+
+        .academic-countdown-box {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(245, 158, 11, 0.28);
+            border-radius: 12px;
+            padding: 10px 6px;
+            text-align: center;
+        }
+
+        [data-theme="light"] .academic-countdown-box {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(217, 119, 6, 0.25);
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.08);
+        }
+
+        .academic-countdown-number {
+            font-size: 1.6rem;
+            font-weight: 800;
+            line-height: 1.1;
+            background: linear-gradient(180deg, #fbbf24 0%, #f97316 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        [data-theme="light"] .academic-countdown-number {
+            background: linear-gradient(180deg, #d97706 0%, #ea580c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ========== LOANS & REPAYMENTS NOTICE CARD ========== */
+        .loan-report-notice-card {
+            position: relative;
+            background: linear-gradient(135deg, rgba(6, 30, 25, 0.88) 0%, rgba(13, 40, 35, 0.75) 50%, rgba(15, 23, 42, 0.92) 100%) !important;
+            backdrop-filter: blur(20px) saturate(190%) !important;
+            -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
+            border: 1px solid rgba(16, 185, 129, 0.38) !important;
+            border-radius: 20px !important;
+            padding: 26px 28px !important;
+            box-shadow: 0 16px 40px -10px rgba(16, 185, 129, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.12) !important;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .loan-report-notice-card::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.28) 0%, rgba(6, 182, 212, 0.15) 55%, transparent 75%);
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(25px);
+            z-index: 0;
+            animation: orbFloatEmerald 7s ease-in-out infinite alternate;
+        }
+
+        .loan-report-notice-card::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: 20%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(5, 150, 105, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(25px);
+            z-index: 0;
+        }
+
+        @keyframes orbFloatEmerald {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-25px, 20px) scale(1.12); }
+        }
+
+        [data-theme="light"] .loan-report-notice-card {
+            background: linear-gradient(135deg, rgba(209, 250, 229, 0.75) 0%, rgba(236, 253, 245, 0.95) 50%, rgba(240, 253, 250, 0.9) 100%) !important;
+            border: 1px solid rgba(16, 185, 129, 0.35) !important;
+            box-shadow: 0 14px 34px -8px rgba(16, 185, 129, 0.16), inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
+        }
+
+        .loan-report-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .loan-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.22);
+            border: 1px solid rgba(52, 211, 153, 0.55);
+            color: #a7f3d0;
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 50px;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+        }
+
+        [data-theme="light"] .loan-badge {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(5, 150, 105, 0.45);
+            color: #065f46;
+        }
+
+        .loan-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(6, 182, 212, 0.18);
+            border: 1px solid rgba(34, 211, 238, 0.45);
+            color: #67e8f9;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 5px 13px;
+            border-radius: 50px;
+            animation: pulseEmerald 2.5s infinite ease-in-out;
+        }
+
+        @keyframes pulseEmerald {
+            0%, 100% {
+                border-color: rgba(34, 211, 238, 0.45);
+                box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.2);
+            }
+            50% {
+                border-color: rgba(34, 211, 238, 0.85);
+                box-shadow: 0 0 12px rgba(6, 182, 212, 0.35);
+            }
+        }
+
+        [data-theme="light"] .loan-status-pill {
+            background: rgba(8, 145, 178, 0.1);
+            border-color: rgba(8, 145, 178, 0.35);
+            color: #0e7490;
+        }
+
+        .loan-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 60%, #047857 100%);
+            color: #ffffff;
+            font-size: 1.4rem;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.45);
+            animation: loanPulse 3s infinite ease-in-out;
+            flex-shrink: 0;
+        }
+
+        @keyframes loanPulse {
+            0%, 100% {
+                transform: scale(1) rotate(0deg);
+                box-shadow: 0 8px 20px rgba(16, 185, 129, 0.45);
+            }
+            50% {
+                transform: scale(1.07) rotate(3deg);
+                box-shadow: 0 12px 28px rgba(16, 185, 129, 0.6);
+            }
+        }
+
+        .loan-card-title {
+            font-size: clamp(1.25rem, 2.6vw, 1.75rem);
+            font-weight: 800;
+            line-height: 1.25;
+            margin: 6px 0 14px 0;
+            color: #ffffff;
+        }
+
+        .loan-card-title .title-highlight-emerald {
+            background: linear-gradient(135deg, #a7f3d0 0%, #34d399 50%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        [data-theme="light"] .loan-card-title {
+            color: #064e3b;
+        }
+
+        [data-theme="light"] .loan-card-title .title-highlight-emerald {
+            background: linear-gradient(135deg, #047857 0%, #059669 50%, #0891b2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .loan-message-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 14px;
+            padding: 16px 20px;
+            backdrop-filter: blur(8px);
+        }
+
+        [data-theme="light"] .loan-message-box {
+            background: rgba(255, 255, 255, 0.85);
+            border-color: rgba(16, 185, 129, 0.25);
+        }
+
+        .loan-statement-si {
+            font-size: 1.02rem;
+            line-height: 1.65;
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        [data-theme="light"] .loan-statement-si {
+            color: #1e293b;
+        }
+
+        .loan-statement-si strong {
+            color: #6ee7b7;
+            font-weight: 700;
+        }
+
+        [data-theme="light"] .loan-statement-si strong {
+            color: #047857;
+        }
+
+        .loan-statement-en {
+            font-size: 0.9rem;
+            line-height: 1.55;
+            color: #94a3b8;
+        }
+
+        [data-theme="light"] .loan-statement-en {
+            color: #64748b;
+        }
+
+        .loan-statement-en strong {
+            color: #cbd5e1;
+            font-weight: 600;
+        }
+
+        [data-theme="light"] .loan-statement-en strong {
+            color: #334155;
+        }
+
+        .text-emerald {
+            color: #34d399 !important;
+        }
+
+        [data-theme="light"] .text-emerald {
+            color: #059669 !important;
+        }
+
+        /* ========== ANNOUNCEMENTS SWIPER STYLING ========== */
+        .announcements-swiper-wrapper {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .adminAnnouncementsSwiper {
+            overflow: hidden;
+            border-radius: 20px;
+        }
+
+        .adminAnnouncementsSwiper .swiper-wrapper {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .adminAnnouncementsSwiper .swiper-slide {
+            height: auto;
+            display: flex;
+        }
+
+        .adminAnnouncementsSwiper .swiper-slide .batch-photo-card,
+        .adminAnnouncementsSwiper .swiper-slide .academic-notice-card,
+        .adminAnnouncementsSwiper .swiper-slide .loan-report-notice-card {
+            width: 100%;
+            height: 100%;
+            margin-bottom: 0 !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .swiper-controls-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding: 0 4px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .admin-announcement-pagination {
+            position: static !important;
+            display: inline-flex;
+            gap: 8px;
+            width: auto !important;
+            flex-wrap: wrap;
+        }
+
+        .custom-swiper-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 16px;
+            border-radius: 50px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #94a3b8;
+            transition: all 0.25s ease;
+            opacity: 1 !important;
+            width: auto !important;
+            height: auto !important;
+            margin: 0 !important;
+            line-height: normal;
+        }
+
+        .custom-swiper-pill:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .custom-swiper-pill.swiper-pagination-bullet-active {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.35) 0%, rgba(168, 85, 247, 0.35) 100%);
+            border-color: rgba(165, 180, 252, 0.65);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+        }
+
+        [data-theme="light"] .custom-swiper-pill {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: #64748b;
+        }
+
+        [data-theme="light"] .custom-swiper-pill.swiper-pagination-bullet-active {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+            border-color: rgba(99, 102, 241, 0.5);
+            color: #4338ca;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+        }
+
+        .swiper-nav-buttons {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .swiper-nav-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.06);
+            color: #cbd5e1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        .swiper-nav-btn:hover {
+            background: rgba(99, 102, 241, 0.3);
+            border-color: rgba(165, 180, 252, 0.5);
+            color: #ffffff;
+            transform: scale(1.08);
+        }
+
+        [data-theme="light"] .swiper-nav-btn {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.12);
+            color: #475569;
+        }
+
+        [data-theme="light"] .swiper-nav-btn:hover {
+            background: rgba(99, 102, 241, 0.15);
+            color: #4338ca;
+        }
+
         @media (max-width: 576px) {
-            .batch-photo-card {
+            .batch-photo-card,
+            .academic-notice-card {
                 padding: 18px 14px;
                 margin-bottom: 20px;
             }
-            .countdown-grid {
+            .countdown-grid,
+            .academic-countdown-grid {
                 gap: 8px;
             }
-            .countdown-box {
+            .countdown-box,
+            .academic-countdown-box {
                 padding: 8px 4px;
             }
-            .countdown-number {
+            .countdown-number,
+            .academic-countdown-number {
                 font-size: 1.35rem;
             }
         }
@@ -636,59 +1321,215 @@ if ($result && $result->num_rows > 0) {
                 <h2>Welcome to Admin Panel</h2>
             </div>
 
-            <!-- Batch Photo Announcement Card -->
-            <div class="batch-photo-card">
-                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
-                    <div class="d-flex align-items-center gap-2 flex-wrap">
-                        <span class="batch-photo-badge">
-                            <i class="fas fa-camera-retro"></i> Batch Photo • Batch 20/21
-                        </span>
-                        <span class="batch-date-pill">
-                            <i class="far fa-calendar-alt"></i> 2026.11.07 (Saturday)
-                        </span>
+            <!-- Announcements Swiper Slider (Batch Photo & Academic Notice in same line) -->
+            <div class="announcements-swiper-wrapper">
+                <div class="swiper adminAnnouncementsSwiper">
+                    <div class="swiper-wrapper">
+                        <!-- Slide 1: Batch Photo Card -->
+                        <div class="swiper-slide">
+                            <div class="batch-photo-card">
+                                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                                        <span class="batch-photo-badge">
+                                            <i class="fas fa-camera-retro"></i> Batch Photo • Batch 20/21
+                                        </span>
+                                        <span class="batch-date-pill">
+                                            <i class="far fa-calendar-alt"></i> 2026.11.07 (Saturday)
+                                        </span>
+                                    </div>
+                                    <span style="font-size: 0.8rem; color: #94a3b8;"><i class="fas fa-clock me-1"></i> 08:30 AM Onwards</span>
+                                </div>
+
+                                <div class="d-flex align-items-start gap-3 mt-3">
+                                    <div class="batch-camera-icon d-none d-sm-inline-flex">
+                                        <i class="fas fa-camera"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h3 class="batch-photo-title mb-3">
+                                            <span class="title-highlight">Batch Photo 2026:</span> Freezing Memories, Celebrating One Unbroken Bond! 📸
+                                        </h3>
+
+                                        <!-- Countdown Grid -->
+                                        <div class="countdown-grid" id="adminBpCountdown">
+                                            <div class="countdown-box">
+                                                <div class="countdown-number" id="adminBpDays">--</div>
+                                                <div class="countdown-label">Days<span class="countdown-label-si">දින</span></div>
+                                            </div>
+                                            <div class="countdown-box">
+                                                <div class="countdown-number" id="adminBpHours">--</div>
+                                                <div class="countdown-label">Hours<span class="countdown-label-si">පැය</span></div>
+                                            </div>
+                                            <div class="countdown-box">
+                                                <div class="countdown-number" id="adminBpMinutes">--</div>
+                                                <div class="countdown-label">Minutes<span class="countdown-label-si">මිනිත්තු</span></div>
+                                            </div>
+                                            <div class="countdown-box">
+                                                <div class="countdown-number" id="adminBpSeconds">--</div>
+                                                <div class="countdown-label">Seconds<span class="countdown-label-si">තත්පර</span></div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Action Links -->
+                                        <div class="d-flex flex-wrap gap-2 mt-3">
+                                            <a href="./batch_photo_email" class="btn btn-primary btn-sm fw-bold" style="text-decoration:none;">
+                                                <i class="fas fa-paper-plane me-1"></i> Send Notice to All Students
+                                            </a>
+                                            <a href="./batch_photo_email" class="btn btn-outline-success btn-sm fw-bold" style="text-decoration:none;">
+                                                <i class="fas fa-vial me-1"></i> Test Send (ITT/2021/106)
+                                            </a>
+                                            <a href="./batch_photo_demo" target="_blank" class="btn btn-outline-info btn-sm fw-bold" style="text-decoration:none;">
+                                                <i class="fas fa-eye me-1"></i> Preview Email Template
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Slide 2: Academic Notice Card -->
+                        <div class="swiper-slide">
+                            <div class="academic-notice-card" id="adminAcademicNoticeCard">
+                                <div class="academic-notice-content">
+                                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                            <span class="academic-badge">
+                                                <i class="fas fa-graduation-cap"></i> Academic Completion • Batch 20/21
+                                            </span>
+                                            <span class="academic-date-pill">
+                                                <i class="far fa-calendar-alt"></i> 2026.11.30 (Monday)
+                                            </span>
+                                        </div>
+                                        <div class="hostel-vacate-pill">
+                                            <i class="fas fa-door-open"></i> Hostel Vacation Notice
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex align-items-start gap-3 mt-3">
+                                        <div class="academic-icon d-none d-sm-inline-flex">
+                                            <i class="fas fa-graduation-cap"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h3 class="academic-title mb-3">
+                                                <span class="title-highlight-amber">Batch 20/21:</span> Academic Conclusion & Hostel Clearance Notice 🎓
+                                            </h3>
+
+                                            <!-- Countdown Timer to 2026.11.30 -->
+                                            <div class="academic-countdown-grid" id="adminAcademicCountdown">
+                                                <div class="academic-countdown-box">
+                                                    <div class="academic-countdown-number" id="adminAcDays">--</div>
+                                                    <div class="countdown-label">Days<span class="countdown-label-si">දින</span></div>
+                                                </div>
+                                                <div class="academic-countdown-box">
+                                                    <div class="academic-countdown-number" id="adminAcHours">--</div>
+                                                    <div class="countdown-label">Hours<span class="countdown-label-si">පැය</span></div>
+                                                </div>
+                                                <div class="academic-countdown-box">
+                                                    <div class="academic-countdown-number" id="adminAcMinutes">--</div>
+                                                    <div class="countdown-label">Minutes<span class="countdown-label-si">මිනිත්තු</span></div>
+                                                </div>
+                                                <div class="academic-countdown-box">
+                                                    <div class="academic-countdown-number" id="adminAcSeconds">--</div>
+                                                    <div class="countdown-label">Seconds<span class="countdown-label-si">තත්පර</span></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="d-flex flex-wrap gap-2 mt-3">
+                                                <span class="badge bg-secondary py-2 px-3" style="font-size: 0.8rem;">
+                                                    <i class="fas fa-boxes-packing me-1 text-warning"></i> Full Clearance Required
+                                                </span>
+                                                <span class="badge bg-secondary py-2 px-3" style="font-size: 0.8rem;">
+                                                    <i class="fas fa-key me-1 text-info"></i> Room Key Handover
+                                                </span>
+                                                <span class="badge bg-secondary py-2 px-3" style="font-size: 0.8rem;">
+                                                    <i class="far fa-clock me-1 text-danger"></i> Deadline: 2026.11.30 23:59
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Slide 3: Loans & Repayments Report Notice Card -->
+                        <div class="swiper-slide">
+                            <div class="loan-report-notice-card" id="adminLoanReportNoticeCard">
+                                <div class="loan-report-content">
+                                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                            <span class="loan-badge">
+                                                <i class="fas fa-hand-holding-dollar"></i> Loans & Repayments • Batch 20/21
+                                            </span>
+                                            <span class="loan-status-pill">
+                                                <i class="fas fa-hourglass-half"></i> Coming Soon • ළඟදීම
+                                            </span>
+                                        </div>
+                                        <span class="badge bg-secondary py-2 px-3" style="font-size: 0.8rem;">
+                                            <i class="fas fa-chart-pie me-1 text-info"></i> Financial Transparency
+                                        </span>
+                                    </div>
+
+                                    <div class="d-flex align-items-start gap-3 mt-3">
+                                        <div class="loan-icon d-none d-sm-inline-flex">
+                                            <i class="fas fa-file-invoice-dollar"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h3 class="loan-card-title mb-3">
+                                                <span class="title-highlight-emerald">Batch 20/21:</span> ණය සහ නැවත ගෙවීම් වාර්තාව (Loans & Repayments Report) 📋
+                                            </h3>
+
+                                            <div class="loan-message-box">
+                                                <div class="loan-statement-si mb-2">
+                                                    <i class="fas fa-bullhorn text-emerald me-2"></i>
+                                                    <strong>20/21 කණ්ඩායම විසින්</strong> විවිධ හේතුන් නිසා ලබාගන්නා ලද ණය මුදල් සහ එහි නැවත ගෙවිම් විස්තර පිලිබද වාර්තාවක් <strong>ලගදීම මෙහි දර්ශනය කෙරේ</strong>.
+                                                </div>
+                                                <div class="loan-statement-en">
+                                                    <i class="fas fa-info-circle text-info me-2"></i>
+                                                    A detailed comprehensive report regarding the loans obtained by <strong>Batch 20/21</strong> for various purposes and their repayment status will be published here soon.
+                                                </div>
+                                            </div>
+
+                                            <div class="d-flex flex-wrap gap-2 mt-3">
+                                                <span class="badge bg-secondary py-2 px-3" style="font-size: 0.8rem;">
+                                                    <i class="fas fa-coins me-1 text-warning"></i> Loan Disbursements
+                                                </span>
+                                                <span class="badge bg-secondary py-2 px-3" style="font-size: 0.8rem;">
+                                                    <i class="fas fa-receipt me-1 text-success"></i> Settlement Breakdown
+                                                </span>
+                                                <span class="badge bg-secondary py-2 px-3" style="font-size: 0.8rem;">
+                                                    <i class="fas fa-shield-halved me-1 text-info"></i> Official Audit
+                                                </span>
+                                            </div>
+
+                                            <!-- Action Links -->
+                                            <div class="d-flex flex-wrap gap-2 mt-3">
+                                                <a href="./loan_report_email" class="btn btn-success btn-sm fw-bold" style="text-decoration:none;">
+                                                    <i class="fas fa-paper-plane me-1"></i> Send Notice to All Students
+                                                </a>
+                                                <a href="./loan_report_email" class="btn btn-outline-success btn-sm fw-bold" style="text-decoration:none;">
+                                                    <i class="fas fa-vial me-1"></i> Test Send (ITT/2021/106)
+                                                </a>
+                                                <a href="./loan_report_demo" target="_blank" class="btn btn-outline-info btn-sm fw-bold" style="text-decoration:none;">
+                                                    <i class="fas fa-eye me-1"></i> Preview Email Template
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <span style="font-size: 0.8rem; color: #94a3b8;"><i class="fas fa-clock me-1"></i> 08:30 AM Onwards</span>
                 </div>
 
-                <div class="d-flex align-items-start gap-3 mt-3">
-                    <div class="batch-camera-icon d-none d-sm-inline-flex">
-                        <i class="fas fa-camera"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <h3 class="batch-photo-title mb-3">
-                            <span class="title-highlight">Batch Photo 2026:</span> Freezing Memories, Celebrating One Unbroken Bond! 📸
-                        </h3>
-
-                        <!-- Countdown Grid -->
-                        <div class="countdown-grid" id="adminBpCountdown">
-                            <div class="countdown-box">
-                                <div class="countdown-number" id="adminBpDays">--</div>
-                                <div class="countdown-label">Days<span class="countdown-label-si">දින</span></div>
-                            </div>
-                            <div class="countdown-box">
-                                <div class="countdown-number" id="adminBpHours">--</div>
-                                <div class="countdown-label">Hours<span class="countdown-label-si">පැය</span></div>
-                            </div>
-                            <div class="countdown-box">
-                                <div class="countdown-number" id="adminBpMinutes">--</div>
-                                <div class="countdown-label">Minutes<span class="countdown-label-si">මිනිත්තු</span></div>
-                            </div>
-                            <div class="countdown-box">
-                                <div class="countdown-number" id="adminBpSeconds">--</div>
-                                <div class="countdown-label">Seconds<span class="countdown-label-si">තත්පර</span></div>
-                            </div>
-                        <!-- Action Links -->
-                        <div class="d-flex flex-wrap gap-2 mt-3">
-                            <a href="./batch_photo_email" class="btn btn-primary btn-sm fw-bold" style="text-decoration:none;">
-                                <i class="fas fa-paper-plane me-1"></i> Send Notice to All Students
-                            </a>
-                            <a href="./batch_photo_email" class="btn btn-outline-success btn-sm fw-bold" style="text-decoration:none;">
-                                <i class="fas fa-vial me-1"></i> Test Send (ITT/2021/106)
-                            </a>
-                            <a href="./batch_photo_demo" target="_blank" class="btn btn-outline-info btn-sm fw-bold" style="text-decoration:none;">
-                                <i class="fas fa-eye me-1"></i> Preview Email Template
-                            </a>
-                        </div>
+                <!-- Swiper Pill Pagination & Controls Bar -->
+                <div class="swiper-controls-bar">
+                    <div class="swiper-pagination admin-announcement-pagination"></div>
+                    <div class="swiper-nav-buttons">
+                        <button type="button" class="swiper-nav-btn admin-swiper-btn-prev" title="Previous Announcement">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button type="button" class="swiper-nav-btn admin-swiper-btn-next" title="Next Announcement">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -822,6 +1663,72 @@ if ($result && $result->num_rows > 0) {
         }
         updateAdminCountdown();
         setInterval(updateAdminCountdown, 1000);
+
+        // Admin Academic Completion Countdown
+        const adminAcademicDate = new Date('2026-11-30T23:59:59+05:30').getTime();
+        function updateAdminAcademicCountdown() {
+            const now = new Date().getTime();
+            const diff = adminAcademicDate - now;
+
+            const daysEl = document.getElementById('adminAcDays');
+            const hoursEl = document.getElementById('adminAcHours');
+            const minEl = document.getElementById('adminAcMinutes');
+            const secEl = document.getElementById('adminAcSeconds');
+
+            if (!daysEl || !hoursEl || !minEl || !secEl) return;
+
+            if (diff <= 0) {
+                daysEl.textContent = '00';
+                hoursEl.textContent = '00';
+                minEl.textContent = '00';
+                secEl.textContent = '00';
+                return;
+            }
+
+            daysEl.textContent = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, '0');
+            hoursEl.textContent = String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+            minEl.textContent = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+            secEl.textContent = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
+        }
+        updateAdminAcademicCountdown();
+        setInterval(updateAdminAcademicCountdown, 1000);
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        // Admin Announcements Swiper (Batch Photo & Academic Notice in same line)
+        if (typeof Swiper !== 'undefined') {
+            const adminAnnouncementSwiper = new Swiper('.adminAnnouncementsSwiper', {
+                slidesPerView: 1,
+                spaceBetween: 24,
+                loop: true,
+                speed: 600,
+                grabCursor: true,
+                observer: true,
+                observeParents: true,
+                autoplay: {
+                    delay: 3000,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                },
+                pagination: {
+                    el: '.admin-announcement-pagination',
+                    clickable: true,
+                    renderBullet: function (index, className) {
+                        const labels = [
+                            '<i class="fas fa-camera-retro me-1"></i> Batch Photo 2026',
+                            '<i class="fas fa-graduation-cap me-1"></i> Academic & Hostel Notice',
+                            '<i class="fas fa-hand-holding-dollar me-1"></i> Loans & Repayments'
+                        ];
+                        return '<button type="button" class="' + className + ' custom-swiper-pill">' + labels[index] + '</button>';
+                    },
+                },
+                navigation: {
+                    nextEl: '.admin-swiper-btn-next',
+                    prevEl: '.admin-swiper-btn-prev',
+                },
+            });
+        }
     </script>
 </body>
 

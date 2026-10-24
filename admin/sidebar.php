@@ -109,6 +109,9 @@
                 <a href="./batch_photo_email"><i class="fas fa-camera-retro"></i> Batch Photo Notice</a>
             </li>
             <li>
+                <a href="./loan_report_email"><i class="fas fa-hand-holding-dollar"></i> Loan Report Notice</a>
+            </li>
+            <li>
                 <a href="./loans"><i class="fas fa-money-bill-wave"></i> Loan Applications</a>
             </li>
             <li>
