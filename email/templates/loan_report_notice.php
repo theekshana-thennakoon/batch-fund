@@ -194,7 +194,7 @@ $logoSrc = ($isWebPreview || empty($companyLogo) || $companyLogo === '../assets/
                             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin:20px 0 10px 0;">
                                 <tr>
                                     <td align="center">
-                                        <a href="<?= htmlspecialchars($webUrl) ?>" target="_blank" class="btn-mobile" style="display:inline-block;background:linear-gradient(135deg, #059669 0%, #10b981 100%);color:#ffffff;font-size:14px;font-weight:800;text-decoration:none;padding:14px 30px;border-radius:10px;box-shadow:0 6px 18px rgba(16,185,129,0.35);text-transform:uppercase;letter-spacing:0.5px;">
+                                        <a href="https://batch-fund.great-site.net/" target="_blank" class="btn-mobile" style="display:inline-block;background:linear-gradient(135deg, #059669 0%, #10b981 100%);color:#ffffff;font-size:14px;font-weight:800;text-decoration:none;padding:14px 30px;border-radius:10px;box-shadow:0 6px 18px rgba(16,185,129,0.35);text-transform:uppercase;letter-spacing:0.5px;">
                                             🌐 ශිෂ්‍ය පද්ධතිය වෙත පිවිසෙන්න &bull; Visit Portal
                                         </a>
                                     </td>
