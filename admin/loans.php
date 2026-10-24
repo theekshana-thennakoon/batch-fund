@@ -8,30 +8,72 @@ if (!isset($_SESSION["admin_logged_user"])) {
     $reg_no = $_SESSION["admin_logged_user"];
 }
 
+$alert_message = "";
+$alert_type = "";
+
 // Handle add new loan
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_loan"])) {
     $reason = $conn->real_escape_string($_POST["reason"]);
-    $total = $conn->real_escape_string($_POST["total"]);
+    $total = (float)$_POST["total"];
 
-    if (!empty($reason) && !empty($total)) {
+    if (!empty($reason) && $total > 0) {
         $sql_insert = "INSERT INTO loans (reason, total, paid, balance) VALUES ('{$reason}', {$total}, 0, {$total})";
-        $conn->query($sql_insert);
+        if ($conn->query($sql_insert)) {
+            $alert_type = "success";
+            $alert_message = "New loan added successfully!";
+        } else {
+            $alert_type = "danger";
+            $alert_message = "Error adding loan: " . $conn->error;
+        }
     }
 }
 
-// Handle paid amount update
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_paid"])) {
-    $loan_id = $conn->real_escape_string($_POST["loan_id"]);
-    $paid = $conn->real_escape_string($_POST["paid"]);
+// Handle loan update (reason, total, paid)
+if ($_SERVER["REQUEST_METHOD"] == "POST" && (isset($_POST["update_paid"]) || isset($_POST["update_loan"]))) {
+    $loan_id = (int)$_POST["loan_id"];
+    $reason = isset($_POST["reason"]) ? $conn->real_escape_string($_POST["reason"]) : null;
+    $total = isset($_POST["total"]) ? (float)$_POST["total"] : null;
+    $paid = isset($_POST["paid"]) ? (float)$_POST["paid"] : 0.0;
 
-    $sql_get = "SELECT total FROM loans WHERE id = {$loan_id}";
-    $result = $conn->query($sql_get);
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $total = $row['total'];
-        $balance = $total - $paid;
+    if ($total === null) {
+        $sql_get = "SELECT total FROM loans WHERE id = {$loan_id}";
+        $result = $conn->query($sql_get);
+        if ($result && $result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $total = (float)$row['total'];
+        } else {
+            $total = 0.0;
+        }
+    }
+
+    $balance = $total - $paid;
+
+    if ($reason !== null) {
+        $sql_update = "UPDATE loans SET reason = '{$reason}', total = {$total}, paid = {$paid}, balance = {$balance} WHERE id = {$loan_id}";
+    } else {
         $sql_update = "UPDATE loans SET paid = {$paid}, balance = {$balance} WHERE id = {$loan_id}";
-        $conn->query($sql_update);
+    }
+
+    if ($conn->query($sql_update)) {
+        $alert_type = "success";
+        $alert_message = "Loan details updated successfully!";
+    } else {
+        $alert_type = "danger";
+        $alert_message = "Error updating loan: " . $conn->error;
+    }
+}
+
+// Handle delete loan
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["delete_loan"])) {
+    $loan_id = (int)$_POST["loan_id"];
+    if ($loan_id > 0) {
+        if ($conn->query("DELETE FROM loans WHERE id = {$loan_id}")) {
+            $alert_type = "success";
+            $alert_message = "Loan deleted successfully!";
+        } else {
+            $alert_type = "danger";
+            $alert_message = "Error deleting loan: " . $conn->error;
+        }
     }
 }
 
@@ -264,11 +306,32 @@ if ($result_loans->num_rows > 0) {
             background: var(--dark-card);
             border: 2px solid var(--dark-border);
             border-radius: 12px;
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            color: var(--text-primary);
         }
 
         .modal-header {
             border-bottom: 2px solid var(--dark-border);
             background: rgba(99, 102, 241, 0.05);
+        }
+
+        .modal-footer {
+            border-top: 2px solid var(--dark-border);
+            background: rgba(99, 102, 241, 0.02);
+        }
+
+        .btn-outline-danger {
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            background: transparent;
+        }
+
+        .btn-outline-danger:hover {
+            background: var(--danger);
+            color: white;
         }
 
         .modal-title {
@@ -331,6 +394,13 @@ if ($result_loans->num_rows > 0) {
 
     <div id="main-content">
         <div class="container-fluid">
+            <?php if (!empty($alert_message)): ?>
+                <div class="alert alert-<?php echo $alert_type; ?> alert-dismissible fade show" role="alert">
+                    <i class="fas <?php echo $alert_type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'; ?> me-2"></i>
+                    <?php echo $alert_message; ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="mb-0"><i class="fas fa-money-bill-wave"></i> Loan Applications</h4>
@@ -377,43 +447,83 @@ if ($result_loans->num_rows > 0) {
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title">Update Loan Status</h5>
+                                                        <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Update Loan Status</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                     </div>
                                                     <form method="POST" action="">
                                                         <div class="modal-body">
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Loan ID: <?php echo $loan['id']; ?></label>
+                                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                                <span class="badge text-light border border-secondary px-3 py-2" style="background: rgba(255, 255, 255, 0.05); font-size: 0.9rem;">
+                                                                    <i class="fas fa-hashtag me-1 text-primary-light"></i> Loan ID: <?php echo $loan['id']; ?>
+                                                                </span>
                                                             </div>
+
                                                             <div class="mb-3">
-                                                                <strong>Reason:</strong>
-                                                                <p><?php echo htmlspecialchars($loan['reason']); ?></p>
+                                                                <label for="reason<?php echo $loan['id']; ?>" class="form-label">
+                                                                    <i class="fas fa-file-alt me-1 text-primary-light"></i> Reason for Loan <span class="text-danger">*</span>
+                                                                </label>
+                                                                <textarea class="form-control" id="reason<?php echo $loan['id']; ?>" name="reason" rows="3" placeholder="Enter the reason for the loan" required><?php echo htmlspecialchars($loan['reason']); ?></textarea>
                                                             </div>
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Total Amount: Rs. <?php echo number_format($loan['total'], 2); ?></label>
+
+                                                            <div class="row">
+                                                                <div class="col-md-6 mb-3">
+                                                                    <label for="total<?php echo $loan['id']; ?>" class="form-label">
+                                                                        <i class="fas fa-coins me-1 text-primary-light"></i> Total Amount (Rs.) <span class="text-danger">*</span>
+                                                                    </label>
+                                                                    <input type="number" class="form-control" id="total<?php echo $loan['id']; ?>" name="total" step="0.01" min="0" value="<?php echo htmlspecialchars($loan['total']); ?>" placeholder="Total amount" required>
+                                                                </div>
+
+                                                                <div class="col-md-6 mb-3">
+                                                                    <label for="paid<?php echo $loan['id']; ?>" class="form-label">
+                                                                        <i class="fas fa-hand-holding-dollar me-1 text-primary-light"></i> Paid Amount (Rs.) <span class="text-danger">*</span>
+                                                                    </label>
+                                                                    <input type="number" class="form-control" id="paid<?php echo $loan['id']; ?>" name="paid" step="0.01" min="0" value="<?php echo htmlspecialchars($loan['paid']); ?>" placeholder="Paid amount" required>
+                                                                </div>
                                                             </div>
-                                                            <div class="mb-3">
-                                                                <label for="paid<?php echo $loan['id']; ?>" class="form-label">Paid Amount (Rs.)</label>
-                                                                <input type="number" class="form-control" id="paid<?php echo $loan['id']; ?>" name="paid" step="0.01" value="<?php echo $loan['paid']; ?>" required>
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Balance: Rs. <span id="balance<?php echo $loan['id']; ?>"><?php echo number_format($loan['balance'], 2); ?></span></label>
+
+                                                            <div class="p-3 rounded mb-2" style="background: rgba(99, 102, 241, 0.1); border: 1px solid var(--dark-border);">
+                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                    <span class="text-secondary fw-semibold">
+                                                                        <i class="fas fa-calculator me-1"></i> Balance Remaining:
+                                                                    </span>
+                                                                    <span class="fs-5 fw-bold text-warning">
+                                                                        Rs. <span id="balance<?php echo $loan['id']; ?>"><?php echo number_format($loan['balance'], 2); ?></span>
+                                                                    </span>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                            <input type="hidden" name="loan_id" value="<?php echo $loan['id']; ?>">
-                                                            <input type="hidden" name="update_paid" value="1">
-                                                            <button type="submit" class="btn btn-primary">Update Payment</button>
+                                                        <div class="modal-footer d-flex justify-content-between">
+                                                            <button type="submit" name="delete_loan" value="1" class="btn btn-outline-danger btn-sm" formnovalidate onclick="return confirm('Are you sure you want to delete Loan #<?php echo $loan['id']; ?>? This action cannot be undone.');">
+                                                                <i class="fas fa-trash-alt me-1"></i> Delete
+                                                            </button>
+                                                            <div class="d-flex gap-2">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                <input type="hidden" name="loan_id" value="<?php echo $loan['id']; ?>">
+                                                                <input type="hidden" name="update_loan" value="1">
+                                                                <input type="hidden" name="update_paid" value="1">
+                                                                <button type="submit" class="btn btn-primary">
+                                                                    <i class="fas fa-save me-1"></i> Update Details
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </form>
                                                     <script>
-                                                        document.getElementById('paid<?php echo $loan['id']; ?>').addEventListener('input', function() {
-                                                            var total = <?php echo $loan['total']; ?>;
-                                                            var paid = parseFloat(this.value) || 0;
-                                                            var balance = total - paid;
-                                                            document.getElementById('balance<?php echo $loan['id']; ?>').textContent = balance.toFixed(2);
-                                                        });
+                                                        (function() {
+                                                            var totalEl = document.getElementById('total<?php echo $loan['id']; ?>');
+                                                            var paidEl = document.getElementById('paid<?php echo $loan['id']; ?>');
+                                                            var balanceEl = document.getElementById('balance<?php echo $loan['id']; ?>');
+                                                            function recalc() {
+                                                                if (!totalEl || !paidEl || !balanceEl) return;
+                                                                var total = parseFloat(totalEl.value) || 0;
+                                                                var paid = parseFloat(paidEl.value) || 0;
+                                                                var balance = total - paid;
+                                                                balanceEl.textContent = balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                                                            }
+                                                            if (totalEl && paidEl) {
+                                                                totalEl.addEventListener('input', recalc);
+                                                                paidEl.addEventListener('input', recalc);
+                                                            }
+                                                        })();
                                                     </script>
                                                 </div>
                                             </div>
