@@ -31,6 +31,14 @@ if ($studentResult && $studentResult->num_rows > 0) {
     }
 }
 
+$loanStats = ['total' => 0, 'paid' => 0, 'balance' => 0];
+$loanRes = $conn->query("SELECT SUM(total) as total, SUM(paid) as paid, SUM(balance) as balance FROM loans");
+if ($loanRes && $row = $loanRes->fetch_assoc()) {
+    $loanStats['total'] = (float)($row['total'] ?? 0);
+    $loanStats['paid'] = (float)($row['paid'] ?? 0);
+    $loanStats['balance'] = (float)($row['balance'] ?? 0);
+}
+
 $mailer = new MailService();
 $demoHtml = $mailer->renderTemplate('loan_report_notice', [
     'name' => $sampleStudent['Name'] ?? 'Student Name',
@@ -44,6 +52,10 @@ $demoHtml = $mailer->renderTemplate('loan_report_notice', [
     'webUrl' => $config['settings']['baseURL'] ?? 'http://localhost/batchfund',
     'companyEmail' => 'theekshanathennakoon79@gmail.com',
     'companyLogo' => '../assets/logo.png',
+    'totalLoanAmount' => $loanStats['total'],
+    'totalPaid' => $loanStats['paid'],
+    'totalBalance' => $loanStats['balance'],
+    'repaymentRate' => $loanStats['total'] > 0 ? round(($loanStats['paid'] / $loanStats['total']) * 100, 1) : 0,
     'isWebPreview' => true,
 ]);
 

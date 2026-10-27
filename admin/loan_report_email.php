@@ -174,16 +174,16 @@ if ($sampleResult && $sampleResult->num_rows > 0) {
                             <span class="badge-pill-custom" style="background:rgba(16,185,129,0.25);border:1px solid #34d399;color:#a7f3d0;">
                                 <i class="fas fa-file-invoice-dollar"></i> Notice: Loans & Repayments Report
                             </span>
-                            <span class="badge-pill-custom" style="background:rgba(6,182,212,0.25);border:1px solid #22d3ee;color:#a5f3fc;">
-                                <i class="fas fa-hourglass-half"></i> Status: Coming Soon • ලඟදීම
+                            <span class="badge-pill-custom" style="background:rgba(16,185,129,0.25);border:1px solid #34d399;color:#a7f3d0;">
+                                <i class="fas fa-check-circle"></i> Status: Report Released • වාර්තාව නිකුත් කර ඇත
                             </span>
                             <span class="badge-pill-custom" style="background:rgba(245,158,11,0.25);border:1px solid #fbbf24;color:#fde68a;">
                                 <i class="fas fa-users"></i> <?= number_format($total_students); ?> Registered Students
                             </span>
                         </div>
-                        <h4 class="fw-bold mb-1 text-white">Batch 20/21: ණය සහ නැවත ගෙවීම් වාර්තාව පිලිබඳ නිවේදනය</h4>
+                        <h4 class="fw-bold mb-1 text-white">Batch 20/21: ණය සහ නැවත ගෙවීම් වාර්තාව නිකුත් කරන ලදී (Report Released)</h4>
                         <p class="text-white-50 mb-0 small">
-                            "20/21 කණ්ඩායම විසින් විවිධ හේතුන් නිසා ලබාගන්නා ලද ණය මුදල් සහ එහි නැවත ගෙවිම් විස්තර පිලිබද වාර්තාවක් ලගදීම මෙහි දර්ශනය කෙරේ." &bull; Emails are delivered to student university inboxes (<code>regno@tec.rjt.ac.lk</code>).
+                            "20/21 කණ්ඩායම විසින් විවිධ හේතුන් නිසා ලබාගන්නා ලද ණය මුදල් සහ එහි නැවත ගෙවීම් විස්තර පිළිබඳ සම්පූර්ණ වාර්තාව දැන් ශිෂ්‍ය පද්ධතිය ඔස්සේ නැරඹිය හැක." &bull; Emails are delivered to student university inboxes (<code>regno@tec.rjt.ac.lk</code>).
                         </p>
                     </div>
                     <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">

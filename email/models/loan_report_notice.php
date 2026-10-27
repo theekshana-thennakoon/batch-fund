@@ -43,6 +43,16 @@ try {
         exit();
     }
 
+    // Fetch Loan Totals for Summary Snapshot
+    $loanStats = ['total' => 0, 'paid' => 0, 'balance' => 0];
+    $loanRes = $conn->query("SELECT SUM(total) as total, SUM(paid) as paid, SUM(balance) as balance FROM loans");
+    if ($loanRes && $row = $loanRes->fetch_assoc()) {
+        $loanStats['total'] = (float)($row['total'] ?? 0);
+        $loanStats['paid'] = (float)($row['paid'] ?? 0);
+        $loanStats['balance'] = (float)($row['balance'] ?? 0);
+    }
+    $repaymentRate = $loanStats['total'] > 0 ? round(($loanStats['paid'] / $loanStats['total']) * 100, 1) : 0;
+
     $mailer = new MailService();
     $sentCount = 0;
     $failedCount = 0;
@@ -113,9 +123,13 @@ try {
             'webUrl' => $config['settings']['baseURL'] ?? 'http://localhost/batchfund',
             'companyEmail' => 'theekshanathennakoon79@gmail.com',
             'companyLogo' => 'cid:company_logo',
+            'totalLoanAmount' => $loanStats['total'],
+            'totalPaid' => $loanStats['paid'],
+            'totalBalance' => $loanStats['balance'],
+            'repaymentRate' => $repaymentRate,
         ]);
 
-        $subject = '📋 ණය සහ නැවත ගෙවීම් වාර්තාව පිලිබඳ නිවේදනය (Batch 20/21) - ' . $regNo;
+        $subject = '📋 ණය සහ නැවත ගෙවීම් වාර්තාව නිකුත් කරන ලදී (Batch 20/21) - ' . $regNo;
         $result = $mailer->sendMail($generatedEmail, $subject, $body);
 
         if ($result === true) {

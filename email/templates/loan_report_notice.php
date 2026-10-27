@@ -13,6 +13,10 @@ $companyLogo = $companyLogo ?? 'cid:company_logo';
 $logoSrc = ($isWebPreview || empty($companyLogo) || $companyLogo === '../assets/logo.png')
     ? 'https://batch-fund.great-site.net/assets/logo.png'
     : $companyLogo;
+$totalLoanAmount = isset($totalLoanAmount) ? (float)$totalLoanAmount : null;
+$totalPaid = isset($totalPaid) ? (float)$totalPaid : null;
+$totalBalance = isset($totalBalance) ? (float)$totalBalance : null;
+$repaymentRate = isset($repaymentRate) ? (float)$repaymentRate : (($totalLoanAmount && $totalLoanAmount > 0) ? round(($totalPaid / $totalLoanAmount) * 100, 1) : null);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,7 +26,7 @@ $logoSrc = ($isWebPreview || empty($companyLogo) || $companyLogo === '../assets/
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
     <meta name="supported-color-schemes" content="light dark">
-    <title>Batch 20/21: Loans & Repayments Report Notice</title>
+    <title>Batch 20/21: Official Loans & Repayments Report Released</title>
     <style>
         :root {
             color-scheme: light dark;
@@ -118,16 +122,16 @@ $logoSrc = ($isWebPreview || empty($companyLogo) || $companyLogo === '../assets/
                                 <tr>
                                     <td align="center">
                                         <div style="display:inline-block;background-color:#047857;color:#ffffff;font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;padding:5px 14px;border-radius:50px;margin-bottom:10px;">
-                                            📋 OFFICIAL NOTICE • FINANCIAL TRANSPARENCY
+                                            📋 OFFICIAL ANNOUNCEMENT • FINANCIAL TRANSPARENCY
                                         </div>
                                         <h1 style="color:#064e3b;font-size:22px;font-weight:800;line-height:1.3;margin:0 0 8px 0;">
-                                            ණය සහ නැවත ගෙවීම් වාර්තාව
+                                            ණය සහ නැවත ගෙවීම් වාර්තාව නිකුත් කරන ලදී
                                         </h1>
                                         <div style="color:#059669;font-size:14px;font-weight:700;margin:0 0 12px 0;">
-                                            Batch 20/21: Loans & Repayments Report Notice
+                                            Batch 20/21: Loans & Repayments Report Officially Released
                                         </div>
-                                        <div style="display:inline-block;background-color:#d1fae5;border:1px solid #6ee7b7;color:#065f46;font-weight:800;font-size:12px;padding:6px 16px;border-radius:50px;">
-                                            ⏳ Coming Soon • ලඟදීම මෙහි දර්ශනය කෙරේ
+                                        <div style="display:inline-block;background-color:#d1fae5;border:1px solid #10b981;color:#065f46;font-weight:800;font-size:12px;padding:6px 16px;border-radius:50px;">
+                                            ✅ Report Released • නිල වාර්තාව නිකුත් කර ඇත
                                         </div>
                                     </td>
                                 </tr>
@@ -148,20 +152,56 @@ $logoSrc = ($isWebPreview || empty($companyLogo) || $companyLogo === '../assets/
                             <!-- Primary Sinhala Official Notice Box -->
                             <div style="background-color:#f0fdf4;border-left:4px solid #10b981;padding:16px 18px;border-radius:0 12px 12px 0;margin:0 0 20px 0;">
                                 <p style="font-size:15px;line-height:1.75;color:#064e3b;font-weight:600;margin:0;">
-                                    📢 <strong>20/21 කණ්ඩායම විසින්</strong> විවිධ හේතුන් නිසා ලබාගන්නා ලද ණය මුදල් සහ එහි නැවත ගෙවිම් විස්තර පිලිබද වාර්තාවක් <strong>ලගදීම මෙහි දර්ශනය කෙරේ</strong>.
+                                    📢 <strong>20/21 කණ්ඩායම විසින්</strong> විවිධ හේතුන් නිසා ලබාගන්නා ලද ණය මුදල් සහ එහි නැවත ගෙවීම් විස්තර පිළිබඳ සම්පූර්ණ වාර්තාව <strong>දැන් නිල වශයෙන් නිකුත් කර ඇත (Report Released)</strong>. ඔබට දැන් ශිෂ්‍ය පද්ධතිය ඔස්සේ මෙම වාර්තාව සවිස්තරාත්මකව නැරඹිය හැක.
                                 </p>
                             </div>
 
                             <!-- English Explanation -->
                             <p style="font-size:14px;line-height:1.65;color:#334155;margin:0 0 20px 0;">
-                                Please be informed that a comprehensive, transparent report regarding all loans obtained by <strong>Batch 20/21</strong> for various batch activities and their up-to-date repayment/settlement statuses is currently being compiled and will be published on the student portal shortly.
+                                We are pleased to inform you that the comprehensive, transparent report regarding all loans obtained by <strong>Batch 20/21</strong> for various batch activities and their up-to-date repayment/settlement statuses has been <strong>officially published and released</strong>. You can now access and review the complete details on the student portal.
                             </p>
+
+                            <?php if ($totalLoanAmount !== null && $totalLoanAmount > 0): ?>
+                            <!-- Financial Summary Snapshot Card -->
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#f0fdf4" style="background-color:#f0fdf4;border:1px solid #a7f3d0;border-radius:12px;margin:0 0 22px 0;border-collapse:separate;overflow:hidden;">
+                                <tr>
+                                    <td colspan="3" bgcolor="#ecfdf5" style="background-color:#ecfdf5;padding:10px 16px;border-bottom:1px solid #a7f3d0;">
+                                        <div style="font-size:11px;font-weight:800;color:#047857;letter-spacing:0.8px;text-transform:uppercase;">
+                                            📊 මූල්‍ය සාරාංශය &bull; FINANCIAL SUMMARY SNAPSHOT
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" style="padding:14px 6px 10px 6px;border-right:1px solid #d1fae5;width:33.3%;">
+                                        <div style="font-size:11px;color:#64748b;font-weight:700;text-transform:uppercase;">Total Borrowed</div>
+                                        <div style="font-size:14px;color:#0f172a;font-weight:800;margin-top:2px;">Rs. <?= number_format($totalLoanAmount, 2) ?></div>
+                                    </td>
+                                    <td align="center" style="padding:14px 6px 10px 6px;border-right:1px solid #d1fae5;width:33.3%;">
+                                        <div style="font-size:11px;color:#059669;font-weight:700;text-transform:uppercase;">Total Settled</div>
+                                        <div style="font-size:14px;color:#059669;font-weight:800;margin-top:2px;">Rs. <?= number_format($totalPaid ?? 0, 2) ?></div>
+                                    </td>
+                                    <td align="center" style="padding:14px 6px 10px 6px;width:33.3%;">
+                                        <div style="font-size:11px;color:#d97706;font-weight:700;text-transform:uppercase;">Outstanding</div>
+                                        <div style="font-size:14px;color:#d97706;font-weight:800;margin-top:2px;">Rs. <?= number_format($totalBalance ?? 0, 2) ?></div>
+                                    </td>
+                                </tr>
+                                <?php if ($repaymentRate !== null): ?>
+                                <tr>
+                                    <td colspan="3" align="center" style="padding:8px 12px 12px 12px;background-color:#f8fafc;border-top:1px solid #e2e8f0;">
+                                        <span style="display:inline-block;background-color:#d1fae5;color:#065f46;font-size:11px;font-weight:800;padding:3px 12px;border-radius:50px;">
+                                            Settlement Progress: <?= $repaymentRate ?>%
+                                        </span>
+                                    </td>
+                                </tr>
+                                <?php endif; ?>
+                            </table>
+                            <?php endif; ?>
 
                             <!-- Key Features / What the report includes -->
                             <table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#f8fafc" style="background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;margin:0 0 24px 0;border-collapse:collapse;overflow:hidden;">
                                 <tr>
                                     <td colspan="2" bgcolor="#065f46" style="background-color:#065f46;padding:12px 16px;color:#ffffff;font-size:12px;font-weight:800;letter-spacing:0.8px;text-transform:uppercase;">
-                                        🔍 මෙම වාර්තාවෙහි අන්තර්ගත වන කරුණු (Report Highlights)
+                                        🔍 වාර්තාවෙහි අන්තර්ගත ප්‍රධාන කරුණු (Report Highlights)
                                     </td>
                                 </tr>
                                 <tr>
@@ -195,7 +235,7 @@ $logoSrc = ($isWebPreview || empty($companyLogo) || $companyLogo === '../assets/
                                 <tr>
                                     <td align="center">
                                         <a href="https://batch-fund.great-site.net/" target="_blank" class="btn-mobile" style="display:inline-block;background:linear-gradient(135deg, #059669 0%, #10b981 100%);color:#ffffff;font-size:14px;font-weight:800;text-decoration:none;padding:14px 30px;border-radius:10px;box-shadow:0 6px 18px rgba(16,185,129,0.35);text-transform:uppercase;letter-spacing:0.5px;">
-                                            🌐 ශිෂ්‍ය පද්ධතිය වෙත පිවිසෙන්න &bull; Visit Portal
+                                            📊 වාර්තාව නරඹන්න &bull; View Released Report
                                         </a>
                                     </td>
                                 </tr>
