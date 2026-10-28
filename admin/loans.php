@@ -11,6 +11,10 @@ if (!isset($_SESSION["admin_logged_user"])) {
 $alert_message = "";
 $alert_type = "";
 
+// Check current display_loan_popup setting
+$display_loan_popup_setting = get_system_setting($conn, 'display_loan_popup', '1');
+$display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popup_setting === 'true' || $display_loan_popup_setting === 1);
+
 // Handle add new loan
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_loan"])) {
     $reason = $conn->real_escape_string($_POST["reason"]);
@@ -401,6 +405,45 @@ if ($result_loans->num_rows > 0) {
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             <?php endif; ?>
+
+            <!-- Dashboard Loan Popup Notice Control -->
+            <div class="card mb-4" style="background: rgba(26, 31, 46, 0.95); border: 1px solid rgba(16, 185, 129, 0.35); box-shadow: 0 4px 20px rgba(0,0,0,0.25);">
+                <div class="card-body p-3">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #10b981; font-size: 1.25rem;">
+                                <i class="fas fa-window-restore"></i>
+                            </div>
+                            <div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <strong class="text-light" style="font-size: 0.95rem;">Student Dashboard Loan Popup Display:</strong>
+                                    <span id="loansPopupStatusBadge" class="badge <?php echo $display_loan_popup ? 'bg-success' : 'bg-danger'; ?>">
+                                        <?php echo $display_loan_popup ? 'Enabled (Auto-Show)' : 'Disabled (Hidden)'; ?>
+                                    </span>
+                                </div>
+                                <small class="text-secondary" id="loansPopupHelpText">
+                                    <?php echo $display_loan_popup 
+                                        ? 'Students see the loan notice popup modal automatically when opening their dashboard.' 
+                                        : 'The loan popup modal will NOT automatically open on the student dashboard.'; ?>
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3 ms-auto">
+                            <div class="form-check form-switch m-0" style="font-size: 1.25rem;">
+                                <input class="form-check-input" type="checkbox" role="switch" id="loansPopupSwitch" <?php echo $display_loan_popup ? 'checked' : ''; ?> style="cursor: pointer; width: 2.9em; height: 1.55em;">
+                            </div>
+                            <a href="./settings" class="btn btn-outline-light btn-sm" title="Advanced System Settings">
+                                <i class="fas fa-cog me-1"></i> Settings
+                            </a>
+                            <a href="../index.php" target="_blank" class="btn btn-outline-info btn-sm" title="View Student Dashboard">
+                                <i class="fas fa-external-link-alt me-1"></i> Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="mb-0"><i class="fas fa-money-bill-wave"></i> Loan Applications</h4>
@@ -574,6 +617,87 @@ if ($result_loans->num_rows > 0) {
 
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Loans Page Toast Container -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11000;">
+        <div id="loansActionToast" class="toast align-items-center text-white bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center gap-2">
+                    <i id="loansToastIcon" class="fas fa-check-circle text-success fs-5"></i>
+                    <span id="loansToastMsg">Setting updated.</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const loansPopupSwitch = document.getElementById('loansPopupSwitch');
+        const loansPopupStatusBadge = document.getElementById('loansPopupStatusBadge');
+        const loansPopupHelpText = document.getElementById('loansPopupHelpText');
+
+        function showLoansToast(msg, isSuccess = true) {
+            const toastEl = document.getElementById('loansActionToast');
+            const msgEl = document.getElementById('loansToastMsg');
+            const iconEl = document.getElementById('loansToastIcon');
+
+            if (!toastEl) return;
+            msgEl.textContent = msg;
+
+            if (isSuccess) {
+                toastEl.className = 'toast align-items-center text-white bg-success border-0';
+                iconEl.className = 'fas fa-check-circle text-white fs-5';
+            } else {
+                toastEl.className = 'toast align-items-center text-white bg-danger border-0';
+                iconEl.className = 'fas fa-exclamation-triangle text-white fs-5';
+            }
+
+            const toast = new bootstrap.Toast(toastEl, { delay: 3500 });
+            toast.show();
+        }
+
+        if (loansPopupSwitch) {
+            loansPopupSwitch.addEventListener('change', async function() {
+                const isChecked = this.checked;
+                this.disabled = true;
+
+                try {
+                    const response = await fetch('api_toggle_setting.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            key: 'display_loan_popup',
+                            value: isChecked ? '1' : '0'
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        const enabled = data.is_enabled;
+                        if (enabled) {
+                            loansPopupStatusBadge.className = 'badge bg-success';
+                            loansPopupStatusBadge.textContent = 'Enabled (Auto-Show)';
+                            loansPopupHelpText.textContent = 'Students see the loan notice popup modal automatically when opening their dashboard.';
+                        } else {
+                            loansPopupStatusBadge.className = 'badge bg-danger';
+                            loansPopupStatusBadge.textContent = 'Disabled (Hidden)';
+                            loansPopupHelpText.textContent = 'The loan popup modal will NOT automatically open on the student dashboard.';
+                        }
+                        showLoansToast(data.message, true);
+                    } else {
+                        showLoansToast(data.message || 'Failed to update setting', false);
+                        loansPopupSwitch.checked = !isChecked;
+                    }
+                } catch (e) {
+                    console.error(e);
+                    showLoansToast('Network error while updating loan popup setting.', false);
+                    loansPopupSwitch.checked = !isChecked;
+                } finally {
+                    loansPopupSwitch.disabled = false;
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>

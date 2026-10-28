@@ -153,6 +153,27 @@ $table_row = $prev_summary_row . $prev_sector_rows . $table_row;
 
 $balance = $tot - $tot_paid;
 
+// Fetch Batch Loans Data
+$sql_loans_list = "SELECT * FROM loans ORDER BY id ASC";
+$result_loans_list = $conn->query($sql_loans_list);
+$dashboard_loans = [];
+$total_batch_loans = 0;
+$total_batch_loans_paid = 0;
+$total_batch_loans_balance = 0;
+
+if ($result_loans_list && $result_loans_list->num_rows > 0) {
+    while ($loan_row = $result_loans_list->fetch_assoc()) {
+        $dashboard_loans[] = $loan_row;
+        $total_batch_loans += (float)$loan_row['total'];
+        $total_batch_loans_paid += (float)$loan_row['paid'];
+        $total_batch_loans_balance += (float)$loan_row['balance'];
+    }
+}
+$overall_loan_progress = $total_batch_loans > 0 ? round(($total_batch_loans_paid / $total_batch_loans) * 100, 1) : 0;
+
+// Check if displaying loan popup on student dashboard is enabled in admin settings
+$display_loan_popup_setting = get_system_setting($conn, 'display_loan_popup', '1');
+$display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popup_setting === 'true' || $display_loan_popup_setting === 1);
 ?>
 
 <!DOCTYPE html>
@@ -1744,43 +1765,23 @@ $balance = $tot - $tot_paid;
             border-color: rgba(16, 185, 129, 0.25);
         }
 
-        .loan-statement-si {
-            font-size: 1.02rem;
+        .loan-statement-en {
+            font-size: 0.98rem;
             line-height: 1.65;
             color: #e2e8f0;
-            font-weight: 500;
         }
 
-        body.light-mode .loan-statement-si {
+        body.light-mode .loan-statement-en {
             color: #1e293b;
         }
 
-        .loan-statement-si strong {
+        .loan-statement-en strong {
             color: #6ee7b7;
             font-weight: 700;
         }
 
-        body.light-mode .loan-statement-si strong {
-            color: #047857;
-        }
-
-        .loan-statement-en {
-            font-size: 0.9rem;
-            line-height: 1.55;
-            color: #94a3b8;
-        }
-
-        body.light-mode .loan-statement-en {
-            color: #64748b;
-        }
-
-        .loan-statement-en strong {
-            color: #cbd5e1;
-            font-weight: 600;
-        }
-
         body.light-mode .loan-statement-en strong {
-            color: #334155;
+            color: #047857;
         }
 
         .text-emerald {
@@ -1789,6 +1790,497 @@ $balance = $tot - $tot_paid;
 
         body.light-mode .text-emerald {
             color: #059669 !important;
+        }
+
+        /* Loan interactive styles & badges */
+        .loan-status-active {
+            background: rgba(16, 185, 129, 0.22) !important;
+            border: 1px solid rgba(52, 211, 153, 0.6) !important;
+            color: #34d399 !important;
+            animation: none !important;
+        }
+
+        body.light-mode .loan-status-active {
+            background: rgba(16, 185, 129, 0.15) !important;
+            border-color: rgba(5, 150, 105, 0.45) !important;
+            color: #065f46 !important;
+        }
+
+        .btn-emerald-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: #ffffff !important;
+            font-size: 0.92rem;
+            font-weight: 700;
+            padding: 10px 22px;
+            border-radius: 12px;
+            border: 1px solid rgba(52, 211, 153, 0.4);
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+            text-decoration: none;
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+
+        .btn-emerald-action:hover {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(16, 185, 129, 0.5);
+            color: #ffffff !important;
+        }
+
+        .btn-outline-emerald-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(16, 185, 129, 0.12);
+            color: #34d399 !important;
+            font-size: 0.92rem;
+            font-weight: 700;
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(52, 211, 153, 0.4);
+            text-decoration: none;
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+
+        .btn-outline-emerald-action:hover {
+            background: rgba(16, 185, 129, 0.25);
+            color: #a7f3d0 !important;
+            transform: translateY(-2px);
+        }
+
+        body.light-mode .btn-outline-emerald-action {
+            background: rgba(5, 150, 105, 0.08);
+            color: #047857 !important;
+            border-color: rgba(5, 150, 105, 0.35);
+        }
+
+        body.light-mode .btn-outline-emerald-action:hover {
+            background: rgba(5, 150, 105, 0.18);
+            color: #064e3b !important;
+        }
+
+        .loan-stat-badge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            margin: 14px 0 10px 0;
+        }
+
+        .loan-stat-mini-pill {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 12px;
+            padding: 8px 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.light-mode .loan-stat-mini-pill {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(16, 185, 129, 0.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .loan-mini-lbl {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #94a3b8;
+            font-weight: 700;
+        }
+
+        body.light-mode .loan-mini-lbl {
+            color: #64748b;
+        }
+
+        .loan-mini-val {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-top: 2px;
+        }
+
+        body.light-mode .loan-mini-val {
+            color: #0f172a;
+        }
+
+        /* Loans Card in Tab Area */
+        .loans-details-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode .loans-details-card {
+            background: #ffffff;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.08);
+        }
+
+        .loans-card-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .loans-card-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            margin: 0;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        body.light-mode .loans-card-title {
+            color: #064e3b;
+        }
+
+        .loan-kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .loan-kpi-box {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 16px 18px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        body.light-mode .loan-kpi-box {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+        }
+
+        .loan-kpi-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .loan-kpi-icon.blue { background: rgba(59, 130, 246, 0.18); color: #60a5fa; }
+        .loan-kpi-icon.green { background: rgba(16, 185, 129, 0.18); color: #34d399; }
+        .loan-kpi-icon.amber { background: rgba(245, 158, 11, 0.18); color: #fbbf24; }
+        .loan-kpi-icon.purple { background: rgba(139, 92, 246, 0.18); color: #a78bfa; }
+
+        .loan-kpi-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-bottom: 3px;
+        }
+
+        .loan-kpi-val {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        /* Progress Bar */
+        .loan-progress-wrap {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+
+        body.light-mode .loan-progress-wrap {
+            background: #e2e8f0;
+        }
+
+        .loan-progress-bar {
+            height: 100%;
+            border-radius: 20px;
+            background: linear-gradient(90deg, #059669 0%, #10b981 100%);
+            transition: width 0.6s ease;
+        }
+
+        .loan-table th {
+            background-color: rgba(16, 185, 129, 0.12) !important;
+            color: #34d399 !important;
+            border-bottom: 2px solid rgba(16, 185, 129, 0.25) !important;
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 14px 16px;
+            white-space: nowrap;
+        }
+
+        body.light-mode .loan-table th {
+            background-color: #ecfdf5 !important;
+            color: #065f46 !important;
+            border-bottom: 2px solid #a7f3d0 !important;
+        }
+
+        .loan-table td {
+            padding: 14px 16px;
+            vertical-align: middle;
+            font-size: 0.92rem;
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        body.light-mode .loan-table td {
+            border-color: #f1f5f9;
+        }
+
+        .badge-settled {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(52, 211, 153, 0.4);
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        body.light-mode .badge-settled {
+            background: #d1fae5;
+            color: #065f46;
+            border-color: #6ee7b7;
+        }
+
+        .badge-partial {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        body.light-mode .badge-partial {
+            background: #fef3c7;
+            color: #92400e;
+            border-color: #fcd34d;
+        }
+
+        .badge-unpaid {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(248, 113, 113, 0.4);
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        body.light-mode .badge-unpaid {
+            background: #fee2e2;
+            color: #991b1b;
+            border-color: #fca5a5;
+        }
+
+        /* Modal Styles */
+        .modal-glass .modal-content {
+            background: #111827;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            border-radius: 20px;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
+            color: #e5e7eb;
+        }
+
+        body.light-mode .modal-glass .modal-content {
+            background: #ffffff;
+            border-color: rgba(16, 185, 129, 0.25);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+            color: #1f2937;
+        }
+
+        .modal-glass .modal-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 20px 24px;
+        }
+
+        body.light-mode .modal-glass .modal-header {
+            border-bottom-color: #f1f5f9;
+        }
+
+        .modal-glass .modal-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 16px 24px;
+        }
+
+        body.light-mode .modal-glass .modal-footer {
+            border-top-color: #f1f5f9;
+        }
+
+        /* ========== LOANS RESPONSIVE MOBILE STYLES ========== */
+        .loan-mobile-card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(16, 185, 129, 0.28);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.25s ease;
+        }
+
+        body.light-mode .loan-mobile-card {
+            background: #ffffff;
+            border-color: rgba(16, 185, 129, 0.22);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .loan-mobile-card-total {
+            background: rgba(16, 185, 129, 0.12) !important;
+            border: 1px solid rgba(16, 185, 129, 0.35) !important;
+        }
+
+        body.light-mode .loan-mobile-card-total {
+            background: #ecfdf5 !important;
+            border-color: #a7f3d0 !important;
+        }
+
+        .loan-table-wrapper {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .loan-table-wrapper::-webkit-scrollbar {
+            height: 7px;
+        }
+
+        .loan-table-wrapper::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 10px;
+        }
+
+        body.light-mode .loan-table-wrapper::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .loan-table-wrapper::-webkit-scrollbar-thumb {
+            background: rgba(16, 185, 129, 0.45);
+            border-radius: 10px;
+        }
+
+        .loan-table-wrapper::-webkit-scrollbar-thumb:hover {
+            background: rgba(16, 185, 129, 0.7);
+        }
+
+        .loan-table-wrapper .loan-table {
+            min-width: 680px;
+            margin-bottom: 0;
+            width: 100%;
+        }
+
+        .loan-table-wrapper .loan-table th,
+        .loan-table-wrapper .loan-table td {
+            white-space: nowrap;
+        }
+
+        .loan-table-wrapper .loan-table th.col-reason,
+        .loan-table-wrapper .loan-table td.col-reason {
+            white-space: normal;
+            min-width: 200px;
+            max-width: 320px;
+        }
+
+        @media (max-width: 768px) {
+            .loans-details-card {
+                padding: 16px 12px !important;
+                border-radius: 14px !important;
+            }
+
+            .loans-card-header {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 12px !important;
+                padding-bottom: 14px !important;
+                margin-bottom: 16px !important;
+            }
+
+            .loans-card-title {
+                font-size: 1.15rem !important;
+            }
+
+            .loan-kpi-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px !important;
+                margin-bottom: 16px !important;
+            }
+
+            .loan-kpi-box {
+                padding: 12px 10px !important;
+                border-radius: 12px !important;
+                gap: 10px !important;
+            }
+
+            .loan-kpi-icon {
+                width: 38px !important;
+                height: 38px !important;
+                font-size: 1.1rem !important;
+                border-radius: 10px !important;
+            }
+
+            .loan-kpi-label {
+                font-size: 0.68rem !important;
+            }
+
+            .loan-kpi-val {
+                font-size: 1.05rem !important;
+            }
+
+            .modal-glass .modal-content {
+                border-radius: 16px !important;
+            }
+
+            .modal-glass .modal-body {
+                padding: 16px 12px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .loan-kpi-grid {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 8px !important;
+            }
+
+            .loan-kpi-val {
+                font-size: 0.95rem !important;
+            }
         }
 
         /* ========== ANNOUNCEMENTS SWIPER STYLING ========== */
@@ -2467,12 +2959,6 @@ $balance = $tot - $tot_paid;
                                                    target="_blank" rel="noopener noreferrer" class="btn-calendar-amber" title="Add event to Google Calendar">
                                                     <i class="far fa-calendar-plus"></i> Add to Calendar
                                                 </a>
-                                                <div class="batch-chip-item">
-                                                    <i class="fas fa-boxes-packing"></i> Full Baggage Clearance
-                                                </div>
-                                                <div class="batch-chip-item">
-                                                    <i class="fas fa-key"></i> Key Handover at Warden Office
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -2480,60 +2966,6 @@ $balance = $tot - $tot_paid;
                             </div>
                         </div>
 
-                        <!-- Slide 3: Loans & Repayments Report Notice Card -->
-                        <div class="swiper-slide">
-                            <div class="loan-report-notice-card" id="loanReportNoticeCard">
-                                <div class="loan-report-content">
-                                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
-                                        <div class="d-flex align-items-center gap-2 flex-wrap">
-                                            <span class="loan-badge">
-                                                <i class="fas fa-hand-holding-dollar"></i> Loans & Repayments • Batch 20/21
-                                            </span>
-                                            <span class="loan-status-pill">
-                                                <i class="fas fa-hourglass-half"></i> Coming Soon • ළඟදීම
-                                            </span>
-                                        </div>
-                                        <div class="batch-chip-item">
-                                            <i class="fas fa-chart-pie"></i> Financial Transparency
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex align-items-start gap-3 mt-3">
-                                        <div class="loan-icon d-none d-sm-inline-flex">
-                                            <i class="fas fa-file-invoice-dollar"></i>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <h3 class="loan-card-title mb-3">
-                                                <span class="title-highlight-emerald">Batch 20/21:</span> ණය සහ නැවත ගෙවීම් වාර්තාව (Loans & Repayments Report) 📋
-                                            </h3>
-
-                                            <div class="loan-message-box">
-                                                <div class="loan-statement-si mb-2">
-                                                    <i class="fas fa-bullhorn text-emerald me-2"></i>
-                                                    <strong>20/21 කණ්ඩායම විසින්</strong> විවිධ හේතුන් නිසා ලබාගන්නා ලද ණය මුදල් සහ එහි නැවත ගෙවිම් විස්තර පිලිබද වාර්තාවක් <strong>ලගදීම මෙහි දර්ශනය කෙරේ</strong>.
-                                                </div>
-                                                <div class="loan-statement-en">
-                                                    <i class="fas fa-info-circle text-info me-2"></i>
-                                                    A detailed comprehensive report regarding the loans obtained by <strong>Batch 20/21</strong> for various purposes and their repayment status will be published here soon.
-                                                </div>
-                                            </div>
-
-                                            <div class="batch-actions mt-3">
-                                                <div class="batch-chip-item">
-                                                    <i class="fas fa-coins text-warning"></i> Loan Disbursements
-                                                </div>
-                                                <div class="batch-chip-item">
-                                                    <i class="fas fa-receipt text-success"></i> Settlement Breakdown
-                                                </div>
-                                                <div class="batch-chip-item">
-                                                    <i class="fas fa-shield-halved text-info"></i> Official Audit
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -2568,12 +3000,18 @@ $balance = $tot - $tot_paid;
                 <li class="nav-item">
                     <button class="nav-link" data-type="prev_system">2024</button>
                 </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-type="loans" id="loansTabButton">
+                        <i class="fas fa-hand-holding-dollar me-1"></i> Loans (ණය)
+                        <span class="badge rounded-pill ms-1" style="background:#059669;color:#fff;font-size:0.75rem;"><?php echo count($dashboard_loans); ?></span>
+                    </button>
+                </li>
             </ul>
 
             <!-- Tab Content -->
             <div class="tab-content" id="contributionTabsContent">
                 <div class="tab-pane fade show active" id="batch-fund" role="tabpanel">
-                    <div class="info-card">
+                    <div class="info-card" id="contributionTableCard">
                         <h4>Contribution Details</h4>
                         <div class="table-responsive">
                             <table class="table table-striped table-hover">
@@ -2619,6 +3057,279 @@ $balance = $tot - $tot_paid;
                             </table>
                         </div>
                     </div>
+
+                    <!-- Batch Loans & Repayments Details Card (Visible on Loans Tab) -->
+                    <div class="loans-details-card" id="loansDetailsCard" style="display: none;">
+                        <div class="loans-card-header">
+                            <div>
+                                <h3 class="loans-card-title">
+                                    <i class="fas fa-hand-holding-dollar text-emerald"></i> Batch 20/21: Loans & Repayments Report
+                                </h3>
+                                <p class="text-secondary small mb-0 mt-1">Official batch fund loan disbursements, repayments, and settlement status</p>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <a href="download_loan_pdf.php" class="btn btn-sm btn-outline-emerald-action" title="Download Official PDF Report">
+                                    <i class="fas fa-file-pdf me-1"></i> Download as PDF
+                                </a>
+                                <button type="button" class="btn btn-sm btn-emerald-action" data-bs-toggle="modal" data-bs-target="#loanDetailsModal">
+                                    <i class="fas fa-expand me-1"></i> Expand Modal
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Loan KPI Summary Grid -->
+                        <div class="loan-kpi-grid">
+                            <div class="loan-kpi-box">
+                                <div class="loan-kpi-icon blue">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="loan-kpi-label">Total Borrowed</div>
+                                    <div class="loan-kpi-val">Rs. <?php echo number_format($total_batch_loans, 2); ?></div>
+                                    <div class="small text-secondary"><?php echo count($dashboard_loans); ?> loan record(s)</div>
+                                </div>
+                            </div>
+                            <div class="loan-kpi-box">
+                                <div class="loan-kpi-icon green">
+                                    <i class="fas fa-check-double"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="loan-kpi-label">Settled / Repaid</div>
+                                    <div class="loan-kpi-val text-emerald">Rs. <?php echo number_format($total_batch_loans_paid, 2); ?></div>
+                                    <div class="small text-secondary">Verified settlements</div>
+                                </div>
+                            </div>
+                            <div class="loan-kpi-box">
+                                <div class="loan-kpi-icon amber">
+                                    <i class="fas fa-clock-rotate-left"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="loan-kpi-label">Balance Due</div>
+                                    <div class="loan-kpi-val text-warning">Rs. <?php echo number_format($total_batch_loans_balance, 2); ?></div>
+                                    <div class="small text-secondary">Outstanding to be cleared</div>
+                                </div>
+                            </div>
+                            <div class="loan-kpi-box">
+                                <div class="loan-kpi-icon purple">
+                                    <i class="fas fa-chart-pie"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="loan-kpi-label">Repaid Rate</div>
+                                    <div class="loan-kpi-val"><?php echo $overall_loan_progress; ?>%</div>
+                                    <div class="loan-progress-wrap">
+                                        <div class="loan-progress-bar" style="width: <?php echo min(100, $overall_loan_progress); ?>%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- View Switcher for Mobile -->
+                        <div class="d-flex justify-content-between align-items-center mb-3 d-md-none">
+                            <span class="small text-secondary fw-bold">
+                                <i class="fas fa-list-check text-emerald me-1"></i> Loans (<?php echo count($dashboard_loans); ?>)
+                            </span>
+                            <div class="btn-group btn-group-sm" role="group" id="loansTabToggleGroup">
+                                <button type="button" class="btn btn-sm btn-outline-emerald-action active btn-loans-cards-view" id="btnLoansCardViewTab" onclick="setLoansView('cards', 'loansDetailsCard')">
+                                    <i class="fas fa-grip-vertical me-1"></i> Cards
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-emerald-action btn-loans-table-view" id="btnLoansTableViewTab" onclick="setLoansView('table', 'loansDetailsCard')">
+                                    <i class="fas fa-table me-1"></i> Table
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 1. Mobile Cards View (Optimized for Phones) -->
+                        <div class="loan-mobile-cards-container d-block d-md-none">
+                            <?php if (!empty($dashboard_loans)): ?>
+                                <?php foreach ($dashboard_loans as $idx => $loan): 
+                                    $l_tot = (float)$loan['total'];
+                                    $l_paid = (float)$loan['paid'];
+                                    $l_bal = (float)$loan['balance'];
+                                    $l_prog = $l_tot > 0 ? round(($l_paid / $l_tot) * 100, 1) : 0;
+                                    
+                                    if ($l_bal <= 0) {
+                                        $badge_class = 'badge-settled';
+                                        $badge_icon = 'fa-check-circle';
+                                        $status_txt = 'Fully Settled';
+                                        $bar_gradient = 'linear-gradient(90deg, #059669 0%, #10b981 100%)';
+                                    } elseif ($l_paid > 0) {
+                                        $badge_class = 'badge-partial';
+                                        $badge_icon = 'fa-spinner fa-spin-pulse';
+                                        $status_txt = 'Partially Paid';
+                                        $bar_gradient = 'linear-gradient(90deg, #d97706 0%, #f59e0b 100%)';
+                                    } else {
+                                        $badge_class = 'badge-unpaid';
+                                        $badge_icon = 'fa-circle-exclamation';
+                                        $status_txt = 'Unpaid';
+                                        $bar_gradient = 'linear-gradient(90deg, #dc2626 0%, #ef4444 100%)';
+                                    }
+                                ?>
+                                    <div class="loan-mobile-card">
+                                        <!-- Header: #, Reason & Status Badge -->
+                                        <div class="d-flex justify-content-between align-items-start gap-2 mb-2 pb-2" style="border-bottom: 1px solid rgba(255,255,255,0.08);">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="badge rounded-pill" style="background: rgba(16,185,129,0.2); color: #34d399; font-size: 0.78rem;">#<?php echo $idx + 1; ?></span>
+                                                <strong class="text-primary text-break" style="font-size: 0.98rem;"><?php echo htmlspecialchars($loan['reason']); ?></strong>
+                                            </div>
+                                            <span class="<?php echo $badge_class; ?>" style="font-size: 0.75rem; padding: 4px 10px; white-space: nowrap;">
+                                                <i class="fas <?php echo $badge_icon; ?>"></i> <?php echo $status_txt; ?>
+                                            </span>
+                                        </div>
+
+                                        <!-- 3 Figures Grid -->
+                                        <div class="row g-2 text-center my-2">
+                                            <div class="col-4">
+                                                <div class="p-2 rounded" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+                                                    <div class="text-secondary small" style="font-size: 0.68rem; text-transform: uppercase;">Total</div>
+                                                    <div class="fw-bold" style="font-size: 0.88rem;">Rs. <?php echo number_format($l_tot, 0); ?></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="p-2 rounded" style="background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.25);">
+                                                    <div class="text-secondary small" style="font-size: 0.68rem; text-transform: uppercase;">Settled</div>
+                                                    <div class="fw-bold text-emerald" style="font-size: 0.88rem;">Rs. <?php echo number_format($l_paid, 0); ?></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="p-2 rounded" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.25);">
+                                                    <div class="text-secondary small" style="font-size: 0.68rem; text-transform: uppercase;">Balance</div>
+                                                    <div class="fw-bold text-warning" style="font-size: 0.88rem;">Rs. <?php echo number_format($l_bal, 0); ?></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Progress Bar -->
+                                        <div class="mt-2 pt-1">
+                                            <div class="d-flex justify-content-between align-items-center small mb-1">
+                                                <span class="text-secondary" style="font-size: 0.75rem;">Repayment Progress</span>
+                                                <span class="fw-bold text-emerald" style="font-size: 0.75rem;"><?php echo $l_prog; ?>%</span>
+                                            </div>
+                                            <div class="loan-progress-wrap" style="height: 6px;">
+                                                <div class="loan-progress-bar" style="width: <?php echo min(100, $l_prog); ?>%; background: <?php echo $bar_gradient; ?>;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+
+                                <!-- Mobile Grand Total Summary Card -->
+                                <div class="loan-mobile-card loan-mobile-card-total">
+                                    <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom border-secondary border-opacity-25">
+                                        <strong class="text-uppercase" style="font-size: 0.85rem;"><i class="fas fa-calculator text-emerald me-1"></i> Grand Total Summary</strong>
+                                        <span class="badge bg-success" style="font-size: 0.75rem;"><?php echo $overall_loan_progress; ?>% Settled</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center small py-1">
+                                        <span class="text-secondary">Total Borrowed:</span>
+                                        <strong>Rs. <?php echo number_format($total_batch_loans, 2); ?></strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center small py-1">
+                                        <span class="text-secondary">Total Settled:</span>
+                                        <strong class="text-emerald">Rs. <?php echo number_format($total_batch_loans_paid, 2); ?></strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center small py-1">
+                                        <span class="text-secondary">Balance Remaining:</span>
+                                        <strong class="text-warning">Rs. <?php echo number_format($total_batch_loans_balance, 2); ?></strong>
+                                    </div>
+                                </div>
+                            <?php else: ?>
+                                <div class="text-center py-4 text-secondary">
+                                    <i class="fas fa-folder-open fa-2x mb-2 d-block"></i>
+                                    No batch loans currently registered.
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- 2. Full Table View (Scrollable on mobile, shown on desktop) -->
+                        <div class="loan-table-wrapper d-none d-md-block">
+                            <div class="d-md-none small mb-2 p-2 rounded d-flex align-items-center justify-content-between" style="background: rgba(16, 185, 129, 0.12); border: 1px dashed rgba(16, 185, 129, 0.35); color: #34d399;">
+                                <span><i class="fas fa-arrows-left-right me-1"></i> Swipe horizontally to view full table</span>
+                                <span class="badge bg-dark text-secondary">7 Columns</span>
+                            </div>
+                            <table class="table table-striped table-hover loan-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50px;" class="text-center">#</th>
+                                        <th class="col-reason">Reason / Lender Party</th>
+                                        <th class="text-end">Total Amount</th>
+                                        <th class="text-end">Amount Settled</th>
+                                        <th class="text-end">Balance Remaining</th>
+                                        <th style="width: 140px;">Progress</th>
+                                        <th class="text-center" style="width: 120px;">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (!empty($dashboard_loans)): ?>
+                                        <?php foreach ($dashboard_loans as $idx => $loan): 
+                                            $l_tot = (float)$loan['total'];
+                                            $l_paid = (float)$loan['paid'];
+                                            $l_bal = (float)$loan['balance'];
+                                            $l_prog = $l_tot > 0 ? round(($l_paid / $l_tot) * 100, 1) : 0;
+                                            
+                                            if ($l_bal <= 0) {
+                                                $badge_class = 'badge-settled';
+                                                $badge_icon = 'fa-check-circle';
+                                                $status_txt = 'Fully Settled';
+                                                $bar_gradient = 'linear-gradient(90deg, #059669 0%, #10b981 100%)';
+                                            } elseif ($l_paid > 0) {
+                                                $badge_class = 'badge-partial';
+                                                $badge_icon = 'fa-spinner fa-spin-pulse';
+                                                $status_txt = 'Partially Paid';
+                                                $bar_gradient = 'linear-gradient(90deg, #d97706 0%, #f59e0b 100%)';
+                                            } else {
+                                                $badge_class = 'badge-unpaid';
+                                                $badge_icon = 'fa-circle-exclamation';
+                                                $status_txt = 'Unpaid';
+                                                $bar_gradient = 'linear-gradient(90deg, #dc2626 0%, #ef4444 100%)';
+                                            }
+                                        ?>
+                                            <tr>
+                                                <td class="text-center fw-bold text-secondary"><?php echo $idx + 1; ?></td>
+                                                <td class="col-reason">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="fas fa-file-contract text-emerald"></i>
+                                                        <strong class="text-primary"><?php echo htmlspecialchars($loan['reason']); ?></strong>
+                                                    </div>
+                                                </td>
+                                                <td class="text-end fw-bold">Rs. <?php echo number_format($l_tot, 2); ?></td>
+                                                <td class="text-end fw-bold text-emerald">Rs. <?php echo number_format($l_paid, 2); ?></td>
+                                                <td class="text-end fw-bold text-warning">Rs. <?php echo number_format($l_bal, 2); ?></td>
+                                                <td>
+                                                    <div class="d-flex justify-content-between small fw-bold mb-1">
+                                                        <span><?php echo $l_prog; ?>%</span>
+                                                    </div>
+                                                    <div class="loan-progress-wrap" style="height: 6px;">
+                                                        <div class="loan-progress-bar" style="width: <?php echo min(100, $l_prog); ?>%; background: <?php echo $bar_gradient; ?>;"></div>
+                                                    </div>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="<?php echo $badge_class; ?>">
+                                                        <i class="fas <?php echo $badge_icon; ?>"></i> <?php echo $status_txt; ?>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="7" class="text-center py-4 text-secondary">
+                                                <i class="fas fa-folder-open fa-2x mb-2 d-block"></i>
+                                                No batch loans currently registered.
+                                            </td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                                <tfoot>
+                                    <tr style="border-top: 2px solid rgba(16, 185, 129, 0.4); font-weight: 800;">
+                                        <td colspan="2" class="text-uppercase text-end">Grand Total:</td>
+                                        <td class="text-end">Rs. <?php echo number_format($total_batch_loans, 2); ?></td>
+                                        <td class="text-end text-emerald">Rs. <?php echo number_format($total_batch_loans_paid, 2); ?></td>
+                                        <td class="text-end text-warning">Rs. <?php echo number_format($total_batch_loans_balance, 2); ?></td>
+                                        <td colspan="2" class="text-center text-emerald"><?php echo $overall_loan_progress; ?>% Settled</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+
+                    </div>
                 </div>
 
                 <div class="tab-pane fade" id="batch-function" role="tabpanel">
@@ -2633,6 +3344,356 @@ $balance = $tot - $tot_paid;
                         <h4>Night Fund Details</h4>
                         <p>No night fund details available at the moment.</p>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loan Notice On-Load Popup Modal -->
+    <?php if ($display_loan_popup): ?>
+    <div class="modal fade modal-glass" id="loanNoticePopupModal" tabindex="-1" aria-labelledby="loanNoticePopupModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content" style="border: 1px solid rgba(16, 185, 129, 0.45); box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 35px rgba(16, 185, 129, 0.25);">
+                <div class="modal-header pb-2" style="border-bottom: 1px solid rgba(16, 185, 129, 0.2);">
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <span class="loan-badge">
+                            <i class="fas fa-hand-holding-dollar"></i> LOANS & REPAYMENTS • BATCH 20/21
+                        </span>
+                        <span class="loan-status-pill loan-status-active">
+                            <i class="fas fa-check-circle"></i> Published • Active Report
+                        </span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 ms-auto">
+                        <div class="batch-chip-item d-none d-sm-inline-flex me-1">
+                            <i class="fas fa-chart-pie"></i> Financial Transparency
+                        </div>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+                <div class="modal-body p-3 p-md-4">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="loan-icon d-none d-sm-inline-flex">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h3 class="loan-card-title mb-2">
+                                <span class="title-highlight-emerald">Batch 20/21:</span> Loans & Repayments Report 📋
+                            </h3>
+
+                            <div class="loan-message-box">
+                                <!-- Quick Mini-Stats Grid -->
+                                <div class="loan-stat-badge-grid mt-0">
+                                    <div class="loan-stat-mini-pill">
+                                        <span class="loan-mini-lbl"><i class="fas fa-coins me-1 text-warning"></i>Total Borrowed</span>
+                                        <span class="loan-mini-val">Rs. <?php echo number_format($total_batch_loans, 2); ?></span>
+                                    </div>
+                                    <div class="loan-stat-mini-pill">
+                                        <span class="loan-mini-lbl"><i class="fas fa-check me-1 text-success"></i>Settled / Paid</span>
+                                        <span class="loan-mini-val text-emerald">Rs. <?php echo number_format($total_batch_loans_paid, 2); ?></span>
+                                    </div>
+                                    <div class="loan-stat-mini-pill">
+                                        <span class="loan-mini-lbl"><i class="fas fa-clock me-1 text-info"></i>Balance Due</span>
+                                        <span class="loan-mini-val text-warning">Rs. <?php echo number_format($total_batch_loans_balance, 2); ?></span>
+                                    </div>
+                                    <div class="loan-stat-mini-pill">
+                                        <span class="loan-mini-lbl"><i class="fas fa-chart-line me-1 text-primary"></i>Repaid Rate</span>
+                                        <span class="loan-mini-val"><?php echo $overall_loan_progress; ?>%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
+                                <button type="button" class="btn btn-emerald-action" id="popupOpenDetailsModalBtn">
+                                    <i class="fas fa-table-list me-2"></i>View Loan Details & Summary
+                                </button>
+                                <button type="button" class="btn btn-outline-emerald-action" id="popupViewLoansTabBtn">
+                                    <i class="fas fa-table me-2"></i>View in Dashboard Table
+                                </button>
+                                <a href="download_loan_pdf.php" target="_blank" class="btn btn-outline-emerald-action" title="Download Official PDF Report">
+                                    <i class="fas fa-file-pdf me-2 text-danger"></i>Download as PDF
+                                </a>
+                                <div class="batch-chip-item ms-auto d-none d-md-inline-flex">
+                                    <i class="fas fa-shield-halved text-info"></i> Official Audit Verified
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <!-- Loan Details Modal -->
+    <div class="modal fade modal-glass" id="loanDetailsModal" tabindex="-1" aria-labelledby="loanDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="loan-icon" style="width: 42px; height: 42px; font-size: 1.2rem;">
+                            <i class="fas fa-hand-holding-dollar"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold mb-0" id="loanDetailsModalLabel">
+                                Batch 20/21: Loans & Repayments Report
+                            </h5>
+                            <span class="small text-emerald fw-semibold">ණය සහ නැවත ගෙවීම් වාර්තාව &bull; Financial Transparency</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- Top Summary KPI Cards -->
+                    <div class="loan-kpi-grid">
+                        <div class="loan-kpi-box">
+                            <div class="loan-kpi-icon blue">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="loan-kpi-label">Total Borrowed</div>
+                                <div class="loan-kpi-val">Rs. <?php echo number_format($total_batch_loans, 2); ?></div>
+                            </div>
+                        </div>
+                        <div class="loan-kpi-box">
+                            <div class="loan-kpi-icon green">
+                                <i class="fas fa-check-double"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="loan-kpi-label">Settled / Paid</div>
+                                <div class="loan-kpi-val text-emerald">Rs. <?php echo number_format($total_batch_loans_paid, 2); ?></div>
+                            </div>
+                        </div>
+                        <div class="loan-kpi-box">
+                            <div class="loan-kpi-icon amber">
+                                <i class="fas fa-clock-rotate-left"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="loan-kpi-label">Balance Due</div>
+                                <div class="loan-kpi-val text-warning">Rs. <?php echo number_format($total_batch_loans_balance, 2); ?></div>
+                            </div>
+                        </div>
+                        <div class="loan-kpi-box">
+                            <div class="loan-kpi-icon purple">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="loan-kpi-label">Repaid Rate</div>
+                                <div class="loan-kpi-val"><?php echo $overall_loan_progress; ?>%</div>
+                                <div class="loan-progress-wrap">
+                                    <div class="loan-progress-bar" style="width: <?php echo min(100, $overall_loan_progress); ?>%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- View Switcher for Mobile inside Modal -->
+                    <div class="d-flex justify-content-between align-items-center mb-3 d-md-none">
+                        <span class="small text-secondary fw-bold">
+                            <i class="fas fa-list-check text-emerald me-1"></i> Loan Records (<?php echo count($dashboard_loans); ?>)
+                        </span>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-sm btn-outline-emerald-action active btn-loans-cards-view" onclick="setLoansView('cards', 'loanDetailsModal')">
+                                <i class="fas fa-grip-vertical me-1"></i> Cards
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-emerald-action btn-loans-table-view" onclick="setLoansView('table', 'loanDetailsModal')">
+                                <i class="fas fa-table me-1"></i> Table
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 1. Mobile Cards View inside Modal -->
+                    <div class="loan-mobile-cards-container d-block d-md-none mb-3">
+                        <?php if (!empty($dashboard_loans)): ?>
+                            <?php foreach ($dashboard_loans as $idx => $loan): 
+                                $l_tot = (float)$loan['total'];
+                                $l_paid = (float)$loan['paid'];
+                                $l_bal = (float)$loan['balance'];
+                                $l_prog = $l_tot > 0 ? round(($l_paid / $l_tot) * 100, 1) : 0;
+                                
+                                if ($l_bal <= 0) {
+                                    $badge_class = 'badge-settled';
+                                    $badge_icon = 'fa-check-circle';
+                                    $status_txt = 'Fully Settled';
+                                    $bar_gradient = 'linear-gradient(90deg, #059669 0%, #10b981 100%)';
+                                } elseif ($l_paid > 0) {
+                                    $badge_class = 'badge-partial';
+                                    $badge_icon = 'fa-spinner fa-spin-pulse';
+                                    $status_txt = 'Partially Paid';
+                                    $bar_gradient = 'linear-gradient(90deg, #d97706 0%, #f59e0b 100%)';
+                                } else {
+                                    $badge_class = 'badge-unpaid';
+                                    $badge_icon = 'fa-circle-exclamation';
+                                    $status_txt = 'Unpaid';
+                                    $bar_gradient = 'linear-gradient(90deg, #dc2626 0%, #ef4444 100%)';
+                                }
+                            ?>
+                                <div class="loan-mobile-card">
+                                    <div class="d-flex justify-content-between align-items-start gap-2 mb-2 pb-2" style="border-bottom: 1px solid rgba(255,255,255,0.08);">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="badge rounded-pill" style="background: rgba(16,185,129,0.2); color: #34d399; font-size: 0.78rem;">#<?php echo $idx + 1; ?></span>
+                                            <strong class="text-primary text-break" style="font-size: 0.98rem;"><?php echo htmlspecialchars($loan['reason']); ?></strong>
+                                        </div>
+                                        <span class="<?php echo $badge_class; ?>" style="font-size: 0.75rem; padding: 4px 10px; white-space: nowrap;">
+                                            <i class="fas <?php echo $badge_icon; ?>"></i> <?php echo $status_txt; ?>
+                                        </span>
+                                    </div>
+                                    <div class="row g-2 text-center my-2">
+                                        <div class="col-4">
+                                            <div class="p-2 rounded" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+                                                <div class="text-secondary small" style="font-size: 0.68rem; text-transform: uppercase;">Total</div>
+                                                <div class="fw-bold" style="font-size: 0.88rem;">Rs. <?php echo number_format($l_tot, 0); ?></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="p-2 rounded" style="background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.25);">
+                                                <div class="text-secondary small" style="font-size: 0.68rem; text-transform: uppercase;">Settled</div>
+                                                <div class="fw-bold text-emerald" style="font-size: 0.88rem;">Rs. <?php echo number_format($l_paid, 0); ?></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="p-2 rounded" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.25);">
+                                                <div class="text-secondary small" style="font-size: 0.68rem; text-transform: uppercase;">Balance</div>
+                                                <div class="fw-bold text-warning" style="font-size: 0.88rem;">Rs. <?php echo number_format($l_bal, 0); ?></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 pt-1">
+                                        <div class="d-flex justify-content-between align-items-center small mb-1">
+                                            <span class="text-secondary" style="font-size: 0.75rem;">Repayment Progress</span>
+                                            <span class="fw-bold text-emerald" style="font-size: 0.75rem;"><?php echo $l_prog; ?>%</span>
+                                        </div>
+                                        <div class="loan-progress-wrap" style="height: 6px;">
+                                            <div class="loan-progress-bar" style="width: <?php echo min(100, $l_prog); ?>%; background: <?php echo $bar_gradient; ?>;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+
+                            <!-- Grand Total Summary Card in Modal -->
+                            <div class="loan-mobile-card loan-mobile-card-total">
+                                <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom border-secondary border-opacity-25">
+                                    <strong class="text-uppercase" style="font-size: 0.85rem;"><i class="fas fa-calculator text-emerald me-1"></i> Grand Total Summary</strong>
+                                    <span class="badge bg-success" style="font-size: 0.75rem;"><?php echo $overall_loan_progress; ?>% Settled</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center small py-1">
+                                    <span class="text-secondary">Total Borrowed:</span>
+                                    <strong>Rs. <?php echo number_format($total_batch_loans, 2); ?></strong>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center small py-1">
+                                    <span class="text-secondary">Total Settled:</span>
+                                    <strong class="text-emerald">Rs. <?php echo number_format($total_batch_loans_paid, 2); ?></strong>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center small py-1">
+                                    <span class="text-secondary">Balance Remaining:</span>
+                                    <strong class="text-warning">Rs. <?php echo number_format($total_batch_loans_balance, 2); ?></strong>
+                                </div>
+                            </div>
+                        <?php else: ?>
+                            <div class="text-center py-4 text-secondary">
+                                <i class="fas fa-folder-open fa-2x mb-2 d-block"></i>
+                                No batch loans recorded.
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- 2. Full Table View inside Modal -->
+                    <div class="loan-table-wrapper d-none d-md-block mb-3">
+                        <div class="d-md-none small mb-2 p-2 rounded d-flex align-items-center justify-content-between" style="background: rgba(16, 185, 129, 0.12); border: 1px dashed rgba(16, 185, 129, 0.35); color: #34d399;">
+                            <span><i class="fas fa-arrows-left-right me-1"></i> Swipe horizontally to view full table</span>
+                            <span class="badge bg-dark text-secondary">7 Columns</span>
+                        </div>
+                        <table class="table table-striped table-hover loan-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;" class="text-center">#</th>
+                                    <th class="col-reason">Reason / Lender Party</th>
+                                    <th class="text-end">Total (Rs.)</th>
+                                    <th class="text-end">Paid (Rs.)</th>
+                                    <th class="text-end">Balance (Rs.)</th>
+                                    <th style="width: 130px;">Progress</th>
+                                    <th class="text-center" style="width: 120px;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (!empty($dashboard_loans)): ?>
+                                    <?php foreach ($dashboard_loans as $idx => $loan): 
+                                        $l_tot = (float)$loan['total'];
+                                        $l_paid = (float)$loan['paid'];
+                                        $l_bal = (float)$loan['balance'];
+                                        $l_prog = $l_tot > 0 ? round(($l_paid / $l_tot) * 100, 1) : 0;
+                                        
+                                        if ($l_bal <= 0) {
+                                            $badge_class = 'badge-settled';
+                                            $badge_icon = 'fa-check-circle';
+                                            $status_txt = 'Fully Settled';
+                                            $bar_gradient = 'linear-gradient(90deg, #059669 0%, #10b981 100%)';
+                                        } elseif ($l_paid > 0) {
+                                            $badge_class = 'badge-partial';
+                                            $badge_icon = 'fa-spinner fa-spin-pulse';
+                                            $status_txt = 'Partially Paid';
+                                            $bar_gradient = 'linear-gradient(90deg, #d97706 0%, #f59e0b 100%)';
+                                        } else {
+                                            $badge_class = 'badge-unpaid';
+                                            $badge_icon = 'fa-circle-exclamation';
+                                            $status_txt = 'Unpaid';
+                                            $bar_gradient = 'linear-gradient(90deg, #dc2626 0%, #ef4444 100%)';
+                                        }
+                                    ?>
+                                        <tr>
+                                            <td class="text-center fw-bold text-secondary"><?php echo $idx + 1; ?></td>
+                                            <td class="col-reason">
+                                                <strong class="text-primary"><?php echo htmlspecialchars($loan['reason']); ?></strong>
+                                            </td>
+                                            <td class="text-end fw-bold">Rs. <?php echo number_format($l_tot, 2); ?></td>
+                                            <td class="text-end fw-bold text-emerald">Rs. <?php echo number_format($l_paid, 2); ?></td>
+                                            <td class="text-end fw-bold text-warning">Rs. <?php echo number_format($l_bal, 2); ?></td>
+                                            <td>
+                                                <div class="small fw-bold mb-1"><?php echo $l_prog; ?>%</div>
+                                                <div class="loan-progress-wrap" style="height: 5px;">
+                                                    <div class="loan-progress-bar" style="width: <?php echo min(100, $l_prog); ?>%; background: <?php echo $bar_gradient; ?>;"></div>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="<?php echo $badge_class; ?>" style="font-size: 0.78rem; padding: 4px 10px;">
+                                                    <i class="fas <?php echo $badge_icon; ?>"></i> <?php echo $status_txt; ?>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="7" class="text-center py-4 text-secondary">
+                                            No batch loans recorded.
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                            <tfoot>
+                                <tr style="border-top: 2px solid rgba(16, 185, 129, 0.4); font-weight: 800;">
+                                    <td colspan="2" class="text-end">Grand Total:</td>
+                                    <td class="text-end">Rs. <?php echo number_format($total_batch_loans, 2); ?></td>
+                                    <td class="text-end text-emerald">Rs. <?php echo number_format($total_batch_loans_paid, 2); ?></td>
+                                    <td class="text-end text-warning">Rs. <?php echo number_format($total_batch_loans_balance, 2); ?></td>
+                                    <td colspan="2" class="text-center text-emerald"><?php echo $overall_loan_progress; ?>% Settled</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="p-3 rounded" style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25);">
+                        <p class="mb-1 small" style="color: #34d399; font-weight: 700;">
+                            <i class="fas fa-bullhorn me-1"></i> Batch 20/21 Financial Transparency & Audit Compliance
+                        </p>
+                        <p class="mb-0 small text-secondary">
+                            All loans obtained for batch programs, special events, and functions, along with verified settlements and clearance records, are officially published here for all batch members.
+                        </p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="download_loan_pdf.php" class="btn btn-emerald-action">
+                        <i class="fas fa-file-pdf me-1"></i> Download as PDF
+                    </a>
                 </div>
             </div>
         </div>
@@ -2952,6 +4013,17 @@ $balance = $tot - $tot_paid;
             const skeletonLoader = document.getElementById('skeleton-loader');
             const mainContent = document.getElementById('main-content');
 
+            const isLoanPopupEnabled = <?php echo $display_loan_popup ? 'true' : 'false'; ?>;
+
+            function showLoanNoticePopupOnLoad() {
+                if (!isLoanPopupEnabled) return;
+                const loanPopupEl = document.getElementById('loanNoticePopupModal');
+                if (loanPopupEl && typeof bootstrap !== 'undefined') {
+                    const popupModal = new bootstrap.Modal(loanPopupEl);
+                    popupModal.show();
+                }
+            }
+
             setTimeout(function() {
                 if (skeletonLoader && mainContent) {
                     skeletonLoader.style.opacity = '0';
@@ -2966,6 +4038,7 @@ $balance = $tot - $tot_paid;
                             if (window.announcementsSwiperInstance) {
                                 window.announcementsSwiperInstance.update();
                             }
+                            setTimeout(showLoanNoticePopupOnLoad, 450);
                         });
                     }, 350);
                 } else if (mainContent) {
@@ -2975,6 +4048,7 @@ $balance = $tot - $tot_paid;
                     if (window.announcementsSwiperInstance) {
                         window.announcementsSwiperInstance.update();
                     }
+                    setTimeout(showLoanNoticePopupOnLoad, 450);
                 }
             }, 600);
 
@@ -3095,10 +4169,9 @@ $balance = $tot - $tot_paid;
                         renderBullet: function (index, className) {
                             const labels = [
                                 '<i class="fas fa-camera-retro me-1"></i> Batch Photo 2026',
-                                '<i class="fas fa-graduation-cap me-1"></i> Academic & Hostel Notice',
-                                '<i class="fas fa-hand-holding-dollar me-1"></i> Loans & Repayments'
+                                '<i class="fas fa-graduation-cap me-1"></i> Academic & Hostel Notice'
                             ];
-                            return '<button type="button" class="' + className + ' custom-swiper-pill">' + labels[index] + '</button>';
+                            return '<button type="button" class="' + className + ' custom-swiper-pill">' + (labels[index] || '') + '</button>';
                         },
                     },
                     navigation: {
@@ -3111,8 +4184,19 @@ $balance = $tot - $tot_paid;
             // Tab filtering logic
             const tabs = document.querySelectorAll('#contributionTabs .nav-link');
             const rows = document.querySelectorAll('tbody tr');
+            const contribCard = document.getElementById('contributionTableCard');
+            const loansCard = document.getElementById('loansDetailsCard');
 
             function filterRows(type) {
+                if (type === 'loans') {
+                    if (contribCard) contribCard.style.display = 'none';
+                    if (loansCard) loansCard.style.display = 'block';
+                    return;
+                } else {
+                    if (contribCard) contribCard.style.display = 'block';
+                    if (loansCard) loansCard.style.display = 'none';
+                }
+
                 const isFullyPaid = <?php echo isset($is_prev_fully_paid) && $is_prev_fully_paid ? 'true' : 'false'; ?>;
                 rows.forEach(row => {
                     const rowType = row.getAttribute('data-type');
@@ -3156,6 +4240,95 @@ $balance = $tot - $tot_paid;
             if (activeTab) {
                 filterRows(activeTab.getAttribute('data-type'));
             }
+
+            // Quick view in dashboard table button click handler
+            const viewLoansTabBtn = document.getElementById('viewLoansTabBtn');
+            if (viewLoansTabBtn) {
+                viewLoansTabBtn.addEventListener('click', function() {
+                    const loansTabBtn = document.getElementById('loansTabButton');
+                    if (loansTabBtn) {
+                        loansTabBtn.click();
+                        loansTabBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+            }
+
+            // Loan Notice Popup Action Buttons
+            const popupOpenDetailsBtn = document.getElementById('popupOpenDetailsModalBtn');
+            if (popupOpenDetailsBtn) {
+                popupOpenDetailsBtn.addEventListener('click', function() {
+                    const popupEl = document.getElementById('loanNoticePopupModal');
+                    if (popupEl && typeof bootstrap !== 'undefined') {
+                        const popupModal = bootstrap.Modal.getInstance(popupEl);
+                        if (popupModal) {
+                            popupModal.hide();
+                        }
+                    }
+                    const detailsEl = document.getElementById('loanDetailsModal');
+                    if (detailsEl && typeof bootstrap !== 'undefined') {
+                        const detailsModal = new bootstrap.Modal(detailsEl);
+                        detailsModal.show();
+                    }
+                });
+            }
+
+            const popupViewLoansTabBtn = document.getElementById('popupViewLoansTabBtn');
+            if (popupViewLoansTabBtn) {
+                popupViewLoansTabBtn.addEventListener('click', function() {
+                    const popupEl = document.getElementById('loanNoticePopupModal');
+                    if (popupEl && typeof bootstrap !== 'undefined') {
+                        const popupModal = bootstrap.Modal.getInstance(popupEl);
+                        if (popupModal) {
+                            popupModal.hide();
+                        }
+                    }
+                    const loansTabBtn = document.getElementById('loansTabButton');
+                    if (loansTabBtn) {
+                        loansTabBtn.click();
+                        setTimeout(function() {
+                            const loansCard = document.getElementById('loansDetailsCard');
+                            if (loansCard) {
+                                loansCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                        }, 200);
+                    }
+                });
+            }
+
+            // Toggle between Cards and Table view for loans on mobile devices
+            window.setLoansView = function(viewType, scopeId) {
+                const scope = document.getElementById(scopeId);
+                if (!scope) return;
+
+                const cardsContainer = scope.querySelector('.loan-mobile-cards-container');
+                const tableWrapper = scope.querySelector('.loan-table-wrapper');
+                const btnCards = scope.querySelector('.btn-loans-cards-view');
+                const btnTable = scope.querySelector('.btn-loans-table-view');
+
+                if (viewType === 'cards') {
+                    if (cardsContainer) {
+                        cardsContainer.classList.remove('d-none');
+                        cardsContainer.classList.add('d-block');
+                    }
+                    if (tableWrapper) {
+                        tableWrapper.classList.remove('d-block');
+                        tableWrapper.classList.add('d-none');
+                    }
+                    if (btnCards) btnCards.classList.add('active');
+                    if (btnTable) btnTable.classList.remove('active');
+                } else if (viewType === 'table') {
+                    if (cardsContainer) {
+                        cardsContainer.classList.remove('d-block');
+                        cardsContainer.classList.add('d-none');
+                    }
+                    if (tableWrapper) {
+                        tableWrapper.classList.remove('d-none');
+                        tableWrapper.classList.add('d-block');
+                    }
+                    if (btnCards) btnCards.classList.remove('active');
+                    if (btnTable) btnTable.classList.add('active');
+                }
+            };
 
         });
     </script>

@@ -60,6 +60,23 @@ if ($result && $result->num_rows > 0) {
     $row = $result->fetch_assoc();
     $total_loans_paid = $row['total'] ?? 0;
 }
+
+// All loans list for details modal
+$sql_admin_loans = "SELECT * FROM loans ORDER BY id ASC";
+$result_admin_loans = $conn->query($sql_admin_loans);
+$admin_loans_list = [];
+$total_admin_loan_balance = 0;
+if ($result_admin_loans && $result_admin_loans->num_rows > 0) {
+    while ($al = $result_admin_loans->fetch_assoc()) {
+        $admin_loans_list[] = $al;
+        $total_admin_loan_balance += (float)$al['balance'];
+    }
+}
+$admin_overall_loan_progress = $total_loan_amount > 0 ? round(($total_loans_paid / $total_loan_amount) * 100, 1) : 0;
+
+// Loan popup setting for student dashboard
+$display_loan_popup_setting = get_system_setting($conn, 'display_loan_popup', '1');
+$display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popup_setting === 'true' || $display_loan_popup_setting === 1);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -1459,8 +1476,8 @@ if ($result && $result->num_rows > 0) {
                                             <span class="loan-badge">
                                                 <i class="fas fa-hand-holding-dollar"></i> Loans & Repayments • Batch 20/21
                                             </span>
-                                            <span class="loan-status-pill">
-                                                <i class="fas fa-hourglass-half"></i> Coming Soon • ළඟදීම
+                                            <span id="adminPopupStatusBadge" class="loan-status-pill" style="<?php echo $display_loan_popup ? 'background: rgba(16, 185, 129, 0.2); border-color: rgba(52, 211, 153, 0.5); color: #34d399;' : 'background: rgba(239, 68, 68, 0.2); border-color: rgba(248, 113, 113, 0.5); color: #f87171;'; ?> animation: none;">
+                                                <i class="fas <?php echo $display_loan_popup ? 'fa-check-circle' : 'fa-ban'; ?>"></i> Popup: <span id="adminPopupStatusText"><?php echo $display_loan_popup ? 'Enabled (Auto-Show)' : 'Disabled (Hidden)'; ?></span>
                                             </span>
                                         </div>
                                         <span class="badge bg-secondary py-2 px-3" style="font-size: 0.8rem;">
@@ -1480,36 +1497,75 @@ if ($result && $result->num_rows > 0) {
                                             <div class="loan-message-box">
                                                 <div class="loan-statement-si mb-2">
                                                     <i class="fas fa-bullhorn text-emerald me-2"></i>
-                                                    <strong>20/21 කණ්ඩායම විසින්</strong> විවිධ හේතුන් නිසා ලබාගන්නා ලද ණය මුදල් සහ එහි නැවත ගෙවිම් විස්තර පිලිබද වාර්තාවක් <strong>ලගදීම මෙහි දර්ශනය කෙරේ</strong>.
+                                                    <strong>20/21 කණ්ඩායම විසින්</strong> විවිධ හේතුන් නිසා ලබාගන්නා ලද ණය මුදල් සහ එහි නැවත ගෙවිම් විස්තර පිලිබද වාර්තාව <strong>දැන් මෙහි සක්‍රීයව නැරඹිය හැක</strong>.
                                                 </div>
                                                 <div class="loan-statement-en">
                                                     <i class="fas fa-info-circle text-info me-2"></i>
-                                                    A detailed comprehensive report regarding the loans obtained by <strong>Batch 20/21</strong> for various purposes and their repayment status will be published here soon.
+                                                    A detailed comprehensive report regarding the loans obtained by <strong>Batch 20/21</strong> and their settlement status is now published and active.
+                                                </div>
+                                            </div>
+
+                                            <!-- Dashboard Loan Popup Toggle Control Box -->
+                                            <div class="mt-3 p-3 rounded-3" style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(16, 185, 129, 0.35); backdrop-filter: blur(8px);">
+                                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                                                    <div class="d-flex align-items-center gap-3">
+                                                        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background: rgba(16, 185, 129, 0.18); border: 1px solid rgba(16, 185, 129, 0.4); color: #34d399; font-size: 1.2rem;">
+                                                            <i class="fas fa-window-restore"></i>
+                                                        </div>
+                                                        <div>
+                                                            <div class="d-flex align-items-center gap-2">
+                                                                <strong class="text-light" style="font-size: 0.92rem;">Student Dashboard Loan Popup Modal</strong>
+                                                                <span id="adminPopupPill" class="badge <?php echo $display_loan_popup ? 'bg-success' : 'bg-secondary'; ?>">
+                                                                    <?php echo $display_loan_popup ? 'Active' : 'Disabled'; ?>
+                                                                </span>
+                                                            </div>
+                                                            <small class="text-secondary d-block" id="adminPopupHelpText">
+                                                                <?php echo $display_loan_popup 
+                                                                    ? 'The Loan Notice popup will automatically pop up when students load their dashboard.' 
+                                                                    : 'Popup is disabled. It will NOT automatically open on the student dashboard.'; ?>
+                                                            </small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="d-flex align-items-center gap-3 ms-auto">
+                                                        <div class="form-check form-switch m-0" style="font-size: 1.25rem;">
+                                                            <input class="form-check-input" type="checkbox" role="switch" id="adminLoanPopupSwitch" <?php echo $display_loan_popup ? 'checked' : ''; ?> style="cursor: pointer; width: 3em; height: 1.6em;">
+                                                        </div>
+                                                        <button type="button" class="btn btn-outline-info btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#adminLoanPopupPreviewModal" title="Preview Student Popup">
+                                                            <i class="fas fa-eye me-1"></i> Preview Popup
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
 
                                             <div class="d-flex flex-wrap gap-2 mt-3">
                                                 <span class="badge bg-secondary py-2 px-3" style="font-size: 0.8rem;">
-                                                    <i class="fas fa-coins me-1 text-warning"></i> Loan Disbursements
+                                                    <i class="fas fa-coins me-1 text-warning"></i> Total: Rs. <?php echo number_format($total_loan_amount, 2); ?>
                                                 </span>
                                                 <span class="badge bg-secondary py-2 px-3" style="font-size: 0.8rem;">
-                                                    <i class="fas fa-receipt me-1 text-success"></i> Settlement Breakdown
+                                                    <i class="fas fa-receipt me-1 text-success"></i> Paid: Rs. <?php echo number_format($total_loans_paid, 2); ?>
                                                 </span>
                                                 <span class="badge bg-secondary py-2 px-3" style="font-size: 0.8rem;">
-                                                    <i class="fas fa-shield-halved me-1 text-info"></i> Official Audit
+                                                    <i class="fas fa-clock me-1 text-info"></i> Balance: Rs. <?php echo number_format($total_admin_loan_balance, 2); ?>
                                                 </span>
                                             </div>
 
                                             <!-- Action Links -->
                                             <div class="d-flex flex-wrap gap-2 mt-3">
-                                                <a href="./loan_report_email" class="btn btn-success btn-sm fw-bold" style="text-decoration:none;">
-                                                    <i class="fas fa-paper-plane me-1"></i> Send Notice to All Students
+                                                <button type="button" class="btn btn-warning btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#adminLoanDetailsModal">
+                                                    <i class="fas fa-table-list me-1"></i> View Loan Details
+                                                </button>
+                                                <a href="./loans" class="btn btn-primary btn-sm fw-bold" style="text-decoration:none;">
+                                                    <i class="fas fa-money-bill-wave me-1"></i> Manage Loans
                                                 </a>
-                                                <a href="./loan_report_email" class="btn btn-outline-success btn-sm fw-bold" style="text-decoration:none;">
-                                                    <i class="fas fa-vial me-1"></i> Test Send (ITT/2021/106)
+                                                <a href="./loan_report_email" class="btn btn-success btn-sm fw-bold" style="text-decoration:none;">
+                                                    <i class="fas fa-paper-plane me-1"></i> Send Notice to Students
                                                 </a>
                                                 <a href="./loan_report_demo" target="_blank" class="btn btn-outline-info btn-sm fw-bold" style="text-decoration:none;">
-                                                    <i class="fas fa-eye me-1"></i> Preview Email Template
+                                                    <i class="fas fa-eye me-1"></i> Preview Template
+                                                </a>
+                                                <a href="./settings" class="btn btn-outline-light btn-sm fw-bold" style="text-decoration:none;">
+                                                    <i class="fas fa-cog me-1"></i> Settings
                                                 </a>
                                             </div>
                                         </div>
@@ -1604,6 +1660,150 @@ if ($result && $result->num_rows > 0) {
                     </a>
                     <a href="./reason_list" class="btn btn-primary" style="text-decoration: none;">
                         <i class="fas fa-download me-2"></i>Export Report
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Loan Details Modal -->
+    <div class="modal fade" id="adminLoanDetailsModal" tabindex="-1" aria-labelledby="adminLoanDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content" style="background: var(--dark-card); border: 1px solid var(--dark-border); color: var(--text-primary);">
+                <div class="modal-header" style="border-bottom: 1px solid var(--dark-border);">
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(16, 185, 129, 0.2); color: #34d399; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                            <i class="fas fa-hand-holding-dollar"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold mb-0" id="adminLoanDetailsModalLabel">
+                                Batch 20/21: Loans & Repayments Report
+                            </h5>
+                            <span class="small" style="color: #34d399;">Financial Overview & Breakdown</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- Top Summary Grid -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-sm-6 col-md-3">
+                            <div class="p-3 rounded" style="background: rgba(255, 255, 255, 0.04); border: 1px solid var(--dark-border);">
+                                <div class="text-secondary small text-uppercase fw-bold mb-1">Total Loans</div>
+                                <div class="h5 fw-bold mb-0 text-white">Rs. <?php echo number_format($total_loan_amount, 2); ?></div>
+                                <div class="small text-secondary"><?php echo count($admin_loans_list); ?> record(s)</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="p-3 rounded" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);">
+                                <div class="text-secondary small text-uppercase fw-bold mb-1">Total Settled</div>
+                                <div class="h5 fw-bold mb-0" style="color: #34d399;">Rs. <?php echo number_format($total_loans_paid, 2); ?></div>
+                                <div class="small text-secondary">Repaid amount</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="p-3 rounded" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3);">
+                                <div class="text-secondary small text-uppercase fw-bold mb-1">Balance Due</div>
+                                <div class="h5 fw-bold mb-0" style="color: #fbbf24;">Rs. <?php echo number_format($total_admin_loan_balance, 2); ?></div>
+                                <div class="small text-secondary">Outstanding balance</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="p-3 rounded" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3);">
+                                <div class="text-secondary small text-uppercase fw-bold mb-1">Progress</div>
+                                <div class="h5 fw-bold mb-0 text-white"><?php echo $admin_overall_loan_progress; ?>%</div>
+                                <div class="progress mt-2" style="height: 6px; background: rgba(255, 255, 255, 0.1);">
+                                    <div class="progress-bar bg-success" style="width: <?php echo min(100, $admin_overall_loan_progress); ?>%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loans Table -->
+                    <div class="table-responsive mb-3" style="border-radius: 10px; -webkit-overflow-scrolling: touch;">
+                        <div class="d-md-none small mb-2 p-2 rounded d-flex align-items-center justify-content-between" style="background: rgba(99, 102, 241, 0.1); border: 1px dashed rgba(99, 102, 241, 0.35); color: #818cf8;">
+                            <span><i class="fas fa-arrows-left-right me-1"></i> Swipe horizontally to view all columns</span>
+                            <span class="badge bg-dark text-secondary">7 Columns</span>
+                        </div>
+                        <table class="table table-striped table-hover text-nowrap align-middle">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 50px;">#</th>
+                                    <th style="min-width: 180px; white-space: normal;">Reason / Lender Party</th>
+                                    <th class="text-end">Total (Rs.)</th>
+                                    <th class="text-end">Paid (Rs.)</th>
+                                    <th class="text-end">Balance (Rs.)</th>
+                                    <th style="width: 140px;">Progress</th>
+                                    <th class="text-center" style="width: 120px;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (!empty($admin_loans_list)): ?>
+                                    <?php foreach ($admin_loans_list as $idx => $loan): 
+                                        $l_tot = (float)$loan['total'];
+                                        $l_paid = (float)$loan['paid'];
+                                        $l_bal = (float)$loan['balance'];
+                                        $l_prog = $l_tot > 0 ? round(($l_paid / $l_tot) * 100, 1) : 0;
+                                        
+                                        if ($l_bal <= 0) {
+                                            $badge_bg = 'bg-success';
+                                            $status_txt = 'Fully Settled';
+                                        } elseif ($l_paid > 0) {
+                                            $badge_bg = 'bg-warning text-dark';
+                                            $status_txt = 'Partially Paid';
+                                        } else {
+                                            $badge_bg = 'bg-danger';
+                                            $status_txt = 'Unpaid';
+                                        }
+                                    ?>
+                                        <tr>
+                                            <td class="text-center fw-bold text-secondary"><?php echo $loan['id']; ?></td>
+                                            <td>
+                                                <strong class="text-white"><?php echo htmlspecialchars($loan['reason']); ?></strong>
+                                            </td>
+                                            <td class="text-end fw-bold">Rs. <?php echo number_format($l_tot, 2); ?></td>
+                                            <td class="text-end fw-bold text-success">Rs. <?php echo number_format($l_paid, 2); ?></td>
+                                            <td class="text-end fw-bold text-warning">Rs. <?php echo number_format($l_bal, 2); ?></td>
+                                            <td>
+                                                <div class="small fw-bold mb-1"><?php echo $l_prog; ?>%</div>
+                                                <div class="progress" style="height: 5px; background: rgba(255, 255, 255, 0.1);">
+                                                    <div class="progress-bar bg-success" style="width: <?php echo min(100, $l_prog); ?>%;"></div>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge <?php echo $badge_bg; ?> px-2 py-1">
+                                                    <?php echo $status_txt; ?>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="7" class="text-center py-4 text-secondary">
+                                            No loans registered.
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                            <tfoot>
+                                <tr style="border-top: 2px solid var(--dark-border); font-weight: 800;">
+                                    <td colspan="2" class="text-end">Total:</td>
+                                    <td class="text-end">Rs. <?php echo number_format($total_loan_amount, 2); ?></td>
+                                    <td class="text-end text-success">Rs. <?php echo number_format($total_loans_paid, 2); ?></td>
+                                    <td class="text-end text-warning">Rs. <?php echo number_format($total_admin_loan_balance, 2); ?></td>
+                                    <td colspan="2" class="text-center text-success"><?php echo $admin_overall_loan_progress; ?>% Settled</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid var(--dark-border);">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="../download_loan_pdf.php" class="btn btn-success">
+                        <i class="fas fa-file-pdf me-1"></i> Download as PDF
+                    </a>
+                    <a href="./loans" class="btn btn-primary">
+                        <i class="fas fa-edit me-1"></i> Edit & Update in Loans Manager
                     </a>
                 </div>
             </div>
@@ -1727,6 +1927,177 @@ if ($result && $result->num_rows > 0) {
                     nextEl: '.admin-swiper-btn-next',
                     prevEl: '.admin-swiper-btn-prev',
                 },
+            });
+        }
+    </script>
+    <!-- Loan Notice Preview Modal for Admin -->
+    <div class="modal fade" id="adminLoanPopupPreviewModal" tabindex="-1" aria-labelledby="adminLoanPopupPreviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content" style="background: #111827; border: 1px solid rgba(16, 185, 129, 0.45); color: #e9ecef; border-radius: 16px; box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 35px rgba(16, 185, 129, 0.25);">
+                <div class="modal-header pb-2" style="border-bottom: 1px solid rgba(16, 185, 129, 0.2);">
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <span class="badge bg-success py-2 px-3">
+                            <i class="fas fa-hand-holding-dollar me-1"></i> LOANS & REPAYMENTS • BATCH 20/21
+                        </span>
+                        <span class="badge bg-info py-2 px-3">
+                            <i class="fas fa-eye me-1"></i> Exact Student Popup Preview
+                        </span>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="p-3 rounded-3 d-none d-sm-inline-flex" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; font-size: 1.5rem;">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h4 class="fw-bold mb-2 text-light">
+                                <span style="color: #34d399;">Batch 20/21:</span> Loans & Repayments Report 📋
+                            </h4>
+
+                            <div class="p-3 rounded-3 mb-3" style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(16, 185, 129, 0.25);">
+                                <div class="row g-2 text-center">
+                                    <div class="col-6 col-md-3">
+                                        <div class="p-2 rounded" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.08);">
+                                            <span class="d-block small text-secondary">Total Borrowed</span>
+                                            <strong class="text-light">Rs. <?php echo number_format($total_loan_amount, 2); ?></strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <div class="p-2 rounded" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.08);">
+                                            <span class="d-block small text-secondary">Settled</span>
+                                            <strong class="text-success">Rs. <?php echo number_format($total_loans_paid, 2); ?></strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <div class="p-2 rounded" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.08);">
+                                            <span class="d-block small text-secondary">Balance Due</span>
+                                            <strong class="text-warning">Rs. <?php echo number_format($total_admin_loan_balance, 2); ?></strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <div class="p-2 rounded" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.08);">
+                                            <span class="d-block small text-secondary">Repaid Rate</span>
+                                            <strong class="text-info"><?php echo $admin_overall_loan_progress; ?>%</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p class="text-secondary small mb-3">
+                                When enabled, this popup will automatically display to every student who visits their dashboard.
+                            </p>
+
+                            <div class="d-flex flex-wrap gap-2">
+                                <button type="button" class="btn btn-success btn-sm fw-bold" data-bs-dismiss="modal">
+                                    <i class="fas fa-check me-1"></i> Close Preview
+                                </button>
+                                <a href="../download_loan_pdf.php" target="_blank" class="btn btn-outline-light btn-sm">
+                                    <i class="fas fa-file-pdf me-1 text-danger"></i> Download PDF
+                                </a>
+                                <a href="../index.php" target="_blank" class="btn btn-outline-info btn-sm">
+                                    <i class="fas fa-external-link-alt me-1"></i> Visit Student Dashboard
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Toast Notification -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11000;">
+        <div id="adminActionToast" class="toast align-items-center text-white bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center gap-2">
+                    <i id="adminToastIcon" class="fas fa-check-circle text-success fs-5"></i>
+                    <span id="adminToastMsg">Status updated.</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Loan Popup Switch Live Toggle
+        const adminLoanPopupSwitch = document.getElementById('adminLoanPopupSwitch');
+        const adminPopupStatusBadge = document.getElementById('adminPopupStatusBadge');
+        const adminPopupStatusText = document.getElementById('adminPopupStatusText');
+        const adminPopupPill = document.getElementById('adminPopupPill');
+        const adminPopupHelpText = document.getElementById('adminPopupHelpText');
+
+        function showAdminToast(msg, isSuccess = true) {
+            const toastEl = document.getElementById('adminActionToast');
+            const msgEl = document.getElementById('adminToastMsg');
+            const iconEl = document.getElementById('adminToastIcon');
+
+            if (!toastEl) return;
+            msgEl.textContent = msg;
+
+            if (isSuccess) {
+                toastEl.className = 'toast align-items-center text-white bg-success border-0';
+                iconEl.className = 'fas fa-check-circle text-white fs-5';
+            } else {
+                toastEl.className = 'toast align-items-center text-white bg-danger border-0';
+                iconEl.className = 'fas fa-exclamation-triangle text-white fs-5';
+            }
+
+            const toast = new bootstrap.Toast(toastEl, { delay: 3500 });
+            toast.show();
+        }
+
+        if (adminLoanPopupSwitch) {
+            adminLoanPopupSwitch.addEventListener('change', async function() {
+                const isChecked = this.checked;
+                this.disabled = true;
+
+                try {
+                    const response = await fetch('api_toggle_setting.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            key: 'display_loan_popup',
+                            value: isChecked ? '1' : '0'
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        const enabled = data.is_enabled;
+                        if (enabled) {
+                            adminPopupStatusBadge.style.background = 'rgba(16, 185, 129, 0.2)';
+                            adminPopupStatusBadge.style.borderColor = 'rgba(52, 211, 153, 0.5)';
+                            adminPopupStatusBadge.style.color = '#34d399';
+                            adminPopupStatusBadge.innerHTML = '<i class="fas fa-check-circle"></i> Popup: <span id="adminPopupStatusText">Enabled (Auto-Show)</span>';
+                            
+                            adminPopupPill.className = 'badge bg-success';
+                            adminPopupPill.textContent = 'Active';
+
+                            adminPopupHelpText.textContent = 'The Loan Notice popup will automatically pop up when students load their dashboard.';
+                        } else {
+                            adminPopupStatusBadge.style.background = 'rgba(239, 68, 68, 0.2)';
+                            adminPopupStatusBadge.style.borderColor = 'rgba(248, 113, 113, 0.5)';
+                            adminPopupStatusBadge.style.color = '#f87171';
+                            adminPopupStatusBadge.innerHTML = '<i class="fas fa-ban"></i> Popup: <span id="adminPopupStatusText">Disabled (Hidden)</span>';
+                            
+                            adminPopupPill.className = 'badge bg-secondary';
+                            adminPopupPill.textContent = 'Disabled';
+
+                            adminPopupHelpText.textContent = 'Popup is disabled. It will NOT automatically open on the student dashboard.';
+                        }
+                        showAdminToast(data.message, true);
+                    } else {
+                        showAdminToast(data.message || 'Failed to update setting', false);
+                        adminLoanPopupSwitch.checked = !isChecked;
+                    }
+                } catch (e) {
+                    console.error(e);
+                    showAdminToast('Network error while toggling loan popup setting.', false);
+                    adminLoanPopupSwitch.checked = !isChecked;
+                } finally {
+                    adminLoanPopupSwitch.disabled = false;
+                }
             });
         }
     </script>

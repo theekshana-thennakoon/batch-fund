@@ -86,49 +86,43 @@
             <h3>SCMP Admin</h3>
         </div>
 
+<?php
+$currentAdminPage = basename($_SERVER['PHP_SELF']);
+?>
         <ul class="list-unstyled components">
-            <li class="active">
+            <li class="<?php echo ($currentAdminPage == 'index.php' || $currentAdminPage == '') ? 'active' : ''; ?>">
                 <a href="./"><i class="fas fa-home"></i> Dashboard</a>
             </li>
-            <li>
+            <li class="<?php echo ($currentAdminPage == 'add_reason.php') ? 'active' : ''; ?>">
                 <a href="./add_reason"><i class="fas fa-plus"></i> Add reason</a>
             </li>
-            <li>
+            <li class="<?php echo ($currentAdminPage == 'mark_paid.php') ? 'active' : ''; ?>">
                 <a href="./mark_paid"><i class="fas fa-check"></i> Mark as paid</a>
             </li>
-            <li>
+            <li class="<?php echo ($currentAdminPage == 'pay_2024.php') ? 'active' : ''; ?>">
                 <a href="./pay_2024"><i class="fas fa-calendar-check"></i> 2024 Payment</a>
             </li>
-            <li>
+            <li class="<?php echo ($currentAdminPage == 'due_reports.php') ? 'active' : ''; ?>">
                 <a href="./due_reports"><i class="fas fa-file-invoice-dollar"></i> Due Reports</a>
             </li>
-            <li>
+            <li class="<?php echo ($currentAdminPage == 'send_email.php') ? 'active' : ''; ?>">
                 <a href="./send_email"><i class="fas fa-envelope"></i> Send Email</a>
             </li>
-            <li>
+            <li class="<?php echo ($currentAdminPage == 'batch_photo_email.php') ? 'active' : ''; ?>">
                 <a href="./batch_photo_email"><i class="fas fa-camera-retro"></i> Batch Photo Notice</a>
             </li>
-            <li>
+            <li class="<?php echo ($currentAdminPage == 'loan_report_email.php') ? 'active' : ''; ?>">
                 <a href="./loan_report_email"><i class="fas fa-hand-holding-dollar"></i> Loan Report Notice</a>
             </li>
-            <li>
+            <li class="<?php echo ($currentAdminPage == 'loans.php') ? 'active' : ''; ?>">
                 <a href="./loans"><i class="fas fa-money-bill-wave"></i> Loan Applications</a>
             </li>
-            <li>
+            <li class="<?php echo ($currentAdminPage == 'reason_list.php') ? 'active' : ''; ?>">
                 <a href="./reason_list"><i class="fas fa-book"></i> Reasons</a>
             </li>
-            <!-- <li>
-                <a href="#"><i class="fas fa-calendar-alt"></i> Schedule</a>
+            <li class="<?php echo ($currentAdminPage == 'settings.php') ? 'active' : ''; ?>">
+                <a href="./settings"><i class="fas fa-cog"></i> Settings</a>
             </li>
-            <li>
-                <a href="#"><i class="fas fa-file-invoice-dollar"></i> Payments</a>
-            </li>
-            <li>
-                <a href="#"><i class="fas fa-chart-bar"></i> Results</a>
-            </li>
-            <li>
-                <a href="#"><i class="fas fa-cog"></i> Settings</a>
-            </li> -->
             <li>
                 <a href="processing?logout=1"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </li>
