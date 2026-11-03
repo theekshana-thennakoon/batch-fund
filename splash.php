@@ -144,8 +144,6 @@
             }
         }
     </style>
-    <!-- Glassy Screen Styling -->
-    <link rel="stylesheet" href="./assets/glassy.css">
 </head>
 
 <body>

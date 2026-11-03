@@ -177,31 +177,32 @@ if (isset($_COOKIE["reg_no"])) {
             position: fixed;
             top: 20px;
             right: 20px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border: none;
+            background-color: #2a2a3a;
+            border: 1px solid #3d3d5c;
             color: white;
             border-radius: 50px;
-            padding: 10px 20px;
-            font-size: 14px;
+            padding: 8px 18px;
+            font-size: 13px;
             transition: all 0.2s ease;
             cursor: pointer;
             z-index: 1000;
-            backdrop-filter: blur(10px);
             font-weight: 500;
         }
 
         .theme-toggle-btn:hover {
-            background-color: rgba(255, 255, 255, 0.3);
+            background-color: #383850;
             transform: scale(1.02);
         }
 
         body.light-mode .theme-toggle-btn {
-            background-color: rgba(0, 0, 0, 0.2);
+            background-color: #ffffff;
+            border-color: #cbd5e1;
             color: #333;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         body.light-mode .theme-toggle-btn:hover {
-            background-color: rgba(0, 0, 0, 0.3);
+            background-color: #f8fafc;
         }
 
         /* SweetAlert dark mode compatibility */
@@ -244,8 +245,6 @@ if (isset($_COOKIE["reg_no"])) {
             }
         }
     </style>
-    <!-- Glassy Screen Styling -->
-    <link rel="stylesheet" href="./assets/glassy.css">
 </head>
 
 <body class="dark-mode">
@@ -289,7 +288,7 @@ if (isset($_COOKIE["reg_no"])) {
                         <div class="logo-container">
                             <img src="assets/logo.png" alt="Instruction logo" class="logo">
                         </div>
-                        <h2 class="h5 text-center text-white mb-4 fw-bold">LOGIN</h2>
+                        <h2 class="h5 text-center mb-4 fw-bold">LOGIN</h2>
 
                         <form action="processing" method="post" autocomplete="off">
                             <div class="mb-4">

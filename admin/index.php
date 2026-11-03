@@ -420,33 +420,25 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         /* ========== BATCH PHOTO ANNOUNCEMENT CARD ========== */
         .batch-photo-card {
             position: relative;
-            background: linear-gradient(135deg, rgba(30, 27, 75, 0.78) 0%, rgba(49, 46, 129, 0.6) 50%, rgba(15, 23, 42, 0.85) 100%);
-            border: 1px solid rgba(165, 180, 252, 0.3);
-            border-radius: 16px;
-            padding: 24px 26px;
-            margin-bottom: 25px;
-            box-shadow: 0 12px 36px -10px rgba(99, 102, 241, 0.35);
+            background: #151928 !important;
+            border: 1px solid #282f4e !important;
+            border-radius: 16px !important;
+            padding: 24px 26px !important;
+            margin-bottom: 24px !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
             overflow: hidden;
             transition: all 0.3s ease;
         }
 
-        [data-theme="light"] .batch-photo-card {
-            background: linear-gradient(135deg, rgba(238, 242, 255, 0.95) 0%, rgba(224, 231, 255, 0.85) 50%, rgba(245, 243, 255, 0.95) 100%);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.12);
+        .batch-photo-card::before,
+        .batch-photo-card::after {
+            display: none !important;
         }
 
-        .batch-photo-card::before {
-            content: '';
-            position: absolute;
-            top: -50px;
-            right: -50px;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, rgba(56, 189, 248, 0.15) 60%, transparent 80%);
-            border-radius: 50%;
-            pointer-events: none;
-            filter: blur(20px);
+        [data-theme="light"] .batch-photo-card {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05) !important;
         }
 
         .batch-photo-badge {
@@ -610,45 +602,27 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
             color: #8b5cf6;
         }
 
-        /* ========== ACADEMIC & HOSTEL NOTICE CARD ========== */
         .academic-notice-card {
             position: relative;
-            background: linear-gradient(135deg, rgba(24, 24, 40, 0.85) 0%, rgba(30, 27, 75, 0.72) 50%, rgba(15, 23, 42, 0.9) 100%) !important;
-            backdrop-filter: blur(20px) saturate(190%) !important;
-            -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
-            border: 1px solid rgba(245, 158, 11, 0.35) !important;
-            border-radius: 20px !important;
+            background: #1a1922 !important;
+            border: 1px solid #3d3527 !important;
+            border-radius: 16px !important;
             padding: 24px 26px !important;
             margin-bottom: 24px !important;
-            box-shadow: 0 16px 40px -10px rgba(245, 158, 11, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.12) !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
             overflow: hidden;
             transition: all 0.3s ease;
         }
 
-        .academic-notice-card::before {
-            content: '';
-            position: absolute;
-            top: -60px;
-            right: -60px;
-            width: 240px;
-            height: 240px;
-            background: radial-gradient(circle, rgba(245, 158, 11, 0.28) 0%, rgba(239, 68, 68, 0.16) 50%, transparent 75%);
-            border-radius: 50%;
-            pointer-events: none;
-            filter: blur(25px);
-            z-index: 0;
-            animation: orbFloatAmber 7s ease-in-out infinite alternate;
-        }
-
-        @keyframes orbFloatAmber {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(-25px, 20px) scale(1.12); }
+        .academic-notice-card::before,
+        .academic-notice-card::after {
+            display: none !important;
         }
 
         [data-theme="light"] .academic-notice-card {
-            background: linear-gradient(135deg, rgba(254, 249, 195, 0.75) 0%, rgba(255, 251, 235, 0.95) 50%, rgba(241, 245, 249, 0.9) 100%) !important;
-            border: 1px solid rgba(217, 119, 6, 0.35) !important;
-            box-shadow: 0 14px 34px -8px rgba(217, 119, 6, 0.16), inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
+            background: #ffffff !important;
+            border: 1px solid #fed7aa !important;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05) !important;
         }
 
         .academic-notice-content {
@@ -762,18 +736,17 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         }
 
         .notice-lang-box {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
+            background: #111422;
+            border: 1px solid #232738;
+            border-radius: 14px;
             padding: 16px 18px;
             position: relative;
-            backdrop-filter: blur(10px);
             transition: all 0.25s ease;
         }
 
         [data-theme="light"] .notice-lang-box {
-            background: rgba(255, 255, 255, 0.88);
-            border-color: rgba(217, 119, 6, 0.22);
+            background: #f8fafc;
+            border-color: #fed7aa;
             box-shadow: 0 4px 14px rgba(217, 119, 6, 0.08);
         }
 
@@ -934,49 +907,270 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         /* ========== LOANS & REPAYMENTS NOTICE CARD ========== */
         .loan-report-notice-card {
             position: relative;
-            background: linear-gradient(135deg, rgba(6, 30, 25, 0.88) 0%, rgba(13, 40, 35, 0.75) 50%, rgba(15, 23, 42, 0.92) 100%) !important;
-            backdrop-filter: blur(20px) saturate(190%) !important;
-            -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
-            border: 1px solid rgba(16, 185, 129, 0.38) !important;
-            border-radius: 20px !important;
-            padding: 26px 28px !important;
-            box-shadow: 0 16px 40px -10px rgba(16, 185, 129, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.12) !important;
+            background: #11221b !important;
+            border: 1px solid #1c4535 !important;
+            border-radius: 16px !important;
+            padding: 24px 26px !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
             overflow: hidden;
             transition: all 0.3s ease;
         }
 
-        .loan-report-notice-card::before {
-            content: '';
-            position: absolute;
-            top: -60px;
-            right: -60px;
-            width: 240px;
-            height: 240px;
-            background: radial-gradient(circle, rgba(16, 185, 129, 0.28) 0%, rgba(6, 182, 212, 0.15) 55%, transparent 75%);
-            border-radius: 50%;
-            pointer-events: none;
-            filter: blur(25px);
-            z-index: 0;
-            animation: orbFloatEmerald 7s ease-in-out infinite alternate;
-        }
-
+        .loan-report-notice-card::before,
         .loan-report-notice-card::after {
-            content: '';
-            position: absolute;
-            bottom: -50px;
-            left: 20%;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(5, 150, 105, 0.2) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            filter: blur(25px);
-            z-index: 0;
+            display: none !important;
         }
 
-        @keyframes orbFloatEmerald {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(-25px, 20px) scale(1.12); }
+        /* ========== PADURA 2026 CARD ========== */
+        .padura-notice-card {
+            position: relative;
+            background: #191426 !important;
+            border: 1px solid #3d2b52 !important;
+            border-radius: 16px !important;
+            padding: 24px 26px !important;
+            margin-bottom: 24px !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .padura-notice-card::before,
+        .padura-notice-card::after {
+            display: none !important;
+        }
+
+        [data-theme="light"] .padura-notice-card {
+            background: #ffffff !important;
+            border: 1px solid #fbcfe8 !important;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        .padura-notice-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .padura-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(236, 72, 153, 0.22);
+            border: 1px solid rgba(244, 114, 182, 0.55);
+            color: #fbcfe8;
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 50px;
+            box-shadow: 0 2px 8px rgba(236, 72, 153, 0.25);
+        }
+
+        [data-theme="light"] .padura-badge {
+            background: rgba(219, 39, 119, 0.14);
+            border-color: rgba(219, 39, 119, 0.45);
+            color: #9d174d;
+        }
+
+        .padura-date-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(168, 85, 247, 0.2);
+            border: 1px solid rgba(192, 132, 252, 0.5);
+            color: #e9d5ff;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 5px 13px;
+            border-radius: 50px;
+        }
+
+        [data-theme="light"] .padura-date-pill {
+            background: rgba(147, 51, 234, 0.1);
+            border-color: rgba(147, 51, 234, 0.35);
+            color: #7e22ce;
+        }
+
+        .padura-time-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(59, 130, 246, 0.18);
+            border: 1px solid rgba(96, 165, 250, 0.45);
+            color: #93c5fd;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 5px 13px;
+            border-radius: 50px;
+        }
+
+        [data-theme="light"] .padura-time-pill {
+            background: rgba(37, 99, 235, 0.1);
+            border-color: rgba(37, 99, 235, 0.35);
+            color: #1d4ed8;
+        }
+
+        .padura-tag-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(244, 63, 94, 0.22);
+            border: 1px solid rgba(251, 113, 133, 0.55);
+            color: #fecdd3;
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            padding: 5px 13px;
+            border-radius: 50px;
+            animation: paduraPulse 2.5s infinite ease-in-out;
+        }
+
+        @keyframes paduraPulse {
+            0%, 100% {
+                border-color: rgba(251, 113, 133, 0.55);
+                box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.25);
+            }
+            50% {
+                border-color: rgba(251, 113, 133, 0.95);
+                box-shadow: 0 0 14px rgba(244, 63, 94, 0.45);
+            }
+        }
+
+        [data-theme="light"] .padura-tag-pill {
+            background: rgba(225, 29, 72, 0.12);
+            border-color: rgba(225, 29, 72, 0.4);
+            color: #9f1239;
+        }
+
+        .padura-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #ec4899 0%, #d946ef 50%, #8b5cf6 100%);
+            color: #ffffff;
+            font-size: 1.4rem;
+            box-shadow: 0 8px 22px rgba(236, 72, 153, 0.5);
+            animation: paduraIconBounce 3s infinite ease-in-out;
+            flex-shrink: 0;
+        }
+
+        @keyframes paduraIconBounce {
+            0%, 100% {
+                transform: scale(1) rotate(0deg);
+                box-shadow: 0 8px 22px rgba(236, 72, 153, 0.5);
+            }
+            50% {
+                transform: scale(1.07) rotate(4deg);
+                box-shadow: 0 12px 28px rgba(217, 70, 239, 0.65);
+            }
+        }
+
+        .padura-title {
+            font-size: 1.45rem;
+            font-weight: 800;
+            margin: 6px 0 16px 0;
+            color: #ffffff;
+        }
+
+        .padura-title .title-highlight-padura {
+            background: linear-gradient(135deg, #f472b6 0%, #c084fc 50%, #818cf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        [data-theme="light"] .padura-title {
+            color: #1e1b4b;
+        }
+
+        [data-theme="light"] .padura-title .title-highlight-padura {
+            background: linear-gradient(135deg, #db2777 0%, #9333ea 50%, #4f46e5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .padura-countdown-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            max-width: 460px;
+            margin-bottom: 16px;
+        }
+
+        .padura-countdown-box {
+            background: #0f121d;
+            border: 1px solid #35213b;
+            border-radius: 12px;
+            padding: 12px 8px;
+            text-align: center;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .padura-countdown-box:hover {
+            transform: translateY(-2px);
+            border-color: #ec4899;
+        }
+
+        [data-theme="light"] .padura-countdown-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .padura-countdown-number {
+            font-size: 1.55rem;
+            font-weight: 800;
+            line-height: 1.1;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #f472b6;
+            background: none;
+            -webkit-text-fill-color: initial;
+            text-shadow: none;
+        }
+
+        [data-theme="light"] .padura-countdown-number {
+            color: #db2777;
+            background: none;
+            -webkit-text-fill-color: initial;
+            text-shadow: none;
+        }
+
+        .btn-calendar-padura {
+            background: rgba(236, 72, 153, 0.2);
+            color: #fbcfe8 !important;
+            border: 1px solid rgba(244, 114, 182, 0.45);
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .btn-calendar-padura:hover {
+            background: rgba(236, 72, 153, 0.36);
+            border-color: rgba(244, 114, 182, 0.8);
+            color: #ffffff !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(236, 72, 153, 0.35);
+        }
+
+        [data-theme="light"] .btn-calendar-padura {
+            background: rgba(219, 39, 119, 0.12);
+            color: #9d174d !important;
+            border-color: rgba(219, 39, 119, 0.35);
+        }
+
+        [data-theme="light"] .btn-calendar-padura:hover {
+            background: rgba(219, 39, 119, 0.22);
+            color: #831843 !important;
         }
 
         [data-theme="light"] .loan-report-notice-card {
@@ -1094,16 +1288,15 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         }
 
         .loan-message-box {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(16, 185, 129, 0.25);
+            background: #0d1915;
+            border: 1px solid #1c4535;
             border-radius: 14px;
             padding: 16px 20px;
-            backdrop-filter: blur(8px);
         }
 
         [data-theme="light"] .loan-message-box {
-            background: rgba(255, 255, 255, 0.85);
-            border-color: rgba(16, 185, 129, 0.25);
+            background: #f0fdf4;
+            border-color: #a7f3d0;
         }
 
         .loan-statement-si {
@@ -1269,7 +1462,6 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
             font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.2s ease;
-            backdrop-filter: blur(8px);
         }
 
         .swiper-nav-btn:hover {
@@ -1403,7 +1595,59 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
                             </div>
                         </div>
 
-                        <!-- Slide 2: Academic Notice Card -->
+                        <!-- Slide 2: Padura 2026 Card -->
+                        <div class="swiper-slide">
+                            <div class="padura-notice-card" id="adminPaduraNoticeCard">
+                                <div class="padura-notice-content">
+                                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                            <span class="padura-badge">
+                                                <i class="fas fa-guitar"></i> Cultural & Musical Eve • Batch 20/21
+                                            </span>
+                                            <span class="padura-date-pill">
+                                                <i class="far fa-calendar-alt"></i> 2026.11.28 (Saturday)
+                                            </span>
+                                            <span class="padura-time-pill">
+                                                <i class="fas fa-clock"></i> 06:00 PM Onwards
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex align-items-start gap-3 mt-3">
+                                        <div class="padura-icon d-none d-sm-inline-flex">
+                                            <i class="fas fa-guitar"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h3 class="padura-title mb-3">
+                                                <span class="title-highlight-padura">Batch 20/21:</span> පැදුර 2026 (Batch Padura Musical Night) 🪕 🎶
+                                            </h3>
+
+                                            <!-- Countdown Grid -->
+                                            <div class="padura-countdown-grid" id="adminPaduraCountdown">
+                                                <div class="padura-countdown-box">
+                                                    <div class="padura-countdown-number" id="adminPaduraDays">--</div>
+                                                    <div class="countdown-label">Days<span class="countdown-label-si">දින</span></div>
+                                                </div>
+                                                <div class="padura-countdown-box">
+                                                    <div class="padura-countdown-number" id="adminPaduraHours">--</div>
+                                                    <div class="countdown-label">Hours<span class="countdown-label-si">පැය</span></div>
+                                                </div>
+                                                <div class="padura-countdown-box">
+                                                    <div class="padura-countdown-number" id="adminPaduraMinutes">--</div>
+                                                    <div class="countdown-label">Minutes<span class="countdown-label-si">මිනිත්තු</span></div>
+                                                </div>
+                                                <div class="padura-countdown-box">
+                                                    <div class="padura-countdown-number" id="adminPaduraSeconds">--</div>
+                                                    <div class="countdown-label">Seconds<span class="countdown-label-si">තත්පර</span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Slide 3: Academic Notice Card -->
                         <div class="swiper-slide">
                             <div class="academic-notice-card" id="adminAcademicNoticeCard">
                                 <div class="academic-notice-content">
@@ -1506,7 +1750,7 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
                                             </div>
 
                                             <!-- Dashboard Loan Popup Toggle Control Box -->
-                                            <div class="mt-3 p-3 rounded-3" style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(16, 185, 129, 0.35); backdrop-filter: blur(8px);">
+                                            <div class="mt-3 p-3 rounded-3" style="background: #0d1915; border: 1px solid #1c4535;">
                                                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                                                     <div class="d-flex align-items-center gap-3">
                                                         <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background: rgba(16, 185, 129, 0.18); border: 1px solid rgba(16, 185, 129, 0.4); color: #34d399; font-size: 1.2rem;">
@@ -1892,11 +2136,40 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         }
         updateAdminAcademicCountdown();
         setInterval(updateAdminAcademicCountdown, 1000);
+
+        // Admin Padura 2026 Countdown
+        const adminPaduraDate = new Date('2026-11-28T18:00:00+05:30').getTime();
+        function updateAdminPaduraCountdown() {
+            const now = new Date().getTime();
+            const diff = adminPaduraDate - now;
+
+            const daysEl = document.getElementById('adminPaduraDays');
+            const hoursEl = document.getElementById('adminPaduraHours');
+            const minEl = document.getElementById('adminPaduraMinutes');
+            const secEl = document.getElementById('adminPaduraSeconds');
+
+            if (!daysEl || !hoursEl || !minEl || !secEl) return;
+
+            if (diff <= 0) {
+                daysEl.textContent = '00';
+                hoursEl.textContent = '00';
+                minEl.textContent = '00';
+                secEl.textContent = '00';
+                return;
+            }
+
+            daysEl.textContent = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, '0');
+            hoursEl.textContent = String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+            minEl.textContent = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+            secEl.textContent = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
+        }
+        updateAdminPaduraCountdown();
+        setInterval(updateAdminPaduraCountdown, 1000);
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
-        // Admin Announcements Swiper (Batch Photo & Academic Notice in same line)
+        // Admin Announcements Swiper (Batch Photo, Padura, Academic Notice, Loans)
         if (typeof Swiper !== 'undefined') {
             const adminAnnouncementSwiper = new Swiper('.adminAnnouncementsSwiper', {
                 slidesPerView: 1,
@@ -1917,10 +2190,11 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
                     renderBullet: function (index, className) {
                         const labels = [
                             '<i class="fas fa-camera-retro me-1"></i> Batch Photo 2026',
+                            '<i class="fas fa-guitar me-1"></i> පැදුර 2026',
                             '<i class="fas fa-graduation-cap me-1"></i> Academic & Hostel Notice',
                             '<i class="fas fa-hand-holding-dollar me-1"></i> Loans & Repayments'
                         ];
-                        return '<button type="button" class="' + className + ' custom-swiper-pill">' + labels[index] + '</button>';
+                        return '<button type="button" class="' + className + ' custom-swiper-pill">' + (labels[index] || '') + '</button>';
                     },
                 },
                 navigation: {

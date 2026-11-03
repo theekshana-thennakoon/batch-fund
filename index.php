@@ -246,31 +246,65 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: var(--bg-body);
             color: var(--text-primary);
             transition: background-color 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
         }
 
         /* Header styles */
         .scmp-header {
             background-color: var(--header-bg);
             color: white;
-            padding: 10px 0;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1020;
             transition: background-color 0.3s ease;
         }
 
+        body.light-mode .scmp-header {
+            background-color: #ffffff;
+            color: #1e293b;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        body.light-mode .scmp-header .text-white {
+            color: #1e293b !important;
+        }
+
         .scmp-logo {
-            height: 80px;
-            margin-right: 10px;
+            height: 48px;
+            max-height: 48px;
+            width: auto;
+            object-fit: contain;
+            margin-right: 12px;
         }
 
         .scmp-footer {
             background-color: var(--footer-bg);
             color: var(--footer-text);
-            padding: 20px 0;
-            margin-top: 30px;
+            padding: 24px 0 20px 0;
+            margin-top: 36px;
+            border-top: 1px solid var(--card-border);
             transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        body.light-mode .scmp-footer {
+            border-top-color: #e2e8f0;
+        }
+
+        .footer-logo {
+            height: 44px;
+            max-height: 44px;
+            max-width: 120px;
+            width: auto;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
         }
 
         .nav-link {
@@ -287,10 +321,16 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
             background-color: #dc3545;
             color: white;
             border: none;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
         }
 
         .logout-btn:hover {
             background-color: #c82333;
+            color: white;
         }
 
         .shield-icon {
@@ -300,11 +340,31 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
 
         .info-card {
             border: 1px solid var(--card-border);
-            border-radius: 5px;
-            padding: 20px;
-            margin-bottom: 20px;
+            border-radius: 14px;
+            padding: 22px 24px;
+            margin-bottom: 22px;
             background-color: var(--info-card-bg);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
             transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body.light-mode .info-card {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border-color: #e2e8f0;
+        }
+
+        .skeleton-card {
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 22px 24px;
+            margin-bottom: 22px;
+            background-color: var(--info-card-bg);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        body.light-mode .skeleton-card {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border-color: #e2e8f0;
         }
 
         .rank-box {
@@ -325,25 +385,42 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
 
         .contribution-box {
             border: 1px solid var(--contribution-box-border);
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 15px;
+            padding: 18px 20px;
+            border-radius: 14px;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 14px;
             background-color: var(--contribution-box-bg);
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        body.light-mode .contribution-box {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border-color: #e2e8f0;
+        }
+
+        .contribution-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+        }
+
+        body.light-mode .contribution-box:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
         .contribution-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 20px;
+            flex-shrink: 0;
         }
 
         .blue-icon {
@@ -473,11 +550,15 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
 
         /* Theme toggle button */
         .theme-toggle-btn {
-            background-color: rgba(255, 255, 255, 0.2);
-            border: none;
+            background-color: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             color: white;
-            border-radius: 50px;
-            padding: 8px 16px;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             font-size: 14px;
             margin-right: 12px;
             transition: all 0.2s ease;
@@ -485,17 +566,18 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         }
 
         .theme-toggle-btn:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-            transform: scale(1.02);
+            background-color: rgba(255, 255, 255, 0.28);
+            transform: scale(1.04);
         }
 
         body.light-mode .theme-toggle-btn {
-            background-color: rgba(0, 0, 0, 0.1);
-            color: #1a2a4f;
+            background-color: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #1e293b;
         }
 
         body.light-mode .theme-toggle-btn:hover {
-            background-color: rgba(0, 0, 0, 0.2);
+            background-color: #e2e8f0;
         }
 
         /* Responsive adjustments */
@@ -839,56 +921,25 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         /* ========== BATCH PHOTO ANNOUNCEMENT CARD ========== */
         .batch-photo-card {
             position: relative;
-            background: linear-gradient(135deg, rgba(30, 27, 75, 0.78) 0%, rgba(49, 46, 129, 0.6) 50%, rgba(15, 23, 42, 0.85) 100%) !important;
-            backdrop-filter: blur(20px) saturate(190%) !important;
-            -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
-            border: 1px solid rgba(165, 180, 252, 0.3) !important;
-            border-radius: 20px !important;
-            padding: 26px 28px !important;
+            background: #151928 !important;
+            border: 1px solid #282f4e !important;
+            border-radius: 16px !important;
+            padding: 24px 26px !important;
             margin-bottom: 24px !important;
-            box-shadow: 0 16px 40px -10px rgba(99, 102, 241, 0.32), inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
             overflow: hidden;
             transition: all 0.3s ease;
         }
 
-        .batch-photo-card::before {
-            content: '';
-            position: absolute;
-            top: -60px;
-            right: -60px;
-            width: 220px;
-            height: 220px;
-            background: radial-gradient(circle, rgba(168, 85, 247, 0.35) 0%, rgba(56, 189, 248, 0.18) 60%, transparent 80%);
-            border-radius: 50%;
-            pointer-events: none;
-            filter: blur(20px);
-            z-index: 0;
-            animation: orbFloat 6s ease-in-out infinite alternate;
-        }
-
+        .batch-photo-card::before,
         .batch-photo-card::after {
-            content: '';
-            position: absolute;
-            bottom: -40px;
-            left: 20%;
-            width: 180px;
-            height: 180px;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            filter: blur(25px);
-            z-index: 0;
-        }
-
-        @keyframes orbFloat {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(-20px, 15px) scale(1.1); }
+            display: none !important;
         }
 
         body.light-mode .batch-photo-card {
-            background: linear-gradient(135deg, rgba(238, 242, 255, 0.9) 0%, rgba(224, 231, 255, 0.8) 50%, rgba(245, 243, 255, 0.9) 100%) !important;
-            border: 1px solid rgba(99, 102, 241, 0.3) !important;
-            box-shadow: 0 14px 34px -8px rgba(99, 102, 241, 0.18), inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05) !important;
         }
 
         .batch-photo-content {
@@ -1021,26 +1072,24 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         }
 
         .countdown-box {
-            background: rgba(15, 23, 42, 0.65);
-            border: 1px solid rgba(165, 180, 252, 0.25);
-            border-radius: 14px;
+            background: #0f121d;
+            border: 1px solid #23283c;
+            border-radius: 12px;
             padding: 12px 8px;
             text-align: center;
-            backdrop-filter: blur(10px);
-            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
         }
 
         .countdown-box:hover {
-            transform: translateY(-3px);
-            border-color: rgba(168, 85, 247, 0.55);
-            box-shadow: 0 8px 22px rgba(99, 102, 241, 0.35);
+            transform: translateY(-2px);
+            border-color: #4f46e5;
         }
 
         body.light-mode .countdown-box {
-            background: rgba(255, 255, 255, 0.85);
-            border: 1px solid rgba(99, 102, 241, 0.25);
-            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.1);
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
         }
 
         .countdown-number {
@@ -1048,16 +1097,16 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
             font-weight: 800;
             line-height: 1.1;
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(180deg, #38bdf8 0%, #818cf8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+            color: #38bdf8;
+            background: none;
+            -webkit-text-fill-color: initial;
+            text-shadow: none;
         }
 
         body.light-mode .countdown-number {
-            background: linear-gradient(180deg, #2563eb 0%, #4f46e5 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #2563eb;
+            background: none;
+            -webkit-text-fill-color: initial;
             text-shadow: none;
         }
 
@@ -1150,56 +1199,25 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         /* ========== ACADEMIC & HOSTEL NOTICE CARD ========== */
         .academic-notice-card {
             position: relative;
-            background: linear-gradient(135deg, rgba(24, 24, 40, 0.85) 0%, rgba(30, 27, 75, 0.72) 50%, rgba(15, 23, 42, 0.9) 100%) !important;
-            backdrop-filter: blur(20px) saturate(190%) !important;
-            -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
-            border: 1px solid rgba(245, 158, 11, 0.35) !important;
-            border-radius: 20px !important;
-            padding: 26px 28px !important;
+            background: #1a1922 !important;
+            border: 1px solid #3d3527 !important;
+            border-radius: 16px !important;
+            padding: 24px 26px !important;
             margin-bottom: 24px !important;
-            box-shadow: 0 16px 40px -10px rgba(245, 158, 11, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.12) !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
             overflow: hidden;
             transition: all 0.3s ease;
         }
 
-        .academic-notice-card::before {
-            content: '';
-            position: absolute;
-            top: -60px;
-            right: -60px;
-            width: 240px;
-            height: 240px;
-            background: radial-gradient(circle, rgba(245, 158, 11, 0.28) 0%, rgba(239, 68, 68, 0.16) 50%, transparent 75%);
-            border-radius: 50%;
-            pointer-events: none;
-            filter: blur(25px);
-            z-index: 0;
-            animation: orbFloatAmber 7s ease-in-out infinite alternate;
-        }
-
+        .academic-notice-card::before,
         .academic-notice-card::after {
-            content: '';
-            position: absolute;
-            bottom: -50px;
-            left: 15%;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            filter: blur(25px);
-            z-index: 0;
-        }
-
-        @keyframes orbFloatAmber {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(-25px, 20px) scale(1.12); }
+            display: none !important;
         }
 
         body.light-mode .academic-notice-card {
-            background: linear-gradient(135deg, rgba(254, 249, 195, 0.75) 0%, rgba(255, 251, 235, 0.95) 50%, rgba(241, 245, 249, 0.9) 100%) !important;
-            border: 1px solid rgba(217, 119, 6, 0.35) !important;
-            box-shadow: 0 14px 34px -8px rgba(217, 119, 6, 0.16), inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
+            background: #ffffff !important;
+            border: 1px solid #fed7aa !important;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05) !important;
         }
 
         .academic-notice-content {
@@ -1340,26 +1358,25 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         }
 
         .notice-lang-box {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
+            background: #111422;
+            border: 1px solid #232738;
+            border-radius: 14px;
             padding: 18px 20px;
             position: relative;
-            backdrop-filter: blur(10px);
             transition: all 0.25s ease;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         .notice-lang-box:hover {
-            border-color: rgba(245, 158, 11, 0.45);
+            border-color: #f59e0b;
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
         }
 
         body.light-mode .notice-lang-box {
-            background: rgba(255, 255, 255, 0.88);
-            border-color: rgba(217, 119, 6, 0.22);
-            box-shadow: 0 4px 14px rgba(217, 119, 6, 0.08);
+            background: #f8fafc;
+            border-color: #fed7aa;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
         .notice-lang-header {
@@ -1491,26 +1508,24 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         }
 
         .academic-countdown-box {
-            background: rgba(15, 23, 42, 0.65);
-            border: 1px solid rgba(245, 158, 11, 0.28);
-            border-radius: 14px;
+            background: #0f121d;
+            border: 1px solid #362c1e;
+            border-radius: 12px;
             padding: 12px 8px;
             text-align: center;
-            backdrop-filter: blur(10px);
-            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
         }
 
         .academic-countdown-box:hover {
-            transform: translateY(-3px);
-            border-color: rgba(245, 158, 11, 0.6);
-            box-shadow: 0 8px 22px rgba(245, 158, 11, 0.35);
+            transform: translateY(-2px);
+            border-color: #f59e0b;
         }
 
         body.light-mode .academic-countdown-box {
-            background: rgba(255, 255, 255, 0.85);
-            border: 1px solid rgba(217, 119, 6, 0.25);
-            box-shadow: 0 4px 14px rgba(217, 119, 6, 0.1);
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
         }
 
         .academic-countdown-number {
@@ -1518,16 +1533,16 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
             font-weight: 800;
             line-height: 1.1;
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(180deg, #fbbf24 0%, #f97316 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(251, 191, 36, 0.25);
+            color: #fbbf24;
+            background: none;
+            -webkit-text-fill-color: initial;
+            text-shadow: none;
         }
 
         body.light-mode .academic-countdown-number {
-            background: linear-gradient(180deg, #d97706 0%, #ea580c 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #d97706;
+            background: none;
+            -webkit-text-fill-color: initial;
             text-shadow: none;
         }
 
@@ -1590,58 +1605,306 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
             color: #78350f !important;
         }
 
-        /* ========== LOANS & REPAYMENTS NOTICE CARD ========== */
-        .loan-report-notice-card {
+        .padura-notice-card {
             position: relative;
-            background: linear-gradient(135deg, rgba(6, 30, 25, 0.88) 0%, rgba(13, 40, 35, 0.75) 50%, rgba(15, 23, 42, 0.92) 100%) !important;
-            backdrop-filter: blur(20px) saturate(190%) !important;
-            -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
-            border: 1px solid rgba(16, 185, 129, 0.38) !important;
-            border-radius: 20px !important;
-            padding: 26px 28px !important;
-            box-shadow: 0 16px 40px -10px rgba(16, 185, 129, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.12) !important;
+            background: #191426 !important;
+            border: 1px solid #3d2b52 !important;
+            border-radius: 16px !important;
+            padding: 24px 26px !important;
+            margin-bottom: 24px !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
             overflow: hidden;
             transition: all 0.3s ease;
         }
 
-        .loan-report-notice-card::before {
-            content: '';
-            position: absolute;
-            top: -60px;
-            right: -60px;
-            width: 240px;
-            height: 240px;
-            background: radial-gradient(circle, rgba(16, 185, 129, 0.28) 0%, rgba(6, 182, 212, 0.15) 55%, transparent 75%);
-            border-radius: 50%;
-            pointer-events: none;
-            filter: blur(25px);
-            z-index: 0;
-            animation: orbFloatEmerald 7s ease-in-out infinite alternate;
+        .padura-notice-card::before,
+        .padura-notice-card::after {
+            display: none !important;
         }
 
+        body.light-mode .padura-notice-card {
+            background: #ffffff !important;
+            border: 1px solid #fbcfe8 !important;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        .padura-notice-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .padura-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(236, 72, 153, 0.22);
+            border: 1px solid rgba(244, 114, 182, 0.55);
+            color: #fbcfe8;
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 50px;
+            box-shadow: 0 2px 8px rgba(236, 72, 153, 0.25);
+        }
+
+        body.light-mode .padura-badge {
+            background: rgba(219, 39, 119, 0.14);
+            border-color: rgba(219, 39, 119, 0.45);
+            color: #9d174d;
+        }
+
+        .padura-date-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(168, 85, 247, 0.2);
+            border: 1px solid rgba(192, 132, 252, 0.5);
+            color: #e9d5ff;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 5px 13px;
+            border-radius: 50px;
+        }
+
+        body.light-mode .padura-date-pill {
+            background: rgba(147, 51, 234, 0.1);
+            border-color: rgba(147, 51, 234, 0.35);
+            color: #7e22ce;
+        }
+
+        .padura-time-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(59, 130, 246, 0.18);
+            border: 1px solid rgba(96, 165, 250, 0.45);
+            color: #93c5fd;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 5px 13px;
+            border-radius: 50px;
+        }
+
+        body.light-mode .padura-time-pill {
+            background: rgba(37, 99, 235, 0.1);
+            border-color: rgba(37, 99, 235, 0.35);
+            color: #1d4ed8;
+        }
+
+        .padura-tag-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(244, 63, 94, 0.22);
+            border: 1px solid rgba(251, 113, 133, 0.55);
+            color: #fecdd3;
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            padding: 5px 13px;
+            border-radius: 50px;
+            animation: paduraPulse 2.5s infinite ease-in-out;
+        }
+
+        @keyframes paduraPulse {
+            0%, 100% {
+                border-color: rgba(251, 113, 133, 0.55);
+                box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.25);
+            }
+            50% {
+                border-color: rgba(251, 113, 133, 0.95);
+                box-shadow: 0 0 14px rgba(244, 63, 94, 0.45);
+            }
+        }
+
+        body.light-mode .padura-tag-pill {
+            background: rgba(225, 29, 72, 0.12);
+            border-color: rgba(225, 29, 72, 0.4);
+            color: #9f1239;
+        }
+
+        .padura-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #ec4899 0%, #d946ef 50%, #8b5cf6 100%);
+            color: #ffffff;
+            font-size: 1.4rem;
+            box-shadow: 0 8px 22px rgba(236, 72, 153, 0.5);
+            animation: paduraIconBounce 3s infinite ease-in-out;
+            flex-shrink: 0;
+        }
+
+        @keyframes paduraIconBounce {
+            0%, 100% {
+                transform: scale(1) rotate(0deg);
+                box-shadow: 0 8px 22px rgba(236, 72, 153, 0.5);
+            }
+            50% {
+                transform: scale(1.07) rotate(4deg);
+                box-shadow: 0 12px 28px rgba(217, 70, 239, 0.65);
+            }
+        }
+
+        .padura-title {
+            font-size: clamp(1.25rem, 2.6vw, 1.75rem);
+            font-weight: 800;
+            line-height: 1.25;
+            margin: 6px 0 16px 0;
+            color: #ffffff;
+        }
+
+        .padura-title .title-highlight-padura {
+            background: linear-gradient(135deg, #f472b6 0%, #c084fc 50%, #818cf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        body.light-mode .padura-title {
+            color: #1e1b4b;
+        }
+
+        body.light-mode .padura-title .title-highlight-padura {
+            background: linear-gradient(135deg, #db2777 0%, #9333ea 50%, #4f46e5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .padura-countdown-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            max-width: 480px;
+            margin-bottom: 16px;
+        }
+
+        .padura-countdown-box {
+            background: #0f121d;
+            border: 1px solid #35213b;
+            border-radius: 12px;
+            padding: 12px 8px;
+            text-align: center;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .padura-countdown-box:hover {
+            transform: translateY(-2px);
+            border-color: #ec4899;
+        }
+
+        body.light-mode .padura-countdown-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .padura-countdown-number {
+            font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+            font-weight: 800;
+            line-height: 1.1;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #f472b6;
+            background: none;
+            -webkit-text-fill-color: initial;
+            text-shadow: none;
+        }
+
+        body.light-mode .padura-countdown-number {
+            color: #db2777;
+            background: none;
+            -webkit-text-fill-color: initial;
+            text-shadow: none;
+        }
+
+        .padura-countdown-label {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #94a3b8;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        body.light-mode .padura-countdown-label {
+            color: #64748b;
+        }
+
+        .padura-countdown-label-si {
+            display: block;
+            font-size: 0.62rem;
+            color: #64748b;
+            font-weight: 500;
+            margin-top: 1px;
+            letter-spacing: normal;
+        }
+
+        body.light-mode .padura-countdown-label-si {
+            color: #be123c;
+        }
+
+        .btn-calendar-padura {
+            background: rgba(236, 72, 153, 0.2);
+            color: #fbcfe8 !important;
+            border: 1px solid rgba(244, 114, 182, 0.45);
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .btn-calendar-padura:hover {
+            background: rgba(236, 72, 153, 0.36);
+            border-color: rgba(244, 114, 182, 0.8);
+            color: #ffffff !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(236, 72, 153, 0.35);
+        }
+
+        body.light-mode .btn-calendar-padura {
+            background: rgba(219, 39, 119, 0.12);
+            color: #9d174d !important;
+            border-color: rgba(219, 39, 119, 0.35);
+        }
+
+        body.light-mode .btn-calendar-padura:hover {
+            background: rgba(219, 39, 119, 0.22);
+            color: #831843 !important;
+        }
+
+        /* ========== LOANS & REPAYMENTS NOTICE CARD ========== */
+        .loan-report-notice-card {
+            position: relative;
+            background: #11221b !important;
+            border: 1px solid #1c4535 !important;
+            border-radius: 16px !important;
+            padding: 24px 26px !important;
+            margin-bottom: 24px !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .loan-report-notice-card::before,
         .loan-report-notice-card::after {
-            content: '';
-            position: absolute;
-            bottom: -50px;
-            left: 20%;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(5, 150, 105, 0.2) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            filter: blur(25px);
-            z-index: 0;
-        }
-
-        @keyframes orbFloatEmerald {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(-25px, 20px) scale(1.12); }
+            display: none !important;
         }
 
         body.light-mode .loan-report-notice-card {
-            background: linear-gradient(135deg, rgba(209, 250, 229, 0.75) 0%, rgba(236, 253, 245, 0.95) 50%, rgba(240, 253, 250, 0.9) 100%) !important;
-            border: 1px solid rgba(16, 185, 129, 0.35) !important;
-            box-shadow: 0 14px 34px -8px rgba(16, 185, 129, 0.16), inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
+            background: #ffffff !important;
+            border: 1px solid #a7f3d0 !important;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05) !important;
         }
 
         .loan-report-content {
@@ -1753,16 +2016,15 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         }
 
         .loan-message-box {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(16, 185, 129, 0.25);
+            background: #0d1915;
+            border: 1px solid #1c4535;
             border-radius: 14px;
             padding: 16px 20px;
-            backdrop-filter: blur(8px);
         }
 
         body.light-mode .loan-message-box {
-            background: rgba(255, 255, 255, 0.85);
-            border-color: rgba(16, 185, 129, 0.25);
+            background: #f0fdf4;
+            border-color: #a7f3d0;
         }
 
         .loan-statement-en {
@@ -2110,21 +2372,21 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         /* Modal Styles */
         .modal-glass .modal-content {
             background: #111827;
-            border: 1px solid rgba(16, 185, 129, 0.35);
-            border-radius: 20px;
-            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
+            border: 1px solid #1f2937;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             color: #e5e7eb;
         }
 
         body.light-mode .modal-glass .modal-content {
             background: #ffffff;
-            border-color: rgba(16, 185, 129, 0.25);
-            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+            border-color: #e2e8f0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             color: #1f2937;
         }
 
         .modal-glass .modal-header {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid #1f2937;
             padding: 20px 24px;
         }
 
@@ -2133,7 +2395,7 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         }
 
         .modal-glass .modal-footer {
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1px solid #1f2937;
             padding: 16px 24px;
         }
 
@@ -2143,24 +2405,24 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
 
         /* ========== LOANS RESPONSIVE MOBILE STYLES ========== */
         .loan-mobile-card {
-            background: rgba(15, 23, 42, 0.7);
-            border: 1px solid rgba(16, 185, 129, 0.28);
+            background: #151928;
+            border: 1px solid #282f4e;
             border-radius: 14px;
             padding: 16px;
             margin-bottom: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
             transition: all 0.25s ease;
         }
 
         body.light-mode .loan-mobile-card {
             background: #ffffff;
-            border-color: rgba(16, 185, 129, 0.22);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-color: #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
         .loan-mobile-card-total {
-            background: rgba(16, 185, 129, 0.12) !important;
-            border: 1px solid rgba(16, 185, 129, 0.35) !important;
+            background: #0f241c !important;
+            border: 1px solid #1c4535 !important;
         }
 
         body.light-mode .loan-mobile-card-total {
@@ -2305,6 +2567,7 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         }
 
         .announcementsSwiper .swiper-slide .batch-photo-card,
+        .announcementsSwiper .swiper-slide .padura-notice-card,
         .announcementsSwiper .swiper-slide .academic-notice-card,
         .announcementsSwiper .swiper-slide .loan-report-notice-card {
             width: 100%;
@@ -2390,8 +2653,8 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid #2d334e;
+            background: #1a1e30;
             color: #cbd5e1;
             display: inline-flex;
             align-items: center;
@@ -2399,25 +2662,24 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
             font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.2s ease;
-            backdrop-filter: blur(8px);
         }
 
         .swiper-nav-btn:hover {
-            background: rgba(99, 102, 241, 0.3);
-            border-color: rgba(165, 180, 252, 0.5);
+            background: #252b45;
+            border-color: #4f46e5;
             color: #ffffff;
-            transform: scale(1.08);
+            transform: scale(1.05);
         }
 
         body.light-mode .swiper-nav-btn {
-            background: rgba(0, 0, 0, 0.05);
-            border-color: rgba(0, 0, 0, 0.12);
+            background: #f1f5f9;
+            border-color: #cbd5e1;
             color: #475569;
         }
 
         body.light-mode .swiper-nav-btn:hover {
-            background: rgba(99, 102, 241, 0.15);
-            color: #4338ca;
+            background: #e2e8f0;
+            color: #1e293b;
         }
 
         @media (max-width: 768px) {
@@ -2496,8 +2758,6 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
             }
         }
     </style>
-    <!-- Glassy Screen Styling -->
-    <link rel="stylesheet" href="./assets/glassy.css">
 </head>
 
 <body class="dark-mode">
@@ -2906,7 +3166,67 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
                             </div>
                         </div>
 
-                        <!-- Slide 2: Academic Notice Card -->
+                        <!-- Slide 2: Padura 2026 Card -->
+                        <div class="swiper-slide">
+                            <div class="padura-notice-card" id="paduraNoticeCard">
+                                <div class="padura-notice-content">
+                                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                            <span class="padura-badge">
+                                                <i class="fas fa-guitar"></i> Cultural & Musical Eve • Batch 20/21
+                                            </span>
+                                            <span class="padura-date-pill">
+                                                <i class="far fa-calendar-alt"></i> 2026.11.28 (Saturday)
+                                            </span>
+                                            <span class="padura-time-pill">
+                                                <i class="fas fa-clock"></i> 06:00 PM Onwards
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex align-items-start gap-3 mt-3">
+                                        <div class="padura-icon d-none d-sm-inline-flex">
+                                            <i class="fas fa-guitar"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h3 class="padura-title mb-3">
+                                                <span class="title-highlight-padura">Batch 20/21:</span> පැදුර 2026 (Padura Musical Night) 🪕 🎶
+                                            </h3>
+
+                                            <!-- Countdown Timer to 2026.11.28 18:00:00 -->
+                                            <div class="padura-countdown-grid" id="paduraCountdown">
+                                                <div class="padura-countdown-box">
+                                                    <div class="padura-countdown-number" id="paduraDays">--</div>
+                                                    <div class="padura-countdown-label">Days<span class="padura-countdown-label-si">දින</span></div>
+                                                </div>
+                                                <div class="padura-countdown-box">
+                                                    <div class="padura-countdown-number" id="paduraHours">--</div>
+                                                    <div class="padura-countdown-label">Hours<span class="padura-countdown-label-si">පැය</span></div>
+                                                </div>
+                                                <div class="padura-countdown-box">
+                                                    <div class="padura-countdown-number" id="paduraMinutes">--</div>
+                                                    <div class="padura-countdown-label">Minutes<span class="padura-countdown-label-si">මිනිත්තු</span></div>
+                                                </div>
+                                                <div class="padura-countdown-box">
+                                                    <div class="padura-countdown-number" id="paduraSeconds">--</div>
+                                                    <div class="padura-countdown-label">Seconds<span class="padura-countdown-label-si">තත්පර</span></div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Actions -->
+                                            <div class="batch-actions">
+                                                <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Batch+20%2F21+-+%E0%B6%B4%E0%B7%90%E0%B6%AF%E0%B7%94%E0%B6%BB+2026+(Padura)&dates=20261128T123000Z/20261128T183000Z&details=Official+Batch+Padura+Musical+Night+for+Batch+20%2F21.+An+evening+of+acoustic+melodies%2C+cultural+harmony%2C+and+memorable+batch+bonding!&location=University+Premises" 
+                                                   target="_blank" rel="noopener noreferrer" class="btn-calendar-padura" title="Add event to Google Calendar">
+                                                    <i class="far fa-calendar-plus"></i> Add to Calendar
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Slide 3: Academic Notice Card -->
                         <div class="swiper-slide">
                             <div class="academic-notice-card" id="academicNoticeCard">
                                 <div class="academic-notice-content">
@@ -4148,7 +4468,55 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
             updateAcademicCountdown();
             setInterval(updateAcademicCountdown, 1000);
 
-            // Announcements Swiper (Batch Photo & Academic Notice in same line)
+            // Padura 2026 Countdown Logic (Target: 2026.11.28 18:00:00 Asia/Colombo)
+            const paduraTargetDate = new Date('2026-11-28T18:00:00+05:30').getTime();
+
+            function updatePaduraCountdown() {
+                const now = new Date().getTime();
+                const distance = paduraTargetDate - now;
+
+                const daysEl = document.getElementById('paduraDays');
+                const hoursEl = document.getElementById('paduraHours');
+                const minEl = document.getElementById('paduraMinutes');
+                const secEl = document.getElementById('paduraSeconds');
+
+                if (!daysEl || !hoursEl || !minEl || !secEl) return;
+
+                if (distance <= 0) {
+                    daysEl.textContent = '00';
+                    hoursEl.textContent = '00';
+                    minEl.textContent = '00';
+                    secEl.textContent = '00';
+
+                    const countdownContainer = document.getElementById('paduraCountdown');
+                    if (countdownContainer && !countdownContainer.dataset.celebrated) {
+                        countdownContainer.dataset.celebrated = 'true';
+                        countdownContainer.innerHTML = `
+                            <div class="padura-countdown-box w-100" style="grid-column: 1 / -1; padding: 14px;">
+                                <div class="padura-countdown-number" style="font-size: 1.35rem; color: #f43f5e;">
+                                    🪕 පැදුර 2026 IS LIVE NOW! ENJOY THE MUSICAL EVE! 🎶✨
+                                </div>
+                            </div>
+                        `;
+                    }
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                daysEl.textContent = String(days).padStart(2, '0');
+                hoursEl.textContent = String(hours).padStart(2, '0');
+                minEl.textContent = String(minutes).padStart(2, '0');
+                secEl.textContent = String(seconds).padStart(2, '0');
+            }
+
+            updatePaduraCountdown();
+            setInterval(updatePaduraCountdown, 1000);
+
+            // Announcements Swiper (Batch Photo, Padura & Academic Notice)
             if (typeof Swiper !== 'undefined') {
                 window.announcementsSwiperInstance = new Swiper('.announcementsSwiper', {
                     slidesPerView: 1,
@@ -4169,6 +4537,7 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
                         renderBullet: function (index, className) {
                             const labels = [
                                 '<i class="fas fa-camera-retro me-1"></i> Batch Photo 2026',
+                                '<i class="fas fa-guitar me-1"></i> පැදුර 2026',
                                 '<i class="fas fa-graduation-cap me-1"></i> Academic & Hostel Notice'
                             ];
                             return '<button type="button" class="' + className + ' custom-swiper-pill">' + (labels[index] || '') + '</button>';

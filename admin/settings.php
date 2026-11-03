@@ -263,10 +263,10 @@ $overall_loan_progress = $total_batch_loans > 0 ? round(($total_batch_loans_paid
         /* Modal styling matching user dashboard */
         .modal-glass .modal-content {
             background: #111827;
-            border: 1px solid rgba(16, 185, 129, 0.45);
+            border: 1px solid #1c4535;
             color: #e9ecef;
             border-radius: 16px;
-            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 35px rgba(16, 185, 129, 0.25);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         .loan-stat-badge-grid {
@@ -276,8 +276,8 @@ $overall_loan_progress = $total_batch_loans > 0 ? round(($total_batch_loans_paid
         }
 
         .loan-stat-mini-pill {
-            background: rgba(15, 23, 42, 0.7);
-            border: 1px solid rgba(16, 185, 129, 0.25);
+            background: #111422;
+            border: 1px solid #1c4535;
             border-radius: 10px;
             padding: 8px 10px;
             display: flex;
