@@ -1004,10 +1004,13 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         }
 
         @keyframes cameraPulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: scale(1) rotate(0deg);
                 box-shadow: 0 8px 20px rgba(99, 102, 241, 0.45);
             }
+
             50% {
                 transform: scale(1.08) rotate(-4deg);
                 box-shadow: 0 12px 28px rgba(168, 85, 247, 0.6);
@@ -1283,10 +1286,13 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         }
 
         @keyframes hostelPulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 border-color: rgba(248, 113, 113, 0.5);
                 box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.25);
             }
+
             50% {
                 border-color: rgba(248, 113, 113, 0.9);
                 box-shadow: 0 0 14px rgba(239, 68, 68, 0.4);
@@ -1315,10 +1321,13 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         }
 
         @keyframes academicPulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: scale(1) rotate(0deg);
                 box-shadow: 0 8px 20px rgba(245, 158, 11, 0.45);
             }
+
             50% {
                 transform: scale(1.07) rotate(-3deg);
                 box-shadow: 0 12px 28px rgba(234, 88, 12, 0.6);
@@ -1729,10 +1738,13 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         }
 
         @keyframes paduraPulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 border-color: rgba(251, 113, 133, 0.55);
                 box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.25);
             }
+
             50% {
                 border-color: rgba(251, 113, 133, 0.95);
                 box-shadow: 0 0 14px rgba(244, 63, 94, 0.45);
@@ -1761,10 +1773,13 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         }
 
         @keyframes paduraIconBounce {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: scale(1) rotate(0deg);
                 box-shadow: 0 8px 22px rgba(236, 72, 153, 0.5);
             }
+
             50% {
                 transform: scale(1.07) rotate(4deg);
                 box-shadow: 0 12px 28px rgba(217, 70, 239, 0.65);
@@ -1968,10 +1983,13 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         }
 
         @keyframes pulseEmerald {
-            0%, 100% {
+
+            0%,
+            100% {
                 border-color: rgba(34, 211, 238, 0.45);
                 box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.2);
             }
+
             50% {
                 border-color: rgba(34, 211, 238, 0.85);
                 box-shadow: 0 0 12px rgba(6, 182, 212, 0.35);
@@ -2000,10 +2018,13 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         }
 
         @keyframes loanPulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: scale(1) rotate(0deg);
                 box-shadow: 0 8px 20px rgba(16, 185, 129, 0.45);
             }
+
             50% {
                 transform: scale(1.07) rotate(3deg);
                 box-shadow: 0 12px 28px rgba(16, 185, 129, 0.6);
@@ -2266,10 +2287,25 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
             flex-shrink: 0;
         }
 
-        .loan-kpi-icon.blue { background: rgba(59, 130, 246, 0.18); color: #60a5fa; }
-        .loan-kpi-icon.green { background: rgba(16, 185, 129, 0.18); color: #34d399; }
-        .loan-kpi-icon.amber { background: rgba(245, 158, 11, 0.18); color: #fbbf24; }
-        .loan-kpi-icon.purple { background: rgba(139, 92, 246, 0.18); color: #a78bfa; }
+        .loan-kpi-icon.blue {
+            background: rgba(59, 130, 246, 0.18);
+            color: #60a5fa;
+        }
+
+        .loan-kpi-icon.green {
+            background: rgba(16, 185, 129, 0.18);
+            color: #34d399;
+        }
+
+        .loan-kpi-icon.amber {
+            background: rgba(245, 158, 11, 0.18);
+            color: #fbbf24;
+        }
+
+        .loan-kpi-icon.purple {
+            background: rgba(139, 92, 246, 0.18);
+            color: #a78bfa;
+        }
 
         .loan-kpi-label {
             font-size: 0.78rem;
@@ -2846,10 +2882,10 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
         <hr>
 
         <!-- FAQ Notice -->
-        <div class="alert alert-info">
+        <!-- <div class="alert alert-info">
             <p class="mb-0">Details are listed here from January 1, 2025..</p>
             <p class="mb-0">2025 වර්ෂයේ ජනවාරි 1 වනදා සිට විස්තර මෙහි සදහන් වේ. </p>
-        </div>
+        </div> -->
 
         <!-- Flowbite Skeleton Loader -->
         <div id="skeleton-loader" class="flowbite-skeleton">
@@ -2862,10 +2898,18 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
                 <div class="skeleton-line xl w-60 mb-2"></div>
                 <div class="skeleton-line sm w-85 mb-3"></div>
                 <div class="row g-2" style="max-width: 480px;">
-                    <div class="col-3"><div class="skeleton-line xl" style="height: 52px; border-radius: 12px;"></div></div>
-                    <div class="col-3"><div class="skeleton-line xl" style="height: 52px; border-radius: 12px;"></div></div>
-                    <div class="col-3"><div class="skeleton-line xl" style="height: 52px; border-radius: 12px;"></div></div>
-                    <div class="col-3"><div class="skeleton-line xl" style="height: 52px; border-radius: 12px;"></div></div>
+                    <div class="col-3">
+                        <div class="skeleton-line xl" style="height: 52px; border-radius: 12px;"></div>
+                    </div>
+                    <div class="col-3">
+                        <div class="skeleton-line xl" style="height: 52px; border-radius: 12px;"></div>
+                    </div>
+                    <div class="col-3">
+                        <div class="skeleton-line xl" style="height: 52px; border-radius: 12px;"></div>
+                    </div>
+                    <div class="col-3">
+                        <div class="skeleton-line xl" style="height: 52px; border-radius: 12px;"></div>
+                    </div>
                 </div>
             </div>
 
@@ -3171,8 +3215,8 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
 
                                             <!-- Actions -->
                                             <div class="batch-actions">
-                                                <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Batch+Photo+2026+-+Batch+20/21&dates=20261107T030000Z/20261107T113000Z&details=Official+Batch+Photo+Session+for+Batch+20/21.+Freezing+our+memories+together!&location=University+Premises" 
-                                                   target="_blank" rel="noopener noreferrer" class="btn-calendar" title="Add event to Google Calendar">
+                                                <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Batch+Photo+2026+-+Batch+20/21&dates=20261107T030000Z/20261107T113000Z&details=Official+Batch+Photo+Session+for+Batch+20/21.+Freezing+our+memories+together!&location=University+Premises"
+                                                    target="_blank" rel="noopener noreferrer" class="btn-calendar" title="Add event to Google Calendar">
                                                     <i class="far fa-calendar-plus"></i> Add to Calendar
                                                 </a>
                                                 <div class="batch-chip-item">
@@ -3237,8 +3281,8 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
 
                                             <!-- Actions -->
                                             <div class="batch-actions">
-                                                <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Batch+20%2F21+-+%E0%B6%B4%E0%B7%90%E0%B6%AF%E0%B7%94%E0%B6%BB+2026+(Padura)&dates=20261123T123000Z/20261123T183000Z&details=Official+Batch+Padura+Musical+Night+for+Batch+20%2F21.+An+evening+of+acoustic+melodies%2C+cultural+harmony%2C+and+memorable+batch+bonding!&location=University+Premises+(%E0%B6%BB%E0%B7%8F%E0%B6%A2%E0%B6%BB%E0%B6%A7+%E0%B7%80%E0%B7%92%E0%B7%81%E0%B7%8d%E0%B7%80%E0%B7%92%E0%B6%AF%E0%B7%8d%E0%B6%BA%E0%B7%8F%E0%B6%BD+%E0%B6%B4%E0%B6%BB%E0%B7%92%E0%B7%81%E0%B7%8d%E0%B6%BB%E0%B6%BA)" 
-                                                   target="_blank" rel="noopener noreferrer" class="btn-calendar-padura" title="Add event to Google Calendar">
+                                                <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Batch+20%2F21+-+%E0%B6%B4%E0%B7%90%E0%B6%AF%E0%B7%94%E0%B6%BB+2026+(Padura)&dates=20261123T123000Z/20261123T183000Z&details=Official+Batch+Padura+Musical+Night+for+Batch+20%2F21.+An+evening+of+acoustic+melodies%2C+cultural+harmony%2C+and+memorable+batch+bonding!&location=University+Premises+(%E0%B6%BB%E0%B7%8F%E0%B6%A2%E0%B6%BB%E0%B6%A7+%E0%B7%80%E0%B7%92%E0%B7%81%E0%B7%8d%E0%B7%80%E0%B7%92%E0%B6%AF%E0%B7%8d%E0%B6%BA%E0%B7%8F%E0%B6%BD+%E0%B6%B4%E0%B6%BB%E0%B7%92%E0%B7%81%E0%B7%8d%E0%B6%BB%E0%B6%BA)"
+                                                    target="_blank" rel="noopener noreferrer" class="btn-calendar-padura" title="Add event to Google Calendar">
                                                     <i class="far fa-calendar-plus"></i> Add to Calendar
                                                 </a>
                                                 <div class="batch-chip-item">
@@ -3300,8 +3344,8 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
 
                                             <!-- Actions & Guidelines -->
                                             <div class="batch-actions">
-                                                <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Batch+20/21+Academic+Conclusion+%26+Hostel+Clearance&dates=20261130T030000Z/20261130T180000Z&details=Final+date+of+academic+period+for+Batch+20/21.+All+students+must+vacate+hostels+with+all+belongings.&location=University+Premises" 
-                                                   target="_blank" rel="noopener noreferrer" class="btn-calendar-amber" title="Add event to Google Calendar">
+                                                <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Batch+20/21+Academic+Conclusion+%26+Hostel+Clearance&dates=20261130T030000Z/20261130T180000Z&details=Final+date+of+academic+period+for+Batch+20/21.+All+students+must+vacate+hostels+with+all+belongings.&location=University+Premises"
+                                                    target="_blank" rel="noopener noreferrer" class="btn-calendar-amber" title="Add event to Google Calendar">
                                                     <i class="far fa-calendar-plus"></i> Add to Calendar
                                                 </a>
                                             </div>
@@ -3486,12 +3530,12 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
                         <!-- 1. Mobile Cards View (Optimized for Phones) -->
                         <div class="loan-mobile-cards-container d-block d-md-none">
                             <?php if (!empty($dashboard_loans)): ?>
-                                <?php foreach ($dashboard_loans as $idx => $loan): 
+                                <?php foreach ($dashboard_loans as $idx => $loan):
                                     $l_tot = (float)$loan['total'];
                                     $l_paid = (float)$loan['paid'];
                                     $l_bal = (float)$loan['balance'];
                                     $l_prog = $l_tot > 0 ? round(($l_paid / $l_tot) * 100, 1) : 0;
-                                    
+
                                     if ($l_bal <= 0) {
                                         $badge_class = 'badge-settled';
                                         $badge_icon = 'fa-check-circle';
@@ -3603,12 +3647,12 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
                                 </thead>
                                 <tbody>
                                     <?php if (!empty($dashboard_loans)): ?>
-                                        <?php foreach ($dashboard_loans as $idx => $loan): 
+                                        <?php foreach ($dashboard_loans as $idx => $loan):
                                             $l_tot = (float)$loan['total'];
                                             $l_paid = (float)$loan['paid'];
                                             $l_bal = (float)$loan['balance'];
                                             $l_prog = $l_tot > 0 ? round(($l_paid / $l_tot) * 100, 1) : 0;
-                                            
+
                                             if ($l_bal <= 0) {
                                                 $badge_class = 'badge-settled';
                                                 $badge_icon = 'fa-check-circle';
@@ -3696,69 +3740,70 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
 
     <!-- Loan Notice On-Load Popup Modal -->
     <?php if ($display_loan_popup): ?>
-    <div class="modal fade modal-glass" id="loanNoticePopupModal" tabindex="-1" aria-labelledby="loanNoticePopupModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content" style="border: 1px solid rgba(16, 185, 129, 0.45); box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 35px rgba(16, 185, 129, 0.25);">
-                <div class="modal-header pb-2" style="border-bottom: 1px solid rgba(16, 185, 129, 0.2);">
-                    <div class="d-flex align-items-center gap-2 flex-wrap">
-                        <span class="loan-badge">
-                            <i class="fas fa-hand-holding-dollar"></i> LOANS & REPAYMENTS • BATCH 20/21
-                        </span>
-                        <span class="loan-status-pill loan-status-active">
-                            <i class="fas fa-check-circle"></i> Published • Active Report
-                        </span>
-                    </div>
-                    <div class="d-flex align-items-center gap-2 ms-auto">
-                        <div class="batch-chip-item d-none d-sm-inline-flex me-1">
-                            <i class="fas fa-chart-pie"></i> Financial Transparency
+        <div class="modal fade modal-glass" id="loanNoticePopupModal" tabindex="-1" aria-labelledby="loanNoticePopupModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content" style="border: 1px solid rgba(16, 185, 129, 0.45); box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 35px rgba(16, 185, 129, 0.25);">
+                    <div class="modal-header pb-2" style="border-bottom: 1px solid rgba(16, 185, 129, 0.2);">
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <span class="loan-badge">
+                                <i class="fas fa-hand-holding-dollar"></i> LOANS & REPAYMENTS • BATCH 20/21
+                            </span>
+                            <span class="loan-status-pill loan-status-active">
+                                <i class="fas fa-check-circle"></i> Published • Active Report
+                            </span>
                         </div>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                </div>
-                <div class="modal-body p-3 p-md-4">
-                    <div class="d-flex align-items-start gap-3">
-                        <div class="loan-icon d-none d-sm-inline-flex">
-                            <i class="fas fa-file-invoice-dollar"></i>
+                        <div class="d-flex align-items-center gap-2 ms-auto">
+                            <div class="batch-chip-item d-none d-sm-inline-flex me-1">
+                                <i class="fas fa-chart-pie"></i> Financial Transparency
+                            </div>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="flex-grow-1">
-                            <h3 class="loan-card-title mb-2">
-                                <span class="title-highlight-emerald">Batch 20/21:</span> Loans & Repayments Report 📋
-                            </h3>
+                    </div>
+                    <div class="modal-body p-3 p-md-4">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="loan-icon d-none d-sm-inline-flex">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h3 class="loan-card-title mb-2">
+                                    <span class="title-highlight-emerald">Batch 20/21:</span> Loans & Repayments Report 📋
+                                </h3>
 
-                            <div class="loan-message-box">
-                                <!-- Quick Mini-Stats Grid -->
-                                <div class="loan-stat-badge-grid mt-0">
-                                    <div class="loan-stat-mini-pill">
-                                        <span class="loan-mini-lbl"><i class="fas fa-coins me-1 text-warning"></i>Total Borrowed</span>
-                                        <span class="loan-mini-val">Rs. <?php echo number_format($total_batch_loans, 2); ?></span>
-                                    </div>
-                                    <div class="loan-stat-mini-pill">
-                                        <span class="loan-mini-lbl"><i class="fas fa-check me-1 text-success"></i>Settled / Paid</span>
-                                        <span class="loan-mini-val text-emerald">Rs. <?php echo number_format($total_batch_loans_paid, 2); ?></span>
-                                    </div>
-                                    <div class="loan-stat-mini-pill">
-                                        <span class="loan-mini-lbl"><i class="fas fa-clock me-1 text-info"></i>Balance Due</span>
-                                        <span class="loan-mini-val text-warning">Rs. <?php echo number_format($total_batch_loans_balance, 2); ?></span>
-                                    </div>
-                                    <div class="loan-stat-mini-pill">
-                                        <span class="loan-mini-lbl"><i class="fas fa-chart-line me-1 text-primary"></i>Repaid Rate</span>
-                                        <span class="loan-mini-val"><?php echo $overall_loan_progress; ?>%</span>
+                                <div class="loan-message-box">
+                                    <!-- Quick Mini-Stats Grid -->
+                                    <div class="loan-stat-badge-grid mt-0">
+                                        <div class="loan-stat-mini-pill">
+                                            <span class="loan-mini-lbl"><i class="fas fa-coins me-1 text-warning"></i>Total Borrowed</span>
+                                            <span class="loan-mini-val">Rs. <?php echo number_format($total_batch_loans, 2); ?></span>
+                                        </div>
+                                        <div class="loan-stat-mini-pill">
+                                            <span class="loan-mini-lbl"><i class="fas fa-check me-1 text-success"></i>Settled / Paid</span>
+                                            <span class="loan-mini-val text-emerald">Rs. <?php echo number_format($total_batch_loans_paid, 2); ?></span>
+                                        </div>
+                                        <div class="loan-stat-mini-pill">
+                                            <span class="loan-mini-lbl"><i class="fas fa-clock me-1 text-info"></i>Balance Due</span>
+                                            <span class="loan-mini-val text-warning">Rs. <?php echo number_format($total_batch_loans_balance, 2); ?></span>
+                                        </div>
+                                        <div class="loan-stat-mini-pill">
+                                            <span class="loan-mini-lbl"><i class="fas fa-chart-line me-1 text-primary"></i>Repaid Rate</span>
+                                            <span class="loan-mini-val"><?php echo $overall_loan_progress; ?>%</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
-                                <button type="button" class="btn btn-emerald-action" id="popupOpenDetailsModalBtn">
-                                    <i class="fas fa-table-list me-2"></i>View Loan Details & Summary
-                                </button>
-                                <button type="button" class="btn btn-outline-emerald-action" id="popupViewLoansTabBtn">
-                                    <i class="fas fa-table me-2"></i>View in Dashboard Table
-                                </button>
-                                <a href="download_loan_pdf.php" target="_blank" class="btn btn-outline-emerald-action" title="Download Official PDF Report">
-                                    <i class="fas fa-file-pdf me-2 text-danger"></i>Download as PDF
-                                </a>
-                                <div class="batch-chip-item ms-auto d-none d-md-inline-flex">
-                                    <i class="fas fa-shield-halved text-info"></i> Official Audit Verified
+                                <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
+                                    <button type="button" class="btn btn-emerald-action" id="popupOpenDetailsModalBtn">
+                                        <i class="fas fa-table-list me-2"></i>View Loan Details & Summary
+                                    </button>
+                                    <button type="button" class="btn btn-outline-emerald-action" id="popupViewLoansTabBtn">
+                                        <i class="fas fa-table me-2"></i>View in Dashboard Table
+                                    </button>
+                                    <a href="download_loan_pdf.php" target="_blank" class="btn btn-outline-emerald-action" title="Download Official PDF Report">
+                                        <i class="fas fa-file-pdf me-2 text-danger"></i>Download as PDF
+                                    </a>
+                                    <div class="batch-chip-item ms-auto d-none d-md-inline-flex">
+                                        <i class="fas fa-shield-halved text-info"></i> Official Audit Verified
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -3766,7 +3811,6 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
                 </div>
             </div>
         </div>
-    </div>
     <?php endif; ?>
 
     <!-- Loan Details Modal -->
@@ -3849,12 +3893,12 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
                     <!-- 1. Mobile Cards View inside Modal -->
                     <div class="loan-mobile-cards-container d-block d-md-none mb-3">
                         <?php if (!empty($dashboard_loans)): ?>
-                            <?php foreach ($dashboard_loans as $idx => $loan): 
+                            <?php foreach ($dashboard_loans as $idx => $loan):
                                 $l_tot = (float)$loan['total'];
                                 $l_paid = (float)$loan['paid'];
                                 $l_bal = (float)$loan['balance'];
                                 $l_prog = $l_tot > 0 ? round(($l_paid / $l_tot) * 100, 1) : 0;
-                                
+
                                 if ($l_bal <= 0) {
                                     $badge_class = 'badge-settled';
                                     $badge_icon = 'fa-check-circle';
@@ -3961,12 +4005,12 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
                             </thead>
                             <tbody>
                                 <?php if (!empty($dashboard_loans)): ?>
-                                    <?php foreach ($dashboard_loans as $idx => $loan): 
+                                    <?php foreach ($dashboard_loans as $idx => $loan):
                                         $l_tot = (float)$loan['total'];
                                         $l_paid = (float)$loan['paid'];
                                         $l_bal = (float)$loan['balance'];
                                         $l_prog = $l_tot > 0 ? round(($l_paid / $l_tot) * 100, 1) : 0;
-                                        
+
                                         if ($l_bal <= 0) {
                                             $badge_class = 'badge-settled';
                                             $badge_icon = 'fa-check-circle';
@@ -4559,7 +4603,7 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
                     pagination: {
                         el: '.announcement-pagination',
                         clickable: true,
-                        renderBullet: function (index, className) {
+                        renderBullet: function(index, className) {
                             const labels = [
                                 '<i class="fas fa-camera-retro me-1"></i> Batch Photo 2026',
                                 '<i class="fas fa-guitar me-1"></i> පැදුර 2026',
@@ -4642,7 +4686,10 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
                     const loansTabBtn = document.getElementById('loansTabButton');
                     if (loansTabBtn) {
                         loansTabBtn.click();
-                        loansTabBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        loansTabBtn.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
                     }
                 });
             }
@@ -4682,7 +4729,10 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
                         setTimeout(function() {
                             const loansCard = document.getElementById('loansDetailsCard');
                             if (loansCard) {
-                                loansCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                loansCard.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'start'
+                                });
                             }
                         }, 200);
                     }
