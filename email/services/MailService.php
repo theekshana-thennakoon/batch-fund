@@ -38,16 +38,76 @@ class MailService
     }
 
     /**
+     * Get configured From Name according to the mail type
+     * @param string $mailType
+     * @return string
+     */
+    public function getFromNameForMail($mailType = 'default')
+    {
+        return $this->smtp['from_names'][$mailType]
+            ?? $this->smtp['from_names']['default']
+            ?? $this->smtp['from_name']
+            ?? 'Batch Fund (20/21)';
+    }
+
+    /**
+     * Resolve the From Name according to mail type or subject keywords
+     * @param string $subject
+     * @param string|null $explicitName
+     * @return string
+     */
+    public function resolveFromName($subject = '', $explicitName = null)
+    {
+        if (!empty($explicitName)) {
+            return $explicitName;
+        }
+
+        $fromNames = $this->smtp['from_names'] ?? [];
+        if (!empty($fromNames) && !empty($subject)) {
+            $subLower = mb_strtolower($subject, 'UTF-8');
+            if (mb_strpos($subLower, 'පැදුර') !== false || mb_strpos($subLower, 'padura') !== false) {
+                return $fromNames['padura_notice'] ?? 'Batch Fund - පැදුර 2026';
+            }
+            if (mb_strpos($subLower, 'batch photo') !== false) {
+                return $fromNames['batch_photo_notice'] ?? 'Batch Fund - Batch Photo 2026';
+            }
+            if (mb_strpos($subLower, 'loan') !== false) {
+                return $fromNames['loan_report_notice'] ?? 'Batch Fund - Loan Scheme';
+            }
+            if (mb_strpos($subLower, 'payment summary') !== false) {
+                return $fromNames['payment_summary'] ?? 'Batch Fund - Payment Summary';
+            }
+            if (mb_strpos($subLower, 'invoice') !== false) {
+                return $fromNames['invoice'] ?? 'Batch Fund - Official Invoice';
+            }
+            if (mb_strpos($subLower, 'reminder') !== false) {
+                return $fromNames['reminder'] ?? 'Batch Fund - Payment Reminder';
+            }
+            if (mb_strpos($subLower, 'inquiry') !== false || mb_strpos($subLower, 'contact') !== false) {
+                return $fromNames['contact'] ?? 'Batch Fund - Inquiry';
+            }
+            if (mb_strpos($subLower, 'newsletter') !== false) {
+                return $fromNames['newsletter'] ?? 'Batch Fund - Newsletter';
+            }
+        }
+
+        return $fromNames['default'] ?? $this->smtp['from_name'] ?? 'Batch Fund (20/21)';
+    }
+
+    /**
      * Send an email
      * @param string|array $to Recipient email(s)
      * @param string $subject Email subject
      * @param string $body HTML body content
      * @param array $replyTo (optional) [email, name]
+     * @param string|null $fromName (optional) Specific sender display name according to the mail
      * @return bool|string Returns true if sent, or error message
      */
-    public function sendMail($to, $subject, $body, $replyTo = [])
+    public function sendMail($to, $subject, $body, $replyTo = [], $fromName = null)
     {
         try {
+            $resolvedFromName = $this->resolveFromName($subject, $fromName);
+
             if ($this->mail === null) {
                 $this->mail = new PHPMailer(true);
                 $this->mail->isSMTP();
@@ -57,7 +117,6 @@ class MailService
                 $this->mail->SMTPAuth   = $this->smtp['auth'];
                 $this->mail->Username   = $this->smtp['username'];
                 $this->mail->Password   = $this->smtp['password'];
-                $this->mail->setFrom($this->smtp['from_email'], $this->smtp['from_name']);
                 $this->mail->CharSet    = 'UTF-8';
                 $this->mail->Encoding   = 'base64';
                 $this->mail->SMTPDebug  = $this->smtp['debug'] ? 2 : 0;
@@ -76,6 +135,9 @@ class MailService
             }
 
             $mail = $this->mail;
+
+            // Set the dynamic From Name according to the specific mail
+            $mail->setFrom($this->smtp['from_email'], $resolvedFromName);
 
             $mail->clearAddresses();
             $mail->clearReplyTos();

@@ -16,7 +16,7 @@ $logoSrc = ($isWebPreview || empty($companyLogo) || $companyLogo === '../assets/
 
 $eventDateFormatted = 'Saturday, November 07, 2026';
 $eventDateCode = '2026.11.07';
-$eventTime = '08:30 AM Onwards';
+$eventTime = '07:00 AM Onwards';
 $eventVenue = 'University Premises';
 $calendarLink = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Official+Batch+Photo+2026+-+Batch+20/21&dates=20261107T030000Z/20261107T113000Z&details=Official+Batch+Photo+Session+for+Batch+20/21.+Freezing+our+unforgettable+memories+together!&location=' . urlencode($eventVenue);
 ?>
@@ -199,7 +199,7 @@ $calendarLink = 'https://calendar.google.com/calendar/render?action=TEMPLATE&tex
                                     <td valign="top" class="table-val-col" style="padding:14px 16px;font-size:14px;color:#0f172a;font-weight:700;line-height:1.55;text-align:left;">
                                         Official / Formal<br>
                                         <span style="font-size:13px;color:#64748b;font-weight:500;">
-                                            Gentlemen: Shirt &amp; Tie / Suit &bull; Ladies: Saree
+                                            Gentlemen: Shirt &amp; Tie / Suit &bull; Ladies: White Saree
                                         </span>
                                     </td>
                                 </tr>

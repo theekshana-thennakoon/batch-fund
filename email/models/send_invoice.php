@@ -117,7 +117,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['invoiceStatus'])) {
         $mail->SMTPSecure = $smtp['encryption'];
         $mail->Port       = $smtp['port'];
 
-        $mail->setFrom($smtp['from_email'], $smtp['from_name']);
+        $fromName = $smtp['from_names']['invoice'] ?? $smtp['from_name'];
+        $mail->setFrom($smtp['from_email'], $fromName);
         // $mail->addAddress($client_email, $client_name);
 
         // // if($toemail2 != ''){ {

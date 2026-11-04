@@ -1693,6 +1693,25 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
             color: #1d4ed8;
         }
 
+        .padura-venue-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16, 185, 129, 0.18);
+            border: 1px solid rgba(52, 211, 153, 0.45);
+            color: #a7f3d0;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 5px 13px;
+            border-radius: 50px;
+        }
+
+        body.light-mode .padura-venue-pill {
+            background: rgba(5, 150, 105, 0.1);
+            border-color: rgba(5, 150, 105, 0.35);
+            color: #047857;
+        }
+
         .padura-tag-pill {
             display: inline-flex;
             align-items: center;
@@ -3117,7 +3136,7 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
                                             </span>
                                         </div>
                                         <div class="batch-chip-item">
-                                            <i class="fas fa-clock"></i> 08:30 AM Onwards
+                                            <i class="fas fa-clock"></i> 07:00 AM Onwards
                                         </div>
                                     </div>
 
@@ -3157,7 +3176,7 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
                                                     <i class="far fa-calendar-plus"></i> Add to Calendar
                                                 </a>
                                                 <div class="batch-chip-item">
-                                                    <i class="fas fa-user-tie"></i> Dress Code: Official / Formal
+                                                    <i class="fas fa-user-tie"></i> Dress Code: Gentlemen: Shirt &amp; Tie / Suit &bull; Ladies: White Saree
                                                 </div>
                                             </div>
                                         </div>
@@ -3176,10 +3195,13 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
                                                 <i class="fas fa-guitar"></i> Cultural & Musical Eve • Batch 20/21
                                             </span>
                                             <span class="padura-date-pill">
-                                                <i class="far fa-calendar-alt"></i> 2026.11.28 (Saturday)
+                                                <i class="far fa-calendar-alt"></i> 2026.11.23 (Monday)
                                             </span>
                                             <span class="padura-time-pill">
                                                 <i class="fas fa-clock"></i> 06:00 PM Onwards
+                                            </span>
+                                            <span class="padura-venue-pill">
+                                                <i class="fas fa-map-marker-alt"></i> University Premises (විශ්වවිද්‍යාල පරිශ්‍රයේදී)
                                             </span>
                                         </div>
                                     </div>
@@ -3193,7 +3215,7 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
                                                 <span class="title-highlight-padura">Batch 20/21:</span> පැදුර 2026 (Padura Musical Night) 🪕 🎶
                                             </h3>
 
-                                            <!-- Countdown Timer to 2026.11.28 18:00:00 -->
+                                            <!-- Countdown Timer to 2026.11.23 18:00:00 -->
                                             <div class="padura-countdown-grid" id="paduraCountdown">
                                                 <div class="padura-countdown-box">
                                                     <div class="padura-countdown-number" id="paduraDays">--</div>
@@ -3215,10 +3237,13 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
 
                                             <!-- Actions -->
                                             <div class="batch-actions">
-                                                <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Batch+20%2F21+-+%E0%B6%B4%E0%B7%90%E0%B6%AF%E0%B7%94%E0%B6%BB+2026+(Padura)&dates=20261128T123000Z/20261128T183000Z&details=Official+Batch+Padura+Musical+Night+for+Batch+20%2F21.+An+evening+of+acoustic+melodies%2C+cultural+harmony%2C+and+memorable+batch+bonding!&location=University+Premises" 
+                                                <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Batch+20%2F21+-+%E0%B6%B4%E0%B7%90%E0%B6%AF%E0%B7%94%E0%B6%BB+2026+(Padura)&dates=20261123T123000Z/20261123T183000Z&details=Official+Batch+Padura+Musical+Night+for+Batch+20%2F21.+An+evening+of+acoustic+melodies%2C+cultural+harmony%2C+and+memorable+batch+bonding!&location=University+Premises+(%E0%B6%BB%E0%B7%8F%E0%B6%A2%E0%B6%BB%E0%B6%A7+%E0%B7%80%E0%B7%92%E0%B7%81%E0%B7%8d%E0%B7%80%E0%B7%92%E0%B6%AF%E0%B7%8d%E0%B6%BA%E0%B7%8F%E0%B6%BD+%E0%B6%B4%E0%B6%BB%E0%B7%92%E0%B7%81%E0%B7%8d%E0%B6%BB%E0%B6%BA)" 
                                                    target="_blank" rel="noopener noreferrer" class="btn-calendar-padura" title="Add event to Google Calendar">
                                                     <i class="far fa-calendar-plus"></i> Add to Calendar
                                                 </a>
+                                                <div class="batch-chip-item">
+                                                    <i class="fas fa-map-marker-alt"></i> Venue: University Premises (විශ්වවිද්‍යාල පරිශ්‍රයේදී)
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -4373,7 +4398,7 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
             }, 600);
 
             // Batch Photo Countdown Logic (Target: 2026.11.07 08:30:00 Asia/Colombo)
-            const photoTargetDate = new Date('2026-11-07T08:30:00+05:30').getTime();
+            const photoTargetDate = new Date('2026-11-07T07:00:00+05:30').getTime();
 
             function updateBatchPhotoCountdown() {
                 const now = new Date().getTime();
@@ -4468,8 +4493,8 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
             updateAcademicCountdown();
             setInterval(updateAcademicCountdown, 1000);
 
-            // Padura 2026 Countdown Logic (Target: 2026.11.28 18:00:00 Asia/Colombo)
-            const paduraTargetDate = new Date('2026-11-28T18:00:00+05:30').getTime();
+            // Padura 2026 Countdown Logic (Target: 2026.11.23 18:00:00 Asia/Colombo)
+            const paduraTargetDate = new Date('2026-11-23T18:00:00+05:30').getTime();
 
             function updatePaduraCountdown() {
                 const now = new Date().getTime();

@@ -8,7 +8,21 @@ return [
         'username' => 'zynovaglobaltech@gmail.com',
         'password' => getenv('SMTP_PASSWORD') ?: 'ugvcaasaabfybkxh', // Use .env if available
         'from_email' => 'zynovaglobaltech@gmail.com',
-        'from_name' => 'Batch Fund Payment Summary',
+        'from_name' => 'Batch Fund (20/21)', // Default fallback sender name
+
+        // Dynamic sender names configured according to the mail type
+        'from_names' => [
+            'default'            => 'Batch Fund (20/21)',
+            'padura_notice'      => 'Batch Fund - පැදුර 2026',
+            'batch_photo_notice' => 'Batch Fund - Batch Photo 2026',
+            'loan_report_notice' => 'Batch Fund - Loan Scheme',
+            'payment_summary'    => 'Batch Fund - Payment Summary',
+            'invoice'            => 'Batch Fund - Official Invoice',
+            'reminder'           => 'Batch Fund - Payment Reminder',
+            'contact'            => 'Batch Fund - Inquiry',
+            'newsletter'         => 'Batch Fund - Newsletter',
+        ],
+
         'auth' => true,
         'debug' => false,
     ],

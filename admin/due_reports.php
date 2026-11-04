@@ -78,9 +78,27 @@ function calculateStudentFinancials($conn, $reg_no) {
     ];
 }
 
-// Fetch all registered users matching threshold criteria
-$report_students = [];
-$total_due_sum = 0.00;
+// Ensure dropped_students table exists
+$conn->query("CREATE TABLE IF NOT EXISTS `dropped_students` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `reg_no` VARCHAR(50) NOT NULL UNIQUE,
+  `dropped_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)");
+
+// Build dropped set
+$dropped_set = [];
+$res_dropped = $conn->query("SELECT reg_no FROM dropped_students");
+if ($res_dropped && $res_dropped->num_rows > 0) {
+    while ($d = $res_dropped->fetch_assoc()) {
+        $dropped_set[$d['reg_no']] = true;
+    }
+}
+
+// Fetch ALL registered users matching threshold criteria (dropped shown but excluded from Grand Total)
+$report_students     = [];
+$total_due_sum       = 0.00; // sum for all matching
+$grand_total_active  = 0.00; // active only
+$grand_total_dropped = 0.00; // dropped portion
 
 $res_users = $conn->query("SELECT reg_no, Name, card FROM users ORDER BY reg_no ASC");
 if ($res_users && $res_users->num_rows > 0) {
@@ -102,12 +120,21 @@ if ($res_users && $res_users->num_rows > 0) {
         }
 
         if ($include) {
-            $user['fin'] = $fin;
-            $report_students[] = $user;
-            $total_due_sum += $fin['due_balance'];
+            $is_dropped            = isset($dropped_set[$user['reg_no']]);
+            $user['fin']           = $fin;
+            $user['is_dropped']    = $is_dropped;
+            $report_students[]     = $user;
+            $total_due_sum        += $fin['due_balance'];
+            if ($is_dropped) {
+                $grand_total_dropped += $fin['due_balance'];
+            } else {
+                $grand_total_active  += $fin['due_balance'];
+            }
         }
     }
 }
+$dropped_in_selection = count(array_filter($report_students, fn($s) => $s['is_dropped']));
+$active_in_selection  = count($report_students) - $dropped_in_selection;
 
 // Dompdf PDF Generation when requested
 if (isset($_GET['download_pdf'])) {
@@ -540,13 +567,22 @@ if (isset($_GET['download_xlsx'])) {
                     <div class="col-6">
                         <div class="p-3 bg-light rounded border">
                             <div class="text-muted small uppercase fw-bold">Matching Students Count</div>
-                            <div class="h4 mb-0 text-primary fw-bold"><?php echo count($report_students); ?> Students</div>
+                            <div class="h4 mb-0 text-primary fw-bold"><?php echo count($report_students); ?> Students
+                                <small class="fs-6 fw-normal text-muted">(<?php echo $active_in_selection; ?> Active, <?php echo $dropped_in_selection; ?> Dropped)</small>
+                            </div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="p-3 bg-light rounded border">
-                            <div class="text-muted small uppercase fw-bold">Combined Total Outstanding Balance</div>
-                            <div class="h4 mb-0 text-danger fw-bold">Rs. <?php echo number_format($total_due_sum, 2); ?></div>
+                            <div class="text-muted small uppercase fw-bold">Grand Total Outstanding</div>
+                            <div class="h4 mb-0 text-danger fw-bold">Rs. <?php echo number_format($grand_total_active, 2); ?></div>
+                            <?php if ($dropped_in_selection > 0): ?>
+                            <div class="small text-warning mt-1">
+                                <i class="fas fa-exclamation-circle"></i>
+                                Reduced by Rs. <?php echo number_format($grand_total_dropped, 2); ?>
+                                (<?php echo $dropped_in_selection; ?> dropped student<?php echo $dropped_in_selection > 1 ? 's' : ''; ?> excluded)
+                            </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -574,23 +610,46 @@ if (isset($_GET['download_xlsx'])) {
                                 </tr>
                             <?php else: ?>
                                 <?php $idx = 1; foreach ($report_students as $st): ?>
-                                    <tr>
+                                    <tr class="<?php echo $st['is_dropped'] ? 'table-secondary' : ''; ?>" style="<?php echo $st['is_dropped'] ? 'opacity:0.72;' : ''; ?>">
                                         <td><?php echo $idx++; ?></td>
-                                        <td class="fw-bold"><?php echo htmlspecialchars($st['reg_no']); ?></td>
+                                        <td class="fw-bold">
+                                            <?php echo htmlspecialchars($st['reg_no']); ?>
+                                            <?php if ($st['is_dropped']): ?>
+                                                <br><span class="badge bg-danger mt-1" style="font-size:0.7em;"><i class="fas fa-user-minus me-1"></i>Dropped</span>
+                                            <?php endif; ?>
+                                        </td>
                                         <td><?php echo htmlspecialchars($st['Name']); ?></td>
                                         <td><?php echo htmlspecialchars($st['card'] ?? 'N/A'); ?></td>
                                         <td>Rs. <?php echo number_format($st['fin']['tot'], 2); ?></td>
                                         <td class="text-success">Rs. <?php echo number_format($st['fin']['tot_paid'], 2); ?></td>
-                                        <td class="text-danger fw-bold">Rs. <?php echo number_format($st['fin']['due_balance'], 2); ?></td>
+                                        <td class="<?php echo $st['is_dropped'] ? 'text-muted' : 'text-danger fw-bold'; ?>">
+                                            Rs. <?php echo number_format($st['fin']['due_balance'], 2); ?>
+                                            <?php if ($st['is_dropped']): ?>
+                                                <br><small class="text-muted fst-italic">(Excluded from Grand Total)</small>
+                                            <?php endif; ?>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php endif; ?>
                         </tbody>
                         <?php if (!empty($report_students)): ?>
                             <tfoot>
-                                <tr class="fw-bold bg-light">
-                                    <td colspan="6" class="text-end">Grand Total Outstanding:</td>
-                                    <td class="text-danger">Rs. <?php echo number_format($total_due_sum, 2); ?></td>
+                                <tr>
+                                    <td colspan="6" class="text-end text-muted fw-bold">Total Selected Due:</td>
+                                    <td class="text-muted">Rs. <?php echo number_format($total_due_sum, 2); ?></td>
+                                </tr>
+                                <?php if ($dropped_in_selection > 0): ?>
+                                <tr class="text-danger">
+                                    <td colspan="6" class="text-end fw-bold">
+                                        <i class="fas fa-user-minus me-1"></i>
+                                        Less: Dropped Students Due (<?php echo $dropped_in_selection; ?> student<?php echo $dropped_in_selection > 1 ? 's' : ''; ?>):
+                                    </td>
+                                    <td class="fw-bold">- Rs. <?php echo number_format($grand_total_dropped, 2); ?></td>
+                                </tr>
+                                <?php endif; ?>
+                                <tr class="fw-bold bg-light" style="border-top:2px solid #4e73df;">
+                                    <td colspan="6" class="text-end">Grand Total Outstanding (Active):</td>
+                                    <td class="text-danger">Rs. <?php echo number_format($grand_total_active, 2); ?></td>
                                 </tr>
                             </tfoot>
                         <?php endif; ?>
