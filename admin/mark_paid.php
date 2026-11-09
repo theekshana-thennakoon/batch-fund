@@ -607,13 +607,7 @@ if (isset($_GET['reg_no'])) {
 
     <!-- Custom scripts -->
     <script>
-        // Toggle sidebar on mobile
-        $(document).ready(function() {
-            $('#sidebarCollapse').on('click', function() {
-                $('#sidebar').toggleClass('active');
-                $('#content').toggleClass('active');
-            });
-        });
+
     </script>
     <script>
         $(function() {

@@ -314,7 +314,12 @@ $overall_loan_progress = $total_batch_loans > 0 ? round(($total_batch_loans_paid
     <div id="content">
         <!-- Topbar -->
         <div class="topbar">
-            <h1><i class="fas fa-cog me-2"></i>System Settings</h1>
+            <div class="d-flex align-items-center">
+                <button type="button" id="sidebarCollapse" class="btn btn-sidebar-toggle d-md-none me-3" aria-label="Toggle navigation" title="Toggle Sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="mb-0"><i class="fas fa-cog me-2"></i>System Settings</h1>
+            </div>
             <div class="topbar-right">
                 <button class="theme-toggle" title="Toggle Theme">
                     <i class="fas fa-moon"></i>

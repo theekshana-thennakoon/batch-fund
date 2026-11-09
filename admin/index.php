@@ -732,43 +732,11 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
 
         @media (max-width: 768px) {
 
-            #sidebar {
-
-                width: 60px;
-
-            }
-
-
-
-            #sidebar .sidebar-header h3 {
-
-                font-size: 0;
-
-            }
-
-
-
-            #sidebar ul li a {
-
-                padding: 15px;
-
-                text-align: center;
-
-            }
-
-
-
-            #sidebar ul li a span {
-
-                display: none;
-
-            }
-
-
-
             #content {
 
-                margin-left: 60px;
+                width: 100% !important;
+
+                margin-left: 0 !important;
 
             }
 
@@ -3064,7 +3032,17 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
 
         <div class="topbar">
 
-            <h1><i class="fas fa-chart-line me-2"></i>Dashboard</h1>
+            <div class="d-flex align-items-center">
+
+                <button type="button" id="sidebarCollapse" class="btn btn-sidebar-toggle d-md-none me-3" aria-label="Toggle navigation" title="Toggle Sidebar">
+
+                    <i class="fas fa-bars"></i>
+
+                </button>
+
+                <h1 class="mb-0"><i class="fas fa-chart-line me-2"></i>Dashboard</h1>
+
+            </div>
 
             <div class="topbar-right">
 
