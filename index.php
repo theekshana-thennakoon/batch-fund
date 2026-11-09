@@ -3166,69 +3166,6 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
             <div class="announcements-swiper-wrapper">
                 <div class="swiper announcementsSwiper">
                     <div class="swiper-wrapper">
-                        <!-- Slide 1: Batch Photo Card -->
-                        <div class="swiper-slide">
-                            <div class="batch-photo-card" id="batchPhotoCard">
-                                <div class="batch-photo-content">
-                                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
-                                        <div class="d-flex align-items-center gap-2 flex-wrap">
-                                            <span class="batch-photo-badge">
-                                                <i class="fas fa-camera-retro"></i> Batch Photo • Batch 20/21
-                                            </span>
-                                            <span class="batch-date-pill">
-                                                <i class="far fa-calendar-alt"></i> 2026.11.07 (Saturday)
-                                            </span>
-                                        </div>
-                                        <div class="batch-chip-item">
-                                            <i class="fas fa-clock"></i> 07:00 AM Onwards
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex align-items-start gap-3 mt-3">
-                                        <div class="batch-camera-icon d-none d-sm-inline-flex">
-                                            <i class="fas fa-camera"></i>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <h3 class="batch-photo-title mb-3">
-                                                <span class="title-highlight">Batch Photo 2026:</span> Freezing Memories, Celebrating One Unbroken Bond! 📸
-                                            </h3>
-
-                                            <!-- Countdown Timer -->
-                                            <div class="countdown-grid" id="batchPhotoCountdown">
-                                                <div class="countdown-box">
-                                                    <div class="countdown-number" id="bpDays">--</div>
-                                                    <div class="countdown-label">Days<span class="countdown-label-si">දින</span></div>
-                                                </div>
-                                                <div class="countdown-box">
-                                                    <div class="countdown-number" id="bpHours">--</div>
-                                                    <div class="countdown-label">Hours<span class="countdown-label-si">පැය</span></div>
-                                                </div>
-                                                <div class="countdown-box">
-                                                    <div class="countdown-number" id="bpMinutes">--</div>
-                                                    <div class="countdown-label">Minutes<span class="countdown-label-si">මිනිත්තු</span></div>
-                                                </div>
-                                                <div class="countdown-box">
-                                                    <div class="countdown-number" id="bpSeconds">--</div>
-                                                    <div class="countdown-label">Seconds<span class="countdown-label-si">තත්පර</span></div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Actions -->
-                                            <div class="batch-actions">
-                                                <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Batch+Photo+2026+-+Batch+20/21&dates=20261107T030000Z/20261107T113000Z&details=Official+Batch+Photo+Session+for+Batch+20/21.+Freezing+our+memories+together!&location=University+Premises"
-                                                    target="_blank" rel="noopener noreferrer" class="btn-calendar" title="Add event to Google Calendar">
-                                                    <i class="far fa-calendar-plus"></i> Add to Calendar
-                                                </a>
-                                                <div class="batch-chip-item">
-                                                    <i class="fas fa-user-tie"></i> Dress Code: Gentlemen: Shirt &amp; Tie / Suit &bull; Ladies: White Saree
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- Slide 2: Padura 2026 Card -->
                         <div class="swiper-slide">
                             <div class="padura-notice-card" id="paduraNoticeCard">
@@ -4441,54 +4378,6 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
                 }
             }, 600);
 
-            // Batch Photo Countdown Logic (Target: 2026.11.07 08:30:00 Asia/Colombo)
-            const photoTargetDate = new Date('2026-11-07T07:00:00+05:30').getTime();
-
-            function updateBatchPhotoCountdown() {
-                const now = new Date().getTime();
-                const distance = photoTargetDate - now;
-
-                const daysEl = document.getElementById('bpDays');
-                const hoursEl = document.getElementById('bpHours');
-                const minEl = document.getElementById('bpMinutes');
-                const secEl = document.getElementById('bpSeconds');
-
-                if (!daysEl || !hoursEl || !minEl || !secEl) return;
-
-                if (distance <= 0) {
-                    daysEl.textContent = '00';
-                    hoursEl.textContent = '00';
-                    minEl.textContent = '00';
-                    secEl.textContent = '00';
-
-                    const countdownContainer = document.getElementById('batchPhotoCountdown');
-                    if (countdownContainer && !countdownContainer.dataset.celebrated) {
-                        countdownContainer.dataset.celebrated = 'true';
-                        countdownContainer.innerHTML = `
-                            <div class="countdown-box w-100" style="grid-column: 1 / -1; padding: 14px;">
-                                <div class="countdown-number" style="font-size: 1.4rem;">
-                                    🎉 TODAY IS THE BIG DAY! SMILE & FREEZE THE MOMENT! 📸
-                                </div>
-                            </div>
-                        `;
-                    }
-                    return;
-                }
-
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                daysEl.textContent = String(days).padStart(2, '0');
-                hoursEl.textContent = String(hours).padStart(2, '0');
-                minEl.textContent = String(minutes).padStart(2, '0');
-                secEl.textContent = String(seconds).padStart(2, '0');
-            }
-
-            updateBatchPhotoCountdown();
-            setInterval(updateBatchPhotoCountdown, 1000);
-
             // Academic Period End Countdown (Target: 2026.11.30 23:59:59 Asia/Colombo)
             const academicTargetDate = new Date('2026-11-30T23:59:59+05:30').getTime();
 
@@ -4605,7 +4494,6 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
                         clickable: true,
                         renderBullet: function(index, className) {
                             const labels = [
-                                '<i class="fas fa-camera-retro me-1"></i> Batch Photo 2026',
                                 '<i class="fas fa-guitar me-1"></i> පැදුර 2026',
                                 '<i class="fas fa-graduation-cap me-1"></i> Academic & Hostel Notice'
                             ];

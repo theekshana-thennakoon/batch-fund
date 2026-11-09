@@ -3086,128 +3086,6 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
 
                     <div class="swiper-wrapper">
 
-                        <!-- Slide 1: Batch Photo Card -->
-
-                        <div class="swiper-slide">
-
-                            <div class="batch-photo-card">
-
-                                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
-
-                                    <div class="d-flex align-items-center gap-2 flex-wrap">
-
-                                        <span class="batch-photo-badge">
-
-                                            <i class="fas fa-camera-retro"></i> Batch Photo • Batch 20/21
-
-                                        </span>
-
-                                        <span class="batch-date-pill">
-
-                                            <i class="far fa-calendar-alt"></i> 2026.11.07 (Saturday)
-
-                                        </span>
-
-                                    </div>
-
-                                    <span style="font-size: 0.8rem; color: #94a3b8;"><i class="fas fa-clock me-1"></i> 08:30 AM Onwards</span>
-
-                                </div>
-
-
-
-                                <div class="d-flex align-items-start gap-3 mt-3">
-
-                                    <div class="batch-camera-icon d-none d-sm-inline-flex">
-
-                                        <i class="fas fa-camera"></i>
-
-                                    </div>
-
-                                    <div class="flex-grow-1">
-
-                                        <h3 class="batch-photo-title mb-3">
-
-                                            <span class="title-highlight">Batch Photo 2026:</span> Freezing Memories, Celebrating One Unbroken Bond! 📸
-
-                                        </h3>
-
-
-
-                                        <!-- Countdown Grid -->
-
-                                        <div class="countdown-grid" id="adminBpCountdown">
-
-                                            <div class="countdown-box">
-
-                                                <div class="countdown-number" id="adminBpDays">--</div>
-
-                                                <div class="countdown-label">Days<span class="countdown-label-si">දින</span></div>
-
-                                            </div>
-
-                                            <div class="countdown-box">
-
-                                                <div class="countdown-number" id="adminBpHours">--</div>
-
-                                                <div class="countdown-label">Hours<span class="countdown-label-si">පැය</span></div>
-
-                                            </div>
-
-                                            <div class="countdown-box">
-
-                                                <div class="countdown-number" id="adminBpMinutes">--</div>
-
-                                                <div class="countdown-label">Minutes<span class="countdown-label-si">මිනිත්තු</span></div>
-
-                                            </div>
-
-                                            <div class="countdown-box">
-
-                                                <div class="countdown-number" id="adminBpSeconds">--</div>
-
-                                                <div class="countdown-label">Seconds<span class="countdown-label-si">තත්පර</span></div>
-
-                                            </div>
-
-                                        </div>
-
-
-
-                                        <!-- Action Links -->
-
-                                        <div class="d-flex flex-wrap gap-2 mt-3">
-
-                                            <a href="./batch_photo_email" class="btn btn-primary btn-sm fw-bold" style="text-decoration:none;">
-
-                                                <i class="fas fa-paper-plane me-1"></i> Send Notice to All Students
-
-                                            </a>
-
-                                            <a href="./batch_photo_email" class="btn btn-outline-success btn-sm fw-bold" style="text-decoration:none;">
-
-                                                <i class="fas fa-vial me-1"></i> Test Send (ITT/2021/106)
-
-                                            </a>
-
-                                            <a href="./batch_photo_demo" target="_blank" class="btn btn-outline-info btn-sm fw-bold" style="text-decoration:none;">
-
-                                                <i class="fas fa-eye me-1"></i> Preview Email Template
-
-                                            </a>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-
                         <!-- Slide 2: Padura 2026 Card -->
 
                         <div class="swiper-slide">
@@ -4208,64 +4086,6 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
 
 
 
-        // Admin Batch Photo Countdown
-
-        const adminPhotoDate = new Date('2026-11-07T08:30:00+05:30').getTime();
-
-        function updateAdminCountdown() {
-
-            const now = new Date().getTime();
-
-            const diff = adminPhotoDate - now;
-
-
-
-            const daysEl = document.getElementById('adminBpDays');
-
-            const hoursEl = document.getElementById('adminBpHours');
-
-            const minEl = document.getElementById('adminBpMinutes');
-
-            const secEl = document.getElementById('adminBpSeconds');
-
-
-
-            if (!daysEl || !hoursEl || !minEl || !secEl) return;
-
-
-
-            if (diff <= 0) {
-
-                daysEl.textContent = '00';
-
-                hoursEl.textContent = '00';
-
-                minEl.textContent = '00';
-
-                secEl.textContent = '00';
-
-                return;
-
-            }
-
-
-
-            daysEl.textContent = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, '0');
-
-            hoursEl.textContent = String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
-
-            minEl.textContent = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
-
-            secEl.textContent = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
-
-        }
-
-        updateAdminCountdown();
-
-        setInterval(updateAdminCountdown, 1000);
-
-
-
         // Admin Academic Completion Countdown
 
         const adminAcademicDate = new Date('2026-11-30T23:59:59+05:30').getTime();
@@ -4427,8 +4247,6 @@ $display_loan_popup = ($display_loan_popup_setting === '1' || $display_loan_popu
                     renderBullet: function (index, className) {
 
                         const labels = [
-
-                            '<i class="fas fa-camera-retro me-1"></i> Batch Photo 2026',
 
                             '<i class="fas fa-guitar me-1"></i> පැදුර 2026',
 
